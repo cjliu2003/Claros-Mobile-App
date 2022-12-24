@@ -48,7 +48,7 @@ const HomeScreen = ({ navigation }) => {
                 <CustomListItem />
             )
         })}</>
-        : <Text></Text>}</>}
+        : <Text>No Opportunities Are Available RN</Text>}</>}
       </ScrollView>
     </SafeAreaView>
   )
