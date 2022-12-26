@@ -15,6 +15,7 @@
     "@rneui/base": "github:react-native-elements/react-native-elements#base",
     "@rneui/themed": "github:react-native-elements/react-native-elements#themed",
     "expo": "~47.0.8",
+    "expo-permissions": "^14.0.0",
     "expo-status-bar": "~1.4.2",
     "firebase": "^9.15.0",
     "moment": "^2.29.4",

@@ -1,9 +1,13 @@
-import { SafeAreaView, ScrollView, StyleSheet, Text, View, Linking } from 'react-native'
+import { SafeAreaView, ScrollView, StyleSheet, Text, View, Linking, Dimensions } from 'react-native'
 import React, { useLayoutEffect, useState } from 'react'
 import { Button} from '@rneui/base'
 import CustomListItem from "../components/customListItem"
 import { useUserContext } from '../contexts/userContext'
 import { parseDate } from '../functions/parseDate'
+
+const screenWidth = Dimensions.get('window').width;
+const screenHeight = Dimensions.get('window').height;
+
 const HomeScreen = ({ navigation }) => {
     const {user, logoutUser, recentSignIn, setSignInError, setRecentSignIn, historicalBetslip} = useUserContext()
 
@@ -15,36 +19,28 @@ const HomeScreen = ({ navigation }) => {
     }
 
     const openCenterURL = () => {
-        Linking.openURL('https://www.claros.ai/center')
-    }
+      Linking.openURL('https://claros.ai/center').catch((error) => console.error(error));
+    };
     useLayoutEffect(() => {
         navigation.setOptions({
-            title: "Home",
+            title: "",
             headerTitleStyle: {color: "black"},
             headerStyle: {backgroundColor: "#fff"},
             headerTintColor: "black",
             headerLeft: () => (
-                <View style={{ marginLeft: 20}}>
-                    <Text onPress={() => openCenterURL()} style={styles.settingsButtonText}>Settings</Text>
-                </View>
+              <View>
+                  <Button onPress={() => signOut()}type="clear" style={styles.signOutButton}>
+                      <Text style={styles.headerText}>Sign Out</Text>
+                  </Button>
+              </View>
             ),
-            headerRight: () => (
-                <View>
-                    <Button onPress={() => signOut()}type="clear" style={styles.signOutButton}>
-                        <Text style={styles.signOutButtonText}>Sign Out</Text>
-                    </Button>
-                </View>
-            )
         });
         if (!user && !recentSignIn) navigation.replace("Login")
     }, [])
   return (
-      <SafeAreaView>
-      <ScrollView contentContainerStyle={styles.headerContainer}>
-        <Text style={styles.dateHeader}>{new Date().toString().substring(0,15)}</Text>
-        <Text style={styles.header}>Current Value Opportunities</Text>
-        <Text style={styles.subHeader}>The following list represents current betting market value opportunities (lines that are mispriced). We recommend placing 1% of your bankroll on each bet.</Text>
-        <Text style={styles.subHeader}>To edit which sportsbooks you have access to, account settings, or subscription management, please go to www.claros.ai/center</Text>
+      <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.scrollContainer}>
+        <Text style={styles.dateText}>{new Date().toString().substring(0,15)}</Text>
         {historicalBetslip && <>
             {historicalBetslip.map((line, i) => {
                 return (
@@ -52,6 +48,12 @@ const HomeScreen = ({ navigation }) => {
                 )
             })}
         </>}
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Button style={styles.outlineButton} type="transparent" onPress={() => openCenterURL()} title="Settings">
+            <Text style={styles.outlineButtonText}>Account Settings</Text>
+          </Button>
+        </View>
+        <View style={styles.footer}></View>
       </ScrollView>
     </SafeAreaView>
   )
@@ -60,39 +62,126 @@ const HomeScreen = ({ navigation }) => {
 export default HomeScreen
 
 const styles = StyleSheet.create({
-    webView: {
+
+    scrollContainer: {
+        width: screenWidth,
+        height: screenHeight,
+    },
+    image: {
+      width: screenWidth * 0.75,
+      height: screenHeight * 0.35,
+      marginTop: screenHeight * 0.025,
+      marginBottom: screenHeight * 0.025,
+    },
+    inputContainerLabel: {
+        marginBottom: 8,
+        fontWeight: '600',
+        fontSize: 16,
+        marginLeft: 16,
+    },
+    input: {
+        width: 325,
+        height: 56,
+        marginTop: 10,
+        paddingVertical: 10,
+        borderColor: 'transparent',
+        backgroundColor: '#f2f2f2',
+        borderRadius: 11,
+        color: 'black',
+        fontWeight: '200',
+    },
+    errorMessage: {
+        padding: 15,
         width: 300,
-        maxHeight: 200,
-        flex: 1,
-    },
-    subHeader: {
-        fontSize: 16,
-        fontWeight: "400",
-        margin: 12,
-        color: '#222222',
-    },
-    dateHeader: {
-        fontSize: 16,
-        fontWeight: "500",
-        marginLeft: 12,
-        marginTop: 12,
-        color: 'black',
-    },
-    header: {
-        fontSize: 24,
-        fontWeight: "800",
-        marginLeft: 12,
-        marginVertical: 6,
-        color: 'black',
-    },
-    signOutButtonText: {
         color: '#b51c07',
-        fontSize: 16,
+        backgroundColor: '#b51c0720',
         fontWeight: '500',
     },
-    settingsButtonText: {
-        color: '#000000',
+    inputContainer: {
+        width: 325,
+        marginTop: 10,
+        paddingVertical: 10,
+        borderColor: 'transparent',
+        borderRadius: 32,
+    },
+    inputContainerText: {
+        color: 'white',
+        fontWeight: '600',
+        fontSize: 18,
+    },
+    outlineButton: {
+        width: 325,
+        marginTop: 10,
+        paddingVertical: 10,
+        borderColor: '#000',
+        backgroundColor: 'transparent',
+        borderRadius: 32,
+        borderWidth: 1.5,
+    },
+    filledButton: {
+        width: 325,
+        marginTop: 10,
+        paddingVertical: 10,
+        borderColor: 'transparent',
+        backgroundColor: '#0060ff',
+        borderRadius: 32,
+    },
+    outlineButtonText: {
+        color: 'black',
+        fontWeight: '600',
+        fontSize: 18,
+    },
+    filledButtonText: {
+        color: 'white',
+        fontWeight: '600',
+        fontSize: 18,
+    },
+    genericText: {
+        color: 'black',
+        fontWeight: '200',
+        fontSize: 20,
+        textAlign: 'center',
+    },
+    dateText: {
+        color: 'black',
+        fontWeight: '200',
+        fontSize: 20,
+        textAlign: 'center',
+        marginTop: screenHeight * 0.05,
+        marginBottom: screenHeight * 0.05,
+    },
+    homeHeaderText: {
+        color: 'black',
+        fontWeight: '600',
+        fontSize: 20,
+        textAlign: 'center',
+        marginTop: screenHeight * 0.05,
+    },
+    
+    brandText: {
+        color: '#0060ff',
+        fontWeight: '900',
+        fontSize: 70,
+        textAlign: 'center',
+    },
+    headerText: {
+        color: 'black',
+        fontWeight: '200',
         fontSize: 16,
-        fontWeight: '500',
+    },
+    footer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: "flex-end",
+        backgroundColor: '#ffffff',
+    },
+    footerText: {
+        width: screenWidth * 0.70,
+        marginTop: screenHeight * 0.025,
+        marginBottom: screenHeight * 0.055,
+        color: 'black',
+        fontWeight: '200',
+        fontSize: 18,
+        textAlign: 'center',
     },
 })
