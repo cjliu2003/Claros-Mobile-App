@@ -32,7 +32,7 @@ export default function App() {
     <UserContextProvider>
       <NavigationContainer theme={myTheme}>
         <Stack.Navigator style={styles.container} initialRouteName="Login" screenOptions={globalScreenOptions}>
-          <Stack.Screen name='Login' component={LoginScreen} />
+          <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }}/>
           <Stack.Screen name='Home' component={HomeScreen} />
           {/* <Stack.Screen name='Center' component={CenterScreen} /> */}
         </Stack.Navigator>
