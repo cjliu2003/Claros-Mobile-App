@@ -5,6 +5,7 @@ import { auth } from "../firebase";
 import { firestore } from "../firebase";
 import { createUserWithEmailAndPassword, updateProfile, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, updateEmail} from "@firebase/auth";
 import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
+import { findTodaysLines } from "../functions/findTodaysLines";
 
 const UserContext = createContext({});
 
@@ -25,6 +26,7 @@ export const UserContextProvider = ({ children }) => {
     const [signUpError, setSignUpError] = useState(null);
     const [success, setSuccess] = useState(false);
     const [recentSignIn, setRecentSignIn] = useState(false);
+    const [historicalBetslip, setHistoricalBetSlip] = useState(null)
 
 
     // triggers an update, the value of the boolean doesn't even matter lol
@@ -66,6 +68,15 @@ export const UserContextProvider = ({ children }) => {
         }
         setLoading(false)
     }
+
+    useEffect(() => {
+        if (customer) {
+            let date = new Date()
+            setHistoricalBetSlip(findTodaysLines(date, customer.historical_bet_slip.reverse().slice(0,10)))
+        }
+    }, [customer])
+    
+    
 
     useEffect(() => {
         if (user) findSubscription()
@@ -305,6 +316,7 @@ export const UserContextProvider = ({ children }) => {
         excludeSportsbook,
         initializePreferences,
         recentSignIn, setRecentSignIn,
+        historicalBetslip
     };
     
     return (

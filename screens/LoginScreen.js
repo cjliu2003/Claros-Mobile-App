@@ -1,4 +1,4 @@
-import { KeyboardAvoidingView, StyleSheet, Text, View } from 'react-native'
+import { Linking, KeyboardAvoidingView, StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useLayoutEffect, useState } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import { Button, Image, Input } from "@rneui/base"
@@ -19,6 +19,10 @@ const LoginScreen = ( { navigation }) => {
         }
     }
 
+    const openCenterURL = () => {
+        Linking.openURL('https://www.claros.ai/signup')
+    }
+
     useLayoutEffect(() => {
       if (user && recentSignIn) navigation.replace("Home")
     }, [user, recentSignIn])
@@ -26,6 +30,7 @@ const LoginScreen = ( { navigation }) => {
 
   return (
     <KeyboardAvoidingView behavior='padding' style={styles.container}>
+        <Text style={styles.title}>Welcome to Claros Beta!</Text>
         <Image 
             source={{
                 uri:
@@ -37,15 +42,15 @@ const LoginScreen = ( { navigation }) => {
         {signInError && <Text style={styles.errorMessage}>We were unable to recognize an account with that email and password. Please check your spelling and try again.</Text>}
         <View style={styles.inputContainer}>
             <Text style={styles.inputContainerLabel}>Email</Text>
-            <Input style={styles.input} placeholder="Email" autoFocus type="Email" value={email} onChangeText={(text) => setEmail(text)} />
+            <TextInput style={styles.input} placeholder="Email" autoFocus type="Email" value={email} onChangeText={(text) => setEmail(text)} />
             <Text style={styles.inputContainerLabel}>Password</Text>
-            <Input style={styles.input} placeholder="Password" secureTextEntry autoFocus type="password"  value={password} onChangeText={(text) => setPassword(text)}/>
+            <TextInput style={styles.input} placeholder="Password" secureTextEntry autoFocus type="password"  value={password} onChangeText={(text) => setPassword(text)}/>
         </View>
         <Button style={styles.loginButton} type="transparent" onPress={signIn} title="Login">
             <Text style={styles.loginButtonText}>Login</Text>
         </Button>
         <Button style={styles.createAccountButton} type="transparent" onPress={signIn} title="Login">
-            <Text style={styles.createAccountButtonText}>Create An Account</Text>
+            <Text style={styles.createAccountButtonText} onPress={() => openCenterURL()}>Create An Account</Text>
         </Button>
         <View style={{height: 100}}/>
         <StatusBar style="light" />
@@ -63,6 +68,13 @@ const styles = StyleSheet.create({
         padding: 10,
         background: "white",
     },
+    title: {
+        fontSize: 36,
+        textAlign: 'center',
+        fontWeight: '600',
+        color: 'black',
+        marginBottom: 32,
+    },
     inputContainerLabel: {
         marginBottom: 8,
         fontWeight: '600',
@@ -73,10 +85,12 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 25,
         padding: 16,
-        borderColor: '#aaaaaa'
+        borderColor: '#aaaaaa',
+        marginBottom: 24,
     },
     errorMessage: {
         padding: 15,
+        marginVertical: 16,
         width: 300,
         color: '#b51c07',
         backgroundColor: '#b51c0720',
