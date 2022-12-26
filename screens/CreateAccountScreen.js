@@ -7,7 +7,7 @@ import { useUserContext } from '../contexts/userContext'
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-const LoginScreen = ( { navigation }) => {
+const CreateAccountScreen = ( { navigation }) => {
   const [orientation, setOrientation] = useState(null);
 
   useEffect(() => {
@@ -48,14 +48,33 @@ const LoginScreen = ( { navigation }) => {
   return (
     <KeyboardAvoidingView behavior = 'padding' style={styles.container}>
       {signInError && <Text style={styles.errorMessage}>We were unable to recognize an account with that email and password. Please check your spelling and try again.</Text>}
-      <Text style={styles.brandText}>login</Text>
-      <Image source={require('../assets/login.png')} style={styles.image} />
+      <Text style={styles.brandText}>create account</Text>
+      <Text style={styles.genericText}>You could be chatting with me in less than 2 minutes. Just create an account and we’ll soon be acquainted!</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="First Name"
+        placeholderTextColor={ 'black' }
+        paddingHorizontal = { screenWidth * 0.05 }
+        type="Text"
+        fontSize= { 16 }
+        value={email}
+        onChangeText={(text) => setEmail(text)} />
+      <View></View>
       <TextInput
         style={styles.input}
         placeholder="Email"
         placeholderTextColor={ 'black' }
         paddingHorizontal = { screenWidth * 0.05 }
         type="Email"
+        fontSize= { 16 }
+        value={email}
+        onChangeText={(text) => setEmail(text)} />
+      <TextInput
+        style={styles.input}
+        placeholder="Phone Number"
+        placeholderTextColor={ 'black' }
+        paddingHorizontal = { screenWidth * 0.05 }
+        type="Text"
         fontSize= { 16 }
         value={email}
         onChangeText={(text) => setEmail(text)} />
@@ -71,19 +90,19 @@ const LoginScreen = ( { navigation }) => {
         value={password}
         onChangeText={(text) => setPassword(text)}/>
     
-      <Button style={styles.filledButton} type="transparent" onPress={signIn} title="Login">
-        <Text style={styles.filledButtonText}>Login</Text>
+      <Button style={styles.filledButton} type="transparent" onPress={signIn} title="CreateAccount">
+        <Text style={styles.filledButtonText}>Sign Up</Text>
       </Button>
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Don't have an account? Sign Up
-        </Text>
+        <Text style={styles.footerText}>Have an account? Login</Text>
       </View>
+      
       <StatusBar style="light" />
     </KeyboardAvoidingView>
   )
 }
 
-export default LoginScreen
+export default CreateAccountScreen
 
 const styles = StyleSheet.create({
     container: {
@@ -162,21 +181,13 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         fontSize: 18,
     },
-    letterButton: {
-        
-    },
-    letterButtonText: {
-        color: '#0060ff',
-        fontWeight: '200',
-        fontSize: 18,
-    },
     genericText: {
       width: screenWidth * 0.70,
       marginTop: screenHeight * 0.05,
       marginBottom: screenHeight * 0.05,
       color: 'black',
       fontWeight: '200',
-      fontSize: 18,
+      fontSize: 20,
       textAlign: 'center',
     },
     brandText: {
@@ -184,7 +195,6 @@ const styles = StyleSheet.create({
       fontWeight: '900',
       fontSize: 70,
       textAlign: 'center',
-      marginBottom: screenHeight * 0.05,
     },
     footer: {
         flexDirection: 'row',
