@@ -1,4 +1,4 @@
-import { SafeAreaView, ScrollView, StyleSheet, Text, View, Linking, Dimensions } from 'react-native'
+import { SafeAreaView, ScrollView, StyleSheet, Text, View, Image, Linking, Dimensions } from 'react-native'
 import React, { useLayoutEffect, useState } from 'react'
 import { Button} from '@rneui/base'
 import CustomListItem from "../components/customListItem"
@@ -48,7 +48,7 @@ const HomeScreen = ({ navigation }) => {
                 )
             })}
         </>}
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: screenHeight * 0.05 }}>
           <Button style={styles.outlineButton} type="transparent" onPress={() => openCenterURL()} title="Settings">
             <Text style={styles.outlineButtonText}>Account Settings</Text>
           </Button>
@@ -70,8 +70,7 @@ const styles = StyleSheet.create({
     image: {
       width: screenWidth * 0.75,
       height: screenHeight * 0.35,
-      marginTop: screenHeight * 0.025,
-      marginBottom: screenHeight * 0.025,
+      justifyContent: 'center'
     },
     inputContainerLabel: {
         marginBottom: 8,
