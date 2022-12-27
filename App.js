@@ -9,7 +9,7 @@ import WelcomeScreen from "./screens/WelcomeScreen";
 import LoginScreen from "./screens/LoginScreen";
 import CreateAccountScreen from "./screens/CreateAccountScreen";
 import HomeScreen from "./screens/HomeScreen";
-import CenterScreen from "./screens/CenterScreen";
+import { useFonts } from "expo-font";
 
 const Stack = createStackNavigator();
 
@@ -30,11 +30,12 @@ const myTheme = {
 
 export default function App() {
 
+
   return (
     <UserContextProvider>
       <NavigationContainer theme={myTheme}>
-        <Stack.Navigator style={styles.container} initialRouteName="Welcome" screenOptions={globalScreenOptions}>
-          <Stack.Screen name='Welcome' component={WelcomeScreen} options={{ headerShown: false }} />
+        <Stack.Navigator initialRouteName="Welcome" screenOptions={globalScreenOptions}>
+          <Stack.Screen style={styles.font} name='Welcome' component={WelcomeScreen} options={{ headerShown: false }} />
           <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }}/>
           <Stack.Screen name='Create Account' component={CreateAccountScreen} options={{ headerShown: false }}/>
           <Stack.Screen name='Home' component={HomeScreen} />
@@ -46,7 +47,7 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    fontFamily: 'Manrope',
-  },
+  font: {
+    fontFamily: 'Manrope'
+  }
 });

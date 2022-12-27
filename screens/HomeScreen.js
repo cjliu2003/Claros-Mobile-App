@@ -1,15 +1,17 @@
-import { SafeAreaView, ScrollView, StyleSheet, Text, View, Image, Linking, Dimensions } from 'react-native'
-import React, { useLayoutEffect, useState } from 'react'
+// Home Screen displays a user's betslip.
+
+import { SafeAreaView, ScrollView, StyleSheet, Text, View, Image, Linking, Dimensions, TouchableOpacity } from 'react-native'
+import React, { useLayoutEffect } from 'react'
 import { Button} from '@rneui/base'
 import CustomListItem from "../components/customListItem"
 import { useUserContext } from '../contexts/userContext'
-import { parseDate } from '../functions/parseDate'
+
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 const HomeScreen = ({ navigation }) => {
-    const {user, logoutUser, recentSignIn, setSignInError, setRecentSignIn, historicalBetslip} = useUserContext()
+    const {user, logoutUser, recentSignIn, setSignInError, setRecentSignIn, historicalBetslip, subscription} = useUserContext()
 
     const signOut = () => {
         logoutUser()
@@ -21,6 +23,10 @@ const HomeScreen = ({ navigation }) => {
     const openCenterURL = () => {
       Linking.openURL('https://claros.ai/center').catch((error) => console.error(error));
     };
+
+    const openPricingURL = () => {
+        Linking.openURL('https://claros.ai/pricing').catch((error) => console.error(error));
+      };
     useLayoutEffect(() => {
         navigation.setOptions({
             title: "",
@@ -40,20 +46,42 @@ const HomeScreen = ({ navigation }) => {
   return (
       <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollContainer}>
-        <Text style={styles.dateText}>{new Date().toString().substring(0,15)}</Text>
-        {historicalBetslip && <>
-            {historicalBetslip.map((line, i) => {
-                return (
-                    <CustomListItem line={line} idx={i + 1}/>
-                )
-            })}
-        </>}
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: screenHeight * 0.05 }}>
-          <Button style={styles.outlineButton} type="transparent" onPress={() => openCenterURL()} title="Settings">
-            <Text style={styles.outlineButtonText}>Account Settings</Text>
-          </Button>
-        </View>
-        <View style={styles.footer}></View>
+
+        {subscription ? <>
+            <Text style={styles.dateText}>{new Date().toString().substring(0,15)}</Text>
+
+            {/* This is a conditional. If there betslip has lines, show the betslip. If not, show a message saying to check back soon. */}
+
+            {historicalBetslip.length > 0 ? <>
+                {historicalBetslip.map((line, i) => {
+                    return (
+                        // Custom list item renders by taking in a line object from historical bet slip, and an index number
+                        <CustomListItem line={line} idx={i + 1}/>
+                    )
+                })}
+            </> : 
+                <>
+                    <Image source={require('../assets/claros__algorithm.png')} style={styles.image}  />
+                    <Text style={styles.noLinesMsg}>Claros is crunching numbers and scanning the market for value betting opportunities. Currently, there are no available opportunities. Please come back later!</Text>
+                </>
+            }
+            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: screenHeight * 0.05 }}>
+            <Button style={styles.outlineButton} type="transparent" onPress={() => openCenterURL()} title="Settings">
+                <Text style={styles.outlineButtonText}>Account Settings</Text>
+            </Button>
+            </View>
+            <View style={styles.footer}></View>
+            </> 
+        : 
+            <View style={styles.centered}>
+                <Image style={styles.logo} source={require('../assets/claros__bot__logo.png')} />
+                <Text style={styles.pricingHdr}>Activiate Claros AI</Text>
+                <Text style={styles.pricingSubhdr}>Access to betting assitant with daily value betting notifications. Includes access to future developments.</Text>
+                <TouchableOpacity style={styles.pricingBtn} onPress={() => openPricingURL()}>
+                    <Text style={styles.pricingBtnTxt}>Get Beta Access</Text>
+                </TouchableOpacity>
+            </View>
+        }
       </ScrollView>
     </SafeAreaView>
   )
@@ -67,10 +95,52 @@ const styles = StyleSheet.create({
         width: screenWidth,
         height: screenHeight,
     },
+    centered: {
+        height: screenHeight * 0.75,
+        justifyContent: 'center',
+    },
+    logo: {
+        alignSelf: 'center',
+        width: screenWidth * .25,
+        height: screenWidth * .25,
+        margin: 16,
+    },
     image: {
-      width: screenWidth * 0.75,
-      height: screenHeight * 0.35,
-      justifyContent: 'center'
+      alignSelf: 'center',
+      width: screenWidth * .50,
+      height: screenWidth * .50,
+    },
+    pricingHdr: {
+        fontSize: 30,
+        fontWeight: '800',
+        letterSpacing: -0.5,
+        alignSelf: 'center',
+    },
+    pricingSubhdr: {
+        fontSize: 20,
+        fontWeight: '300',
+        color: '#222222',
+        textAlign: 'center',
+        marginVertical: 16,
+        width: 300,
+        alignSelf: 'center',
+    },
+    pricingBtn: {
+        width: 200,
+        height: 75,
+        backgroundColor: '#0060ff',
+        color: 'white',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 50,
+        margin: 16,
+        alignSelf: 'center',
+    },
+    pricingBtnTxt: {
+        fontSize: 20,
+        fontWeight: '600',
+        textAlign: 'center',
+        color: 'white',
     },
     inputContainerLabel: {
         marginBottom: 8,
@@ -116,6 +186,12 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
         borderRadius: 32,
         borderWidth: 1.5,
+    },
+    noLinesMsg: {
+        padding: 50,
+        color: 'black',
+        fontWeight: '400',
+        fontSize: 16
     },
     filledButton: {
         width: 325,
