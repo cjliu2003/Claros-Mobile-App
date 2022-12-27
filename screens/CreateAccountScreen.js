@@ -1,7 +1,9 @@
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, Linking, View, Dimensions } from 'react-native'
+// Create account screen links a user to www.claros.ai/signup
+
+import { KeyboardAvoidingView, StyleSheet, Text, Linking, View, Dimensions } from 'react-native'
 import React, { useLayoutEffect, useState, useEffect } from 'react'
 import { StatusBar } from 'expo-status-bar'
-import { Button, Image, Input } from "@rneui/base"
+import { Button, Image } from "@rneui/base"
 import { useUserContext } from '../contexts/userContext'
 
 const screenWidth = Dimensions.get('window').width;
@@ -26,9 +28,7 @@ const CreateAccountScreen = ( { navigation }) => {
   }, []);
   
   
-  const {user, signInUserEmail, signInError, recentSignIn, setRecentSignIn} = useUserContext()
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const {user, signInError, recentSignIn} = useUserContext()
 
 
   const openCenterURL = () => {
@@ -52,7 +52,7 @@ const CreateAccountScreen = ( { navigation }) => {
         <Text style={styles.filledButtonText}>Sign Up on Website</Text>
       </Button>
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Have an account? Login</Text>
+        <Text style={styles.footerText} onPress={() => navigation.navigate('Login')}>Have an account? Login</Text>
       </View>
       
       <StatusBar style="light" />

@@ -1,8 +1,9 @@
-import { KeyboardAvoidingView, StyleSheet, Text, TextStroke, TextInput, View, Dimensions } from 'react-native'
-import React, { useLayoutEffect, useState, useEffect } from 'react'
+// Welcome screen provides user with option to login in or create an account. It's the top of the navigation stack.
+
+import { StyleSheet, Text, View, Dimensions } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import { StatusBar } from 'expo-status-bar'
-import { Button, Image, Input } from "@rneui/base"
-import { useUserContext } from '../contexts/userContext'
+import { Button, Image } from "@rneui/base"
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -130,7 +131,7 @@ const styles = StyleSheet.create({
     },
     brandText: {
       color: '#0060ff',
-      fontWeight: '900',
+      fontWeight: '800',
       fontSize: 70,
       textAlign: 'center',
       marginBottom: screenHeight * 0.05,

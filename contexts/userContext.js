@@ -6,6 +6,7 @@ import { firestore } from "../firebase";
 import { createUserWithEmailAndPassword, updateProfile, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, updateEmail} from "@firebase/auth";
 import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 import { findTodaysLines } from "../functions/findTodaysLines";
+import {REACT_APP_STRIPE_PREMIUM_WEEKLY, REACT_APP_STRIPE_PREMIUM_MONTHLY} from '@env'
 
 const UserContext = createContext({});
 
@@ -26,7 +27,7 @@ export const UserContextProvider = ({ children }) => {
     const [signUpError, setSignUpError] = useState(null);
     const [success, setSuccess] = useState(false);
     const [recentSignIn, setRecentSignIn] = useState(false);
-    const [historicalBetslip, setHistoricalBetSlip] = useState(null)
+    const [historicalBetslip, setHistoricalBetSlip] = useState([])
 
 
     // triggers an update, the value of the boolean doesn't even matter lol
@@ -85,11 +86,9 @@ export const UserContextProvider = ({ children }) => {
     
     // Helper function. Inputs the priceId and returns the associated subscription name
     const parsePriceId = (priceId) => {
-        if (priceId === "price_1LhzVkLm94FZCBUMB35wVBqH" || priceId === "price_1MALPBLm94FZCBUMkBhkoKbJ" || priceId=== "price_1MALPiLm94FZCBUMhcmwoG9r" || priceId === "price_1Ldy5wLm94FZCBUM2bnYdaoD" || priceId === "price_1LW4s7Lm94FZCBUMuOJXFDBs" || priceId === process.env.REACT_APP_STRIPE_PREMIUM_WEEKLY || priceId === process.env.REACT_APP_STRIPE_PREMIUM_MONTHLY) {
+        if (priceId === REACT_APP_STRIPE_PREMIUM_WEEKLY || priceId === REACT_APP_STRIPE_PREMIUM_MONTHLY) {
             return "premium"
-        } else if (priceId === "price_1LhzWELm94FZCBUMFGNjFzH4" || priceId === "price_1Ldy7BLm94FZCBUM9iwkRxY4" || priceId === "price_1LPUOzLm94FZCBUMPE6KGybU") {
-            return "standard"
-        }
+        } 
     }
 
     // Finds the customer's subscription status in firebase.

@@ -1,3 +1,5 @@
+// Login allows user to enter in email and password to sign into the app.
+
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, View, Dimensions } from 'react-native'
 import React, { useLayoutEffect, useState, useEffect } from 'react'
 import { StatusBar } from 'expo-status-bar'
@@ -75,7 +77,7 @@ const LoginScreen = ( { navigation }) => {
         <Text style={styles.filledButtonText}>Login</Text>
       </Button>
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Don't have an account? Sign Up
+        <Text onPress={() => navigation.navigate("Create Account")} style={styles.footerText}>Don't have an account? Sign Up
         </Text>
       </View>
       <StatusBar style="light" />
