@@ -1,4 +1,4 @@
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, View, Dimensions } from 'react-native'
+import { KeyboardAvoidingView, StyleSheet, Text, TextInput, Linking, View, Dimensions } from 'react-native'
 import React, { useLayoutEffect, useState, useEffect } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import { Button, Image, Input } from "@rneui/base"
@@ -31,14 +31,9 @@ const CreateAccountScreen = ( { navigation }) => {
   const [password, setPassword] = useState('');
 
 
-  const signIn = async() => {
-      if (email && password) {
-          signInUserEmail(email, password);
-          setRecentSignIn(true);
-      } else {
-          alert("Both fields must be complete. Please try again.")
-      }
-  }
+  const openCenterURL = () => {
+    Linking.openURL('https://claros.ai/pricing').catch((error) => console.error(error));
+  };
 
   useLayoutEffect(() => {
     if (user && recentSignIn) navigation.replace("Home")
@@ -50,48 +45,11 @@ const CreateAccountScreen = ( { navigation }) => {
       {signInError && <Text style={styles.errorMessage}>We were unable to recognize an account with that email and password. Please check your spelling and try again.</Text>}
       <Text style={styles.brandText}>create account</Text>
       <Text style={styles.genericText}>You could be chatting with me in less than 2 minutes. Just create an account and we’ll soon be acquainted!</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="First Name"
-        placeholderTextColor={ 'black' }
-        paddingHorizontal = { screenWidth * 0.05 }
-        type="Text"
-        fontSize= { 16 }
-        value={email}
-        onChangeText={(text) => setEmail(text)} />
-      <View></View>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        placeholderTextColor={ 'black' }
-        paddingHorizontal = { screenWidth * 0.05 }
-        type="Email"
-        fontSize= { 16 }
-        value={email}
-        onChangeText={(text) => setEmail(text)} />
-      <TextInput
-        style={styles.input}
-        placeholder="Phone Number"
-        placeholderTextColor={ 'black' }
-        paddingHorizontal = { screenWidth * 0.05 }
-        type="Text"
-        fontSize= { 16 }
-        value={email}
-        onChangeText={(text) => setEmail(text)} />
-      <View></View>
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        placeholderTextColor={ 'black' }
-        paddingHorizontal = { screenWidth * 0.05 }
-        secureTextEntry
-        type="password"
-        fontSize= { 16 }
-        value={password}
-        onChangeText={(text) => setPassword(text)}/>
+      <Image source={require('../assets/createAccount.png')} style={styles.image} />
+      
     
-      <Button style={styles.filledButton} type="transparent" onPress={signIn} title="CreateAccount">
-        <Text style={styles.filledButtonText}>Sign Up</Text>
+      <Button style={styles.filledButton} type="transparent" onPress={() => openCenterURL()} title="CreateAccount">
+        <Text style={styles.filledButtonText}>Sign Up on Website</Text>
       </Button>
       <View style={styles.footer}>
         <Text style={styles.footerText}>Have an account? Login</Text>
@@ -184,7 +142,6 @@ const styles = StyleSheet.create({
     genericText: {
       width: screenWidth * 0.70,
       marginTop: screenHeight * 0.05,
-      marginBottom: screenHeight * 0.05,
       color: 'black',
       fontWeight: '200',
       fontSize: 20,
