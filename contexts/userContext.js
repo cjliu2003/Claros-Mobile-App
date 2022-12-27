@@ -6,7 +6,7 @@ import { firestore } from "../firebase";
 import { createUserWithEmailAndPassword, updateProfile, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, updateEmail} from "@firebase/auth";
 import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 import { findTodaysLines } from "../functions/findTodaysLines";
-import {REACT_APP_STRIPE_PREMIUM_WEEKLY, REACT_APP_STRIPE_PREMIUM_MONTHLY} from '@env'
+import { REACT_APP_STRIPE_PREMIUM_WEEKLY, REACT_APP_STRIPE_PREMIUM_MONTHLY } from '@env'
 
 const UserContext = createContext({});
 
@@ -88,7 +88,7 @@ export const UserContextProvider = ({ children }) => {
     const parsePriceId = (priceId) => {
         if (priceId === REACT_APP_STRIPE_PREMIUM_WEEKLY || priceId === REACT_APP_STRIPE_PREMIUM_MONTHLY) {
             return "premium"
-        } 
+        }
     }
 
     // Finds the customer's subscription status in firebase.

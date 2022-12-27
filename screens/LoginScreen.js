@@ -1,6 +1,6 @@
 // Login allows user to enter in email and password to sign into the app.
 
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, View, Dimensions } from 'react-native'
+import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, TextInput, View, Dimensions } from 'react-native'
 import React, { useLayoutEffect, useState, useEffect } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import { Button, Image, Input } from "@rneui/base"
@@ -76,10 +76,12 @@ const LoginScreen = ( { navigation }) => {
       <Button style={styles.filledButton} type="transparent" onPress={signIn} title="Login">
         <Text style={styles.filledButtonText}>Login</Text>
       </Button>
-      <View style={styles.footer}>
-        <Text onPress={() => navigation.navigate("Create Account")} style={styles.footerText}>Don't have an account? Sign Up
+      <TouchableOpacity onPress={() => navigation.navigate('Create Account')}>
+        <Text style={styles.footerText}>
+          Don't have an account?{' '}
+          <Text style={styles.linkText}>Sign Up</Text>
         </Text>
-      </View>
+      </TouchableOpacity>
       <StatusBar style="light" />
     </KeyboardAvoidingView>
   )
@@ -195,12 +197,24 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff',
     },
     footerText: {
-      width: screenWidth * 0.70,
-      marginTop: screenHeight * 0.025,
-      marginBottom: screenHeight * 0.055,
-      color: 'black',
-      fontWeight: '200',
-      fontSize: 18,
-      textAlign: 'center',
+        width: screenWidth * 0.70,
+        marginTop: screenHeight * 0.025,
+        marginBottom: screenHeight * 0.055,
+        color: 'black',
+        fontWeight: '200',
+        fontSize: 18,
+        textAlign: 'center',
+    },
+    linkText: {
+        width: screenWidth * 0.70,
+        marginTop: screenHeight * 0.025,
+        marginBottom: screenHeight * 0.055,
+        color: '#0060ff',
+        fontWeight: '500',
+        fontSize: 18,
+        textAlign: 'center',
+    },
+    footerButton: {
+        backgroundColor: 'white'
     },
 })

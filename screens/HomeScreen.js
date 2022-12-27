@@ -1,11 +1,9 @@
 // Home Screen displays a user's betslip.
-
-import { SafeAreaView, ScrollView, StyleSheet, Text, View, Image, Linking, Dimensions, TouchableOpacity } from 'react-native'
-import React, { useLayoutEffect } from 'react'
-import { Button} from '@rneui/base'
-import CustomListItem from "../components/customListItem"
-import { useUserContext } from '../contexts/userContext'
-
+import { SafeAreaView, ScrollView, StyleSheet, Text, View, Image, Linking, Dimensions, TouchableOpacity } from 'react-native';
+import React, { useLayoutEffect } from 'react';
+import { Button} from '@rneui/base';
+import CustomListItem from '../components/customListItem';
+import { useUserContext } from '../contexts/userContext';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -45,64 +43,77 @@ const HomeScreen = ({ navigation }) => {
     }, [])
   return (
       <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollContainer}>
+        <ScrollView style={styles.scrollContainer}>
+          {subscription ? <>
+              <Text style={styles.dateText}>{new Date().toString().substring(0,15)}</Text>
 
-        {subscription ? <>
-            <Text style={styles.dateText}>{new Date().toString().substring(0,15)}</Text>
+              {/* This is a conditional. If there betslip has lines, show the betslip. If not, show a message saying to check back soon. */}
 
-            {/* This is a conditional. If there betslip has lines, show the betslip. If not, show a message saying to check back soon. */}
-
-            {historicalBetslip.length > 0 ? <>
-                {historicalBetslip.map((line, i) => {
-                    return (
-                        // Custom list item renders by taking in a line object from historical bet slip, and an index number
-                        <CustomListItem line={line} idx={i + 1}/>
-                    )
-                })}
-            </> : 
-                <>
-                    <Image source={require('../assets/claros__algorithm.png')} style={styles.image}  />
-                    <Text style={styles.noLinesMsg}>Claros is crunching numbers and scanning the market for value betting opportunities. Currently, there are no available opportunities. Please come back later!</Text>
-                </>
-            }
-            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: screenHeight * 0.05 }}>
-            <Button style={styles.outlineButton} type="transparent" onPress={() => openCenterURL()} title="Settings">
-                <Text style={styles.outlineButtonText}>Account Settings</Text>
-            </Button>
-            </View>
-            <View style={styles.footer}></View>
-            </> 
-        : 
-            <View style={styles.centered}>
-                <Image style={styles.logo} source={require('../assets/claros__bot__logo.png')} />
-                <Text style={styles.pricingHdr}>Activiate Claros AI</Text>
-                <Text style={styles.pricingSubhdr}>Access to betting assitant with daily value betting notifications. Includes access to future developments.</Text>
-                <TouchableOpacity style={styles.pricingBtn} onPress={() => openPricingURL()}>
-                    <Text style={styles.pricingBtnTxt}>Get Beta Access</Text>
-                </TouchableOpacity>
-            </View>
-        }
-      </ScrollView>
-    </SafeAreaView>
+              {historicalBetslip.length > 0 ? <>
+                  {historicalBetslip.map((line, i) => {
+                      return (
+                          // Custom list item renders by taking in a line object from historical bet slip, and an index number
+                          <CustomListItem line={line} idx={i + 1}/>
+                      )
+                  })}
+              </> :
+                  <>
+                      <Image source={require('../assets/claros__algorithm.png')} style={styles.image}  />
+                      <Text style={styles.noLinesMsg}>Claros is crunching numbers and scanning the market for value betting opportunities. Currently, there are no available opportunities. Please come back later!</Text>
+                  </>
+              }
+              <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: screenHeight * 0.05 }}>
+              <Button style={styles.outlineButton} type="transparent" onPress={() => openCenterURL()} title="Settings">
+                  <Text style={styles.outlineButtonText}>Account Settings</Text>
+              </Button>
+              </View>
+              <View style={styles.footer}></View>
+              </>
+          :
+              <View style={styles.centered}>
+                  <Text style={styles.pricingHdr}>Activate Claros AI</Text>
+                  <Image style={styles.logo} source={require('../assets/claros__bot__logo.png')} />
+                  <Text style={styles.genericText}>Get access to me, your personal betting assitant, with daily value betting notifications.</Text>
+                  <View style={{ height: 20  }}></View>
+                  <Text style={styles.genericText}>Includes access to future features.</Text>
+                  <View style={{ height: 20  }}></View>
+                  <Button style={styles.filledButton} type="transparent" onPress={() => openPricingURL()} title="Login">
+                    
+                    <Text style={styles.filledButtonText}>Get Beta Access</Text>
+                  </Button>
+              </View>
+          }
+        </ScrollView>
+      </SafeAreaView>
   )
 }
 
 export default HomeScreen
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: "flex-end",
+        backgroundColor: '#ffffff',
+    },
 
     scrollContainer: {
         width: screenWidth,
-        height: screenHeight,
+        height: '100%',
     },
     centered: {
         height: screenHeight * 0.75,
+        marginLeft: screenWidth * 0.05,
+        marginRight: screenWidth * 0.05,
         justifyContent: 'center',
+        alignItems: 'center'
     },
     logo: {
         alignSelf: 'center',
-        width: screenWidth * .25,
-        height: screenWidth * .25,
+        width: screenWidth * .35,
+        height: screenWidth * .35,
         margin: 16,
     },
     image: {

@@ -1,6 +1,6 @@
 // Create account screen links a user to www.claros.ai/signup
 
-import { KeyboardAvoidingView, StyleSheet, Text, Linking, View, Dimensions } from 'react-native'
+import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, Linking, View, Dimensions } from 'react-native'
 import React, { useLayoutEffect, useState, useEffect } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import { Button, Image } from "@rneui/base"
@@ -44,16 +44,19 @@ const CreateAccountScreen = ( { navigation }) => {
     <KeyboardAvoidingView behavior = 'padding' style={styles.container}>
       {signInError && <Text style={styles.errorMessage}>We were unable to recognize an account with that email and password. Please check your spelling and try again.</Text>}
       <Text style={styles.brandText}>create account</Text>
-      <Text style={styles.genericText}>You could be chatting with me in less than 2 minutes. Just create an account and we’ll soon be acquainted!</Text>
+      <Text style={styles.genericText}>You could be get access to my algorithmic analysis in less than 2 minutes. Just create an account!</Text>
       <Image source={require('../assets/createAccount.png')} style={styles.image} />
       
     
       <Button style={styles.filledButton} type="transparent" onPress={() => openCenterURL()} title="CreateAccount">
         <Text style={styles.filledButtonText}>Sign Up on Website</Text>
       </Button>
-      <View style={styles.footer}>
-        <Text style={styles.footerText} onPress={() => navigation.navigate('Login')}>Have an account? Login</Text>
-      </View>
+      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+        <Text style={styles.footerText}>
+          Have an account?{' '}
+          <Text style={styles.linkText}>Login</Text>
+        </Text>
+      </TouchableOpacity>
       
       <StatusBar style="light" />
     </KeyboardAvoidingView>
@@ -160,12 +163,24 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff',
     },
     footerText: {
-      width: screenWidth * 0.70,
-      marginTop: screenHeight * 0.025,
-      marginBottom: screenHeight * 0.055,
-      color: 'black',
-      fontWeight: '200',
-      fontSize: 18,
-      textAlign: 'center',
+        width: screenWidth * 0.70,
+        marginTop: screenHeight * 0.025,
+        marginBottom: screenHeight * 0.055,
+        color: 'black',
+        fontWeight: '200',
+        fontSize: 18,
+        textAlign: 'center',
+    },
+    linkText: {
+        width: screenWidth * 0.70,
+        marginTop: screenHeight * 0.025,
+        marginBottom: screenHeight * 0.055,
+        color: '#0060ff',
+        fontWeight: '500',
+        fontSize: 18,
+        textAlign: 'center',
+    },
+    footerButton: {
+        backgroundColor: 'white'
     },
 })
