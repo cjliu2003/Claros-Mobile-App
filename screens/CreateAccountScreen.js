@@ -6,58 +6,78 @@ import { StatusBar } from 'expo-status-bar'
 import { Button, Image } from "@rneui/base"
 import { useUserContext } from '../contexts/userContext'
 
+// Get the current screen width and height
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 const CreateAccountScreen = ( { navigation }) => {
+  // State for user information
+  const {user, signInError, recentSignIn} = useUserContext()
+
+  // State for storing the screen orientation
   const [orientation, setOrientation] = useState(null);
 
+  // Use effect hook to update the orientation state when the screen dimensions change
   useEffect(() => {
+    // Function for updating the orientation state
     const updateOrientation = () => {
+      // If the screen width is greater than the screen height, set the orientation to landscape
+      // Otherwise, set the orientation to portrait
       setOrientation(Dimensions.get('screen').width > Dimensions.get('screen').height ? 'landscape' : 'portrait');
     };
 
+    // Call the update function initially
     updateOrientation();
 
+    // Subscribe to the screen change event
     const changeEventListener = Dimensions.addEventListener('change', updateOrientation);
 
-    // Return a function that removes the event listener
+    // Return a function that removes the event listener when the component unmounts
     return () => {
       changeEventListener.remove();
     };
   }, []);
   
-  
-  const {user, signInError, recentSignIn} = useUserContext()
-
-
+  // Function for opening the Claros AI pricing page in the device's default browser
   const openCenterURL = () => {
+    // Attempt to open the URL and log any errors that occur
     Linking.openURL('https://claros.ai/pricing').catch((error) => console.error(error));
   };
 
+  // Use layout effect hook to navigate to the home screen if the user is authenticated and has recently signed in
   useLayoutEffect(() => {
-    if (user && recentSignIn) navigation.replace("Home")
+    // If the user is authenticated and has recently signed in
+    if (user && recentSignIn) {
+      // Navigate to the home screen
+      navigation.replace("Home")
+    }
   }, [user, recentSignIn])
-
+  
 
   return (
-    <KeyboardAvoidingView behavior = 'padding' style={styles.container}>
+    <KeyboardAvoidingView behavior='padding' style={styles.container}>
+      {/* If there is a sign-in error, display an error message */}
       {signInError && <Text style={styles.errorMessage}>We were unable to recognize an account with that email and password. Please check your spelling and try again.</Text>}
+      {/* Display the page title */}
       <Text style={styles.brandText}>create account</Text>
+      {/* Display a message about the benefits of creating an account */}
       <Text style={styles.genericText}>You could be get access to my algorithmic analysis in less than 2 minutes. Just create an account!</Text>
+      {/* Display an image */}
       <Image source={require('../assets/createAccount.png')} style={styles.image} />
       
-    
+      {/* Button for opening the Claros AI pricing page in the default browser */}
       <Button style={styles.filledButton} type="transparent" onPress={() => openCenterURL()} title="CreateAccount">
         <Text style={styles.filledButtonText}>Sign Up on Website</Text>
       </Button>
+      {/* Link to the login page */}
       <TouchableOpacity onPress={() => navigation.navigate('Login')}>
         <Text style={styles.footerText}>
           Have an account?{' '}
           <Text style={styles.linkText}>Login</Text>
         </Text>
       </TouchableOpacity>
-      
+
+      {/* Display the device's status bar */}
       <StatusBar style="light" />
     </KeyboardAvoidingView>
   )

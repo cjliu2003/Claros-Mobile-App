@@ -1,4 +1,8 @@
-// This is the workhorse of the user data. Here are functions that allow you to manage state of user auth and customer data throughout the website
+// USER CONTEXT
+
+// This code imports various functions and components from the React and Firebase libraries. 
+// It then creates a context object called UserContext, and exports a hook and a provider 
+// component for this context.
 
 import { createContext, useContext, useState, useEffect} from "react";
 import { auth } from "../firebase";
@@ -6,21 +10,18 @@ import { firestore } from "../firebase";
 import { createUserWithEmailAndPassword, updateProfile, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, updateEmail} from "@firebase/auth";
 import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 import { findTodaysLines } from "../functions/findTodaysLines";
-import { REACT_APP_STRIPE_PREMIUM_WEEKLY, REACT_APP_STRIPE_PREMIUM_MONTHLY } from '@env'
+import { REACT_APP_STRIPE_PREMIUM_WEEKLY1, REACT_APP_STRIPE_PREMIUM_MONTHLY1, REACT_APP_STRIPE_PREMIUM_WEEKLY2, REACT_APP_STRIPE_PREMIUM_MONTHLY2 } from '@env'
 
 const UserContext = createContext({});
 
 export const useUserContext = () => useContext(UserContext);
 
 export const UserContextProvider = ({ children }) => {
-
-    // an object of the users data, including email, display name, and profile picture
+    // State variables for storing user data, customer data,
+    // subscription status, and various flags
     const [user, setUser] = useState(null);
-    // an object of the user's data, pertaining to the product. Bet history, subscription info, sportsbook preferences
     const [customer, setCustomer] = useState(null);
-    // a string that represents the user's subscriptoin status. Options are either "premium", "standard", or null.
     const [subscription, setSubscription] = useState(null);
-    // state to manage loading globally, helps with not rendering pages until info is loaded
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [signInError, setSignInError] = useState(null);
@@ -28,15 +29,19 @@ export const UserContextProvider = ({ children }) => {
     const [success, setSuccess] = useState(false);
     const [recentSignIn, setRecentSignIn] = useState(false);
     const [historicalBetslip, setHistoricalBetSlip] = useState([])
+    const [betHistory, setBetHistory] = useState([])
 
 
-    // triggers an update, the value of the boolean doesn't even matter lol
+    // Use effect hook to update the user state whenever the 
+    // authentication state changes
     const [change, setChange] = useState(false);
 
     // Sets the user information whenever the auth state changes
     useEffect(() => {
       setLoading(true)
       const unsubscribe = onAuthStateChanged(auth, res => {
+        // If a user is authenticated, set the user state with the user data
+        // Otherwise, set the user state to null
           res ? setState(res) : setUser(null)
           setError("")
           setLoading(false);
@@ -56,12 +61,12 @@ export const UserContextProvider = ({ children }) => {
         }
     }, [user, change])
 
-    // function that finds the customer data collection in firebase. Sets the data to the customer state.
+    // function that finds the customer data collection in firebase. 
+    // Sets the data to the customer state.
     const findData = async(user) => {
         setLoading(true)
         const userDocRef = doc(firestore, "customers", user.uid);
         const userDocSnap = await getDoc(userDocRef);
-        
         if (userDocSnap.exists()) {
             setCustomer(userDocSnap.data());
         } else {
@@ -74,11 +79,11 @@ export const UserContextProvider = ({ children }) => {
         if (customer) {
             let date = new Date()
             setHistoricalBetSlip(findTodaysLines(date, customer.historical_bet_slip.reverse().slice(0,10)))
+            setBetHistory(customer.historical_bet_slip.reverse())
         }
     }, [customer])
     
     
-
     useEffect(() => {
         if (user) findSubscription()
     }, [user])
@@ -86,7 +91,7 @@ export const UserContextProvider = ({ children }) => {
     
     // Helper function. Inputs the priceId and returns the associated subscription name
     const parsePriceId = (priceId) => {
-        if (priceId === REACT_APP_STRIPE_PREMIUM_WEEKLY || priceId === REACT_APP_STRIPE_PREMIUM_MONTHLY) {
+        if (priceId === REACT_APP_STRIPE_PREMIUM_WEEKLY1 || priceId === REACT_APP_STRIPE_PREMIUM_MONTHLY1 || REACT_APP_STRIPE_PREMIUM_WEEKLY2 || priceId === REACT_APP_STRIPE_PREMIUM_MONTHLY2) {
             return "premium"
         }
     }
@@ -122,7 +127,6 @@ export const UserContextProvider = ({ children }) => {
         }
     }
 
-    
     const updateDisplayName = (user, name) => {
         updateProfile(user, {
             displayName: name
@@ -177,7 +181,6 @@ export const UserContextProvider = ({ children }) => {
         }, {merge: true});
     }
 
-    
     const initializePreferences = () => {
         const userDocRef = doc(firestore, "customers", user.uid);
         setDoc(userDocRef, {
@@ -241,30 +244,36 @@ export const UserContextProvider = ({ children }) => {
                 "UEFA Champions",
                 "UEFA Europa",
             ],
-            initializedPreferences: false,
             bet_history: {},
             login_times: [],
         }, {merge: true});
     }
 
     const registerUser = (email, password, name, phone) => {
-        ///
+        // Set the global loading state to true
         setLoading(true)
+        // Attempt to create a new user with the provided email and password
         createUserWithEmailAndPassword(auth, email, password)
+        // If the user is successfully created, update their display name
         .then(() => {
             return updateProfile(auth.currentUser, {
                 displayName: name,
             });
-        }).then((res) => console.log(res)).then(() => {
+        })
+        // Log the result of the display name update
+        .then((res) => console.log(res))
+        // Write the user's phone number to the database and initialize their user data
+        .then(() => {
             writePhone(auth.currentUser, phone);
             initializeUserData(auth.currentUser);
-        }).catch(err => setSignUpError(err.toString()))
+        })
+        // If there is an error, set the sign-up error state with the error message
+        .catch(err => setSignUpError(err.toString()))
+        // Set the global loading state to false, regardless of success or failure
         .finally(() => setLoading(false));
     }
-
     
     const signInUserEmail = (email, password) => {
-        ///
         setLoading(true)
         signInWithEmailAndPassword(auth, email, password)
         .then((res) => {
@@ -277,11 +286,9 @@ export const UserContextProvider = ({ children }) => {
     }
 
     const logoutUser = () => {
-        ///
         signOut(auth);
         setSubscription(null);
     }
-
 
     const forgotPassword = (email) => {
         sendPasswordResetEmail(auth, email, {url: "http://claros.ai/signin"})
@@ -293,6 +300,7 @@ export const UserContextProvider = ({ children }) => {
             setSuccess(false);
         })
     }
+
     const contextValue = {
         user,
         loading, setLoading,
@@ -315,7 +323,8 @@ export const UserContextProvider = ({ children }) => {
         excludeSportsbook,
         initializePreferences,
         recentSignIn, setRecentSignIn,
-        historicalBetslip
+        historicalBetslip,
+        betHistory,
     };
     
     return (

@@ -10,13 +10,14 @@ import LoginScreen from "./screens/LoginScreen";
 import CreateAccountScreen from "./screens/CreateAccountScreen";
 import HomeScreen from "./screens/HomeScreen";
 import { useFonts } from "expo-font";
+import BetHistory from "./screens/BetHistory";
 
 const Stack = createStackNavigator();
 
 const globalScreenOptions = {
-  headerStyle: { backgroundColor: "#0060ff"},
-  headerTitleStyle: {color: "white"},
-  headerTintColor: "white",
+  headerStyle: { backgroundColor: "#ffffff"},
+  headerTitleStyle: {color: "black"},
+  headerTintColor: "black",
 }
 
 const myTheme = {
@@ -39,6 +40,7 @@ export default function App() {
           <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }}/>
           <Stack.Screen name='Create Account' component={CreateAccountScreen} options={{ headerShown: false }}/>
           <Stack.Screen name='Home' component={HomeScreen} />
+          <Stack.Screen name='Bet History' component={BetHistory} />
           {/* <Stack.Screen name='Center' component={CenterScreen} /> */}
         </Stack.Navigator>
       </NavigationContainer>

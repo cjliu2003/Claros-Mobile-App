@@ -4,6 +4,7 @@ import React, { useLayoutEffect } from 'react';
 import { Button} from '@rneui/base';
 import CustomListItem from '../components/customListItem';
 import { useUserContext } from '../contexts/userContext';
+import { getDeviceToken } from '../functions/getDeviceToken';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -40,6 +41,9 @@ const HomeScreen = ({ navigation }) => {
             ),
         });
         if (!user && !recentSignIn) navigation.replace("Login")
+        if (user) {
+            getDeviceToken()
+        }
     }, [])
   return (
       <SafeAreaView style={styles.container}>
@@ -65,6 +69,9 @@ const HomeScreen = ({ navigation }) => {
               <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: screenHeight * 0.05 }}>
               <Button style={styles.outlineButton} type="transparent" onPress={() => openCenterURL()} title="Settings">
                   <Text style={styles.outlineButtonText}>Account Settings</Text>
+              </Button>
+              <Button style={styles.fillButton} type="transparent" onPress={() => navigation.navigate('Bet History')} title="Settings">
+                  <Text style={styles.filledButtonText}>Bet History</Text>
               </Button>
               </View>
               <View style={styles.footer}></View>
@@ -195,6 +202,15 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         borderColor: '#000',
         backgroundColor: 'transparent',
+        borderRadius: 32,
+        borderWidth: 1.5,
+    },
+    fillButton: {
+        width: 325,
+        marginTop: 10,
+        paddingVertical: 10,
+        borderColor: '#000',
+        backgroundColor: 'black',
         borderRadius: 32,
         borderWidth: 1.5,
     },

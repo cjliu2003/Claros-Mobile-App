@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Dimensions } from 'react-native'
+import { StyleSheet, Text, Dimensions } from 'react-native'
 import { React, useState, useEffect  } from 'react'
 import { ListItem, Image} from '@rneui/base'
 import Sportsbooks from '../assets/Sportsbooks'
@@ -11,14 +11,13 @@ import { parseDate } from '../functions/parseDate'
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-const customListItem = ({line, idx}) => {
+const BetHistoryListItem = ({line, idx}) => {
   const [orientation, setOrientation] = useState(null);
 
   useEffect(() => {
     const updateOrientation = () => {
       setOrientation(Dimensions.get('screen').width > Dimensions.get('screen').height ? 'landscape' : 'portrait');
     };
-
     updateOrientation();
 
     const changeEventListener = Dimensions.addEventListener('change', updateOrientation);
@@ -41,38 +40,43 @@ const customListItem = ({line, idx}) => {
         <ListItem.Subtitle style= {styles.genericText} numberOfLines={1} ellipsizeMode="tail">
           {parseDate(line.snapshot.substring(0, 10))} @ {line.commence_time.substring(11, 19) + " UTC"}
         </ListItem.Subtitle>
-        <ListItem.Title style={styles.lineText}>
+        <ListItem.Title style={line.outcome === "W" ? styles.lineTextWin : styles.lineTextLoss}>
           {findTeam(line.side, line.home_team_name, line.away_team_name, line.market)} {line.point && line.point + " "}{parseMarket(line.market)} {parseOdds(line.odds)}
         </ListItem.Title>
         <ListItem.Subtitle style={styles.genericText} numberOfLines={2} ellipsizeMode="tail">
           {parseLeague(line.league_key)}: {line.home_team_name + " vs. " + line.away_team_name}
         </ListItem.Subtitle>
-        <ListItem.Subtitle style={styles.genericText} numberOfLines={1} ellipsizeMode="tail">
-          {"Edge: " + line.ev.toFixed(2) + "%"}
+        <ListItem.Subtitle style={styles.lineName} numberOfLines={1} ellipsizeMode="tail">
+          {line.outcome === "W" ? "Win" : "Loss"}
         </ListItem.Subtitle>
       </ListItem.Content>
     </ListItem>
   )
 }
 
-export default customListItem
+export default BetHistoryListItem
 
 const styles = StyleSheet.create({
   lineName: {
     maxWidth: 150,
     textAlign: "left",
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: "400",
     color: 'black',
   },
-  lineText: {
-    color: 'black',
+  lineTextWin: {
+    color: 'green',
     fontWeight: '600',
-    fontSize: 18,
+    fontSize: 15,
   },
   genericText: {
     color: 'black',
     fontWeight: '200',
-    fontSize: 16,
+    fontSize: 12,
+  },
+  lineTextLoss: {
+    color: 'red',
+    fontWeight: '600',
+    fontSize: 15,
   },
 })

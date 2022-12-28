@@ -1,4 +1,4 @@
-export const findTodaysLines= (date, lines) => {
+export const findTodaysLines = (date, lines) => {
     const parsedDate = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
     let result = []
     for (const line in lines) {
