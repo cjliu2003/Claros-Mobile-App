@@ -46,7 +46,7 @@ const BetHistoryListItem = ({line, idx}) => {
         <ListItem.Subtitle style={styles.genericText} numberOfLines={2} ellipsizeMode="tail">
           {parseLeague(line.league_key)}: {line.home_team_name + " vs. " + line.away_team_name}
         </ListItem.Subtitle>
-        <ListItem.Subtitle style={styles.lineName} numberOfLines={1} ellipsizeMode="tail">
+        <ListItem.Subtitle style={styles.winStatementText} numberOfLines={1} ellipsizeMode="tail">
           {line.outcome === "W" ? "Win" : "Loss"}
         </ListItem.Subtitle>
       </ListItem.Content>
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   lineTextWin: {
-    color: 'green',
+    color: '#0060ff',
     fontWeight: '600',
     fontSize: 15,
   },
@@ -74,8 +74,9 @@ const styles = StyleSheet.create({
     fontWeight: '200',
     fontSize: 12,
   },
+
   lineTextLoss: {
-    color: 'red',
+    color: '#FF0060',
     fontWeight: '600',
     fontSize: 15,
   },

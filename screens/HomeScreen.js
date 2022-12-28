@@ -49,6 +49,7 @@ const HomeScreen = ({ navigation }) => {
       <SafeAreaView style={styles.container}>
         <ScrollView style={styles.scrollContainer}>
           {subscription ? <>
+              <Text style={styles.brandText}>daily lines</Text>
               <Text style={styles.dateText}>{new Date().toString().substring(0,15)}</Text>
 
               {/* This is a conditional. If there betslip has lines, show the betslip. If not, show a message saying to check back soon. */}
@@ -249,7 +250,7 @@ const styles = StyleSheet.create({
         fontWeight: '200',
         fontSize: 20,
         textAlign: 'center',
-        marginTop: screenHeight * 0.05,
+        marginTop: screenHeight * 0.0125,
         marginBottom: screenHeight * 0.05,
     },
     homeHeaderText: {
@@ -265,6 +266,7 @@ const styles = StyleSheet.create({
         fontWeight: '900',
         fontSize: 70,
         textAlign: 'center',
+        marginTop: screenHeight * 0.05
     },
     headerText: {
         color: 'black',
