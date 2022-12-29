@@ -83,7 +83,7 @@ const HomeScreen = ({ navigation }) => {
                   <Image style={styles.logo} source={require('../assets/claros__bot__logo.png')} />
                   <Text style={styles.genericText}>Get access to me, your personal betting assitant, with daily value betting notifications.</Text>
                   <View style={{ height: 20  }}></View>
-                  <Text style={styles.genericText}>Includes access to future features.</Text>
+                  <Text style={styles.genericText}>Includes access to future developments.</Text>
                   <View style={{ height: 20  }}></View>
                   <Button style={styles.filledButton} type="transparent" onPress={() => openPricingURL()} title="Login">
                     
