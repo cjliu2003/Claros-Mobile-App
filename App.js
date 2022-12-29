@@ -1,7 +1,7 @@
 
 import "react-native-gesture-handler";
-import React, { useLayoutEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { StyleSheet } from 'react-native';
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { UserContextProvider } from "./contexts/userContext";
@@ -9,7 +9,6 @@ import WelcomeScreen from "./screens/WelcomeScreen";
 import LoginScreen from "./screens/LoginScreen";
 import CreateAccountScreen from "./screens/CreateAccountScreen";
 import HomeScreen from "./screens/HomeScreen";
-import { useFonts } from "expo-font";
 import BetHistory from "./screens/BetHistory";
 
 const Stack = createStackNavigator();

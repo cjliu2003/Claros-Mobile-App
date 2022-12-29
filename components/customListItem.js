@@ -1,12 +1,12 @@
-import { StyleSheet, Text, View, Dimensions } from 'react-native'
+import { StyleSheet, Text, Dimensions } from 'react-native'
 import { React, useState, useEffect  } from 'react'
 import { ListItem, Image} from '@rneui/base'
 import Sportsbooks from '../assets/Sportsbooks'
-import { parseMarket } from '../functions/parseMarket'
-import { parseOdds } from '../functions/parseOdds'
-import { findTeam } from '../functions/findTeam'
-import { parseLeague } from '../functions/parseLeague'
-import { parseDate } from '../functions/parseDate'
+import { parseMarket } from '../functions/parsing/parseMarket'
+import { parseOdds } from '../functions/parsing/parseOdds'
+import { findTeam } from '../functions/lines/findTeam'
+import { parseLeague } from '../functions/parsing/parseLeague'
+import { parseDate } from '../functions/parsing/parseDate'
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;

@@ -9,31 +9,37 @@ import { auth } from "../firebase";
 import { firestore } from "../firebase";
 import { createUserWithEmailAndPassword, updateProfile, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, updateEmail} from "@firebase/auth";
 import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
-import { findTodaysLines } from "../functions/findTodaysLines";
 import { REACT_APP_STRIPE_PREMIUM_WEEKLY1, REACT_APP_STRIPE_PREMIUM_MONTHLY1, REACT_APP_STRIPE_PREMIUM_WEEKLY2, REACT_APP_STRIPE_PREMIUM_MONTHLY2 } from '@env'
+import { findTodaysLines } from "../functions/lines/findTodaysLines";
 
 const UserContext = createContext({});
 
 export const useUserContext = () => useContext(UserContext);
 
 export const UserContextProvider = ({ children }) => {
-    // State variables for storing user data, customer data,
-    // subscription status, and various flags
+    // The user state represents the currently authenticated user
     const [user, setUser] = useState(null);
+    // The customer state represents the customer data for the authenticated user
     const [customer, setCustomer] = useState(null);
+    // The subscription state represents the subscription status for the authenticated user
     const [subscription, setSubscription] = useState(null);
+    // The loading state represents whether the app is currently loading data
     const [loading, setLoading] = useState(true);
+    // The error state represents any error that occurred while fetching data
     const [error, setError] = useState("");
+    // The signInError state represents any error that occurred while signing in
     const [signInError, setSignInError] = useState(null);
+    // The signUpError state represents any error that occurred while signing up
     const [signUpError, setSignUpError] = useState(null);
+    // The success state represents whether a requested action was successful
     const [success, setSuccess] = useState(false);
+    // The recentSignIn state represents whether the user recently signed in
     const [recentSignIn, setRecentSignIn] = useState(false);
-    const [historicalBetslip, setHistoricalBetSlip] = useState([])
-    const [betHistory, setBetHistory] = useState([])
-
-
-    // Use effect hook to update the user state whenever the 
-    // authentication state changes
+    // The historicalBetslip state represents the user's most recent bet slips
+    const [historicalBetslip, setHistoricalBetSlip] = useState([]);
+    // The betHistory state represents the user's entire bet history
+    const [betHistory, setBetHistory] = useState([]);
+    // The change state is used to trigger updates to the customer state
     const [change, setChange] = useState(false);
 
     // Sets the user information whenever the auth state changes
@@ -79,7 +85,7 @@ export const UserContextProvider = ({ children }) => {
         if (customer) {
             let date = new Date()
             setHistoricalBetSlip(findTodaysLines(date, customer.historical_bet_slip.reverse().slice(0,10)))
-            setBetHistory(customer.historical_bet_slip.reverse())
+            setBetHistory(customer.historical_bet_slip)
         }
     }, [customer])
     
@@ -127,30 +133,32 @@ export const UserContextProvider = ({ children }) => {
         }
     }
 
+    // This function updates the display name of the given user with the given name
     const updateDisplayName = (user, name) => {
+        // Update the user's profile with the new display name
         updateProfile(user, {
             displayName: name
-        }).then(() => {
+        })
+        .then(() => {
+            // If the update is successful, log a message
             console.log("Succesful Profile Update")
-        }).catch((error) => {
+        })
+        .catch((error) => {
+            // If there is an error, show an alert with the error message
             alert(error);
         })
     }
 
-    const updateProfilePicture = (user, image) => {
-        updateProfile(user, {
-            photoURL: image
-        }).then(() => {
-            console.log("Succesful Profile Update")
-        }).catch((error) => {
-            alert(error);
-        })
-    }
-
+    // This function changes the email of the given user to the given email
     const changeEmail = (user, email) => {
-        updateEmail(user, email).then(() => {
+        // Update the user's email
+        updateEmail(user, email)
+        .then(() => {
+            // If the update is successful, log a message
             console.log("Succesful Profile Update")
-        }).catch((error) => {
+        })
+        .catch((error) => {
+            // If there is an error, show an alert with the error message
             alert(error);
         })
     }
@@ -181,12 +189,6 @@ export const UserContextProvider = ({ children }) => {
         }, {merge: true});
     }
 
-    const initializePreferences = () => {
-        const userDocRef = doc(firestore, "customers", user.uid);
-        setDoc(userDocRef, {
-            initializedPreferences: true,
-        }, {merge: true});
-    }
 
     // Helper function for registering user. will intialize a bet history array, allowing them to input bets they've placed.
     const initializeUserData = (user) => {
@@ -318,10 +320,8 @@ export const UserContextProvider = ({ children }) => {
         changeEmail,
         writePhone,
         initializeUserData,
-        updateProfilePicture,
         setChange,
         excludeSportsbook,
-        initializePreferences,
         recentSignIn, setRecentSignIn,
         historicalBetslip,
         betHistory,

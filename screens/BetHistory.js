@@ -1,15 +1,16 @@
 import { ScrollView, StyleSheet, Text, TouchableOpacity, Dimensions } from 'react-native'
-import React, { useLayoutEffect } from 'react'
+import React, { useLayoutEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useUserContext } from '../contexts/userContext'
 import BetHistoryListItem from '../components/BetHistoryListItem'
+import { calculateROI } from '../functions/calculations/calculateROI'
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 const BetHistory = ({navigation}) => {
     const {betHistory} = useUserContext()
-
+    const [ROI, setROI] = useState(0)
     const goBack = () => {
         navigation.replace("Home")
     }
@@ -26,19 +27,20 @@ const BetHistory = ({navigation}) => {
                 </TouchableOpacity>
             ),
         });
+
+        setROI(calculateROI(1, betHistory))
     }, [])
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollContainer}>
+    <ScrollView style={styles.scrollContainer}>
         <Text style={styles.brandText}>bet history</Text>
         <Text style={styles.dateText}>Updated: {new Date().toString().substring(0,15)}</Text>
+        <Text style={styles.roiText}>Lifetime returns on 1% unit size: {ROI}%</Text>
         {betHistory.map((line, i) => {
             return (
-                <BetHistoryListItem line={line} idx={i + 1}/>
+                <BetHistoryListItem key={line.id} line={line} idx={i + 1}/>
             )
         })}
-      </ScrollView>
-    </SafeAreaView>
+    </ScrollView>
   )
 }
 
@@ -50,23 +52,26 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '300',
     },
+    roiText: {
+        alignSelf: 'center',
+        fontSize: 16,
+        color: 'black',
+        fontWeight: '400',
+        padding: 16,
+        borderWidth: 1,
+        marginBottom: 16,
+        borderRadius: 5,
+    },
     headerText: {
         fontWeight: '800',
         alignSelf: 'center',
         fontSize: 24,
         marginBottom: 16,
     },
-    container: {
-        flex: 1,
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: "flex-end",
-        backgroundColor: '#ffffff',
-    },
-
     scrollContainer: {
         width: screenWidth,
         height: '100%',
+        padding: 16,
     },
     centered: {
         height: screenHeight * 0.75,
