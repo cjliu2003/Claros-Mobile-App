@@ -41,9 +41,8 @@ const HomeScreen = ({ navigation }) => {
             ),
         });
         if (!user && !recentSignIn) navigation.replace("Login")
-        if (user) {
-            getDeviceToken()
-        }
+        if (user) getDeviceToken()
+
     }, [])
   return (
       <SafeAreaView style={styles.container}>
