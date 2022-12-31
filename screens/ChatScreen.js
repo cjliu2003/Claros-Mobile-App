@@ -51,14 +51,16 @@ return (
                 </View>
             </ScrollView>
         }
-    <View style={styles.line} />
-    <View style={styles.inputContainer}>
-        <TextInput value={input} onChangeText={(text) => setInput(text)} style={styles.input} placeholder='Ask a question...' />
-        <TouchableOpacity style={styles.sendButton} onPress={() => addMessage()}>
-            <Text style={styles.whiteText} disabled={!input}>Send</Text>
-        </TouchableOpacity>
-    </View>
-        <Text style={styles.footerText}>Claros AI Betting Assistant. We aim to improve the strategies and mentalities of sports bettors and sharpen their behavior.</Text>
+    <View style={styles.bottomContainer}>
+        <View style={styles.line} />
+        <View style={styles.inputContainer}>
+            <TextInput value={input} onChangeText={(text) => setInput(text)} style={styles.input} placeholder='Ask a question...' />
+            <TouchableOpacity style={styles.sendButton} onPress={() => addMessage()}>
+                <Text style={styles.whiteText} disabled={!input}>Send</Text>
+            </TouchableOpacity>
+        </View>
+            <Text style={styles.footerText}>Claros AI Betting Assistant. We aim to improve the strategies and mentalities of sports bettors and sharpen their behavior.</Text>
+        </View>
     </View>
 );
 };
@@ -67,8 +69,9 @@ export default ChatScreen
 
 const styles = StyleSheet.create({
     container: {
-      alignItems: 'flex-start',
-      justifyContent: 'flex-end',
+        flex: 1,
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
     },
     line: {
         borderBottomColor: '#ccc',
@@ -99,6 +102,10 @@ const styles = StyleSheet.create({
       backgroundColor: '#eeeeee75',
       padding: 8,
       borderRadius: 5,
+    },
+    bottomContainer: {
+        position: 'absolute',
+        bottom: 10,
     },
     inputContainer: {
       flexDirection: 'row',
