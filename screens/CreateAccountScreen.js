@@ -49,7 +49,7 @@ const CreateAccountScreen = ( { navigation }) => {
     // If the user is authenticated and has recently signed in
     if (user && recentSignIn) {
       // Navigate to the home screen
-      navigation.replace("Home")
+      navigation.replace("Chat")
     }
   }, [user, recentSignIn])
   
@@ -61,7 +61,7 @@ const CreateAccountScreen = ( { navigation }) => {
       {/* Display the page title */}
       <Text style={styles.brandText}>create account</Text>
       {/* Display a message about the benefits of creating an account */}
-      <Text style={styles.genericText}>You could be get access to my algorithmic analysis in less than 2 minutes. Just create an account!</Text>
+      <Text style={styles.genericText}>You could be get access to my algorithmic analysis in less than 2 minutes. Just create an account and buy a subscription!</Text>
       {/* Display an image */}
       <Image source={require('../assets/createAccount.png')} style={styles.image} />
       
@@ -142,6 +142,14 @@ const styles = StyleSheet.create({
       color: '#000',
       textAlign: 'center',
   },
+  genericText: {
+    fontSize: 16,
+    fontWeight: '300',
+    color: '#222222',
+    marginBottom: 10,
+    width: screenWidth * 0.90,
+    textAlign: 'center',
+  },  
   linkText: {
       color: '#0060ff',
       fontWeight: '400',

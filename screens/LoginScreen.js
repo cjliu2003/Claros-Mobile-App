@@ -43,7 +43,7 @@ const LoginScreen = ( { navigation }) => {
   }
 
   useLayoutEffect(() => {
-    if (user && recentSignIn) navigation.replace("Home")
+    if (user && recentSignIn) navigation.replace("Chat")
   }, [user, recentSignIn])
 
 
