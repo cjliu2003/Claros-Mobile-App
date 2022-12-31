@@ -1,5 +1,6 @@
-import { FlatList, Dimensions, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Dimensions, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, KeyboardAvoidingView } from 'react-native'
 import React, { useLayoutEffect, useState } from 'react'
+import { generateResponse } from '../functions/NLP/generateResponse';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -7,6 +8,7 @@ const screenHeight = Dimensions.get('window').height;
 const ChatScreen = ({ navigation }) => {
     const [input, setInput] = useState('')
     const [messages, setMessages]= useState([])
+    const [responses, setResponses] = useState([])
     useLayoutEffect(() => {
         navigation.setOptions({
         title: 'Claros AI',
@@ -19,50 +21,57 @@ const ChatScreen = ({ navigation }) => {
 
     const addMessage = () => {
         setMessages([...messages, input]);
+        let response = generateResponse(input)
+        setResponses([...responses, response])
         setInput('');
     };
 
-return (
-    <View style={styles.container}>
-        {messages.length > 0 ? 
-        <FlatList 
-            style={styles.messageList}
-            data={messages}
-            renderItem={({ item }) => (
-                <TouchableOpacity style={styles.messageBox}>
-                    <Text style={styles.messageText}>{item}</Text>
-                </TouchableOpacity>
-            )}
-            keyExtractor={(item, index) => index.toString()}
-        /> 
-        :
-            <ScrollView contentContainerStyle={styles.scrollContainer}>
-                <View style={styles.infoContainer}>
-                    <Text style={styles.headerText}>Example Queries</Text>
-                    <Text style={styles.text}>What's the best line on BetUS right now?</Text>
-                    <Text style={styles.text}>Show me a profitable line based on my sportsbooks.</Text>
-                    <Text style={styles.text}>Are there any good NBA bets tonight?</Text>
+
+    return (
+        <View style={styles.container}>
+            {messages.length > 0 ? 
+            <>
+                {messages.map((msg, i) => {
+                    return (
+                        <>
+                        <TouchableOpacity key={"Msg" + msg + i}style={styles.messageBox}>
+                            <Text style={styles.messageText}>{msg}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity key={"Res" + msg + i}style={styles.responseBox}>
+                            <Text style={styles.responseText}>{responses[i]}</Text>
+                        </TouchableOpacity>
+                        </>
+                    )
+                })}
+            </>
+            :
+                <ScrollView contentContainerStyle={styles.scrollContainer}>
+                    <View style={styles.infoContainer}>
+                        <Text style={styles.headerText}>Example Queries</Text>
+                        <Text style={styles.text}>What's the best line on BetUS right now?</Text>
+                        <Text style={styles.text}>Show me a profitable line based on my sportsbooks.</Text>
+                        <Text style={styles.text}>Are there any good NBA bets tonight?</Text>
+                    </View>
+                    <View style={styles.infoContainer}>
+                        <Text style={styles.headerText}>Limitations</Text>
+                        <Text style={styles.text}>May sometimes provide inaccurate information</Text>
+                        <Text style={styles.text}>May misinterpret or not recognize vague language</Text>
+                        <Text style={styles.text}>Handles only sports betting related queries</Text>
+                    </View>
+                </ScrollView>
+            }
+            <KeyboardAvoidingView behavior='padding' style={styles.bottomContainer} keyboardVerticalOffset={100}>
+                <View style={styles.line} />
+                <View style={styles.inputContainer}>
+                    <TextInput value={input} onChangeText={(text) => setInput(text)} style={styles.input} placeholder='Ask a question...' />
+                    <TouchableOpacity style={styles.sendButton} onPress={() => addMessage()}>
+                    <Text style={styles.whiteText} disabled={!input}>Send</Text>
+                    </TouchableOpacity>
                 </View>
-                <View style={styles.infoContainer}>
-                    <Text style={styles.headerText}>Limitations</Text>
-                    <Text style={styles.text}>May sometimes provide inaccurate information</Text>
-                    <Text style={styles.text}>May misinterpret or not recognize vague language</Text>
-                    <Text style={styles.text}>Handles only sports betting related queries</Text>
-                </View>
-            </ScrollView>
-        }
-    <View style={styles.bottomContainer}>
-        <View style={styles.line} />
-        <View style={styles.inputContainer}>
-            <TextInput value={input} onChangeText={(text) => setInput(text)} style={styles.input} placeholder='Ask a question...' />
-            <TouchableOpacity style={styles.sendButton} onPress={() => addMessage()}>
-                <Text style={styles.whiteText} disabled={!input}>Send</Text>
-            </TouchableOpacity>
+                <Text style={styles.footerText}>Claros AI Betting Assistant. We aim to improve the strategies and mentalities of sports bettors and sharpen their behavior.</Text>
+            </KeyboardAvoidingView>
         </View>
-            <Text style={styles.footerText}>Claros AI Betting Assistant. We aim to improve the strategies and mentalities of sports bettors and sharpen their behavior.</Text>
-        </View>
-    </View>
-);
+    );      
 };
 
 export default ChatScreen
@@ -105,7 +114,8 @@ const styles = StyleSheet.create({
     },
     bottomContainer: {
         position: 'absolute',
-        bottom: 10,
+        bottom: 15,
+        backgroundColor: 'white'
     },
     inputContainer: {
       flexDirection: 'row',
@@ -140,11 +150,21 @@ const styles = StyleSheet.create({
         backgroundColor: '#eeeeee',
         borderRadius: 5,
         marginVertical: screenHeight * 0.01,
-    },
-    messageList: {
-        paddingRight: screenWidth * 0.025,
-        paddingTop: screenWidth * 0.025,
+        margin: 16,
         alignSelf: 'flex-end',
+    },
+    responseText: {
+        fontSize: 16,
+        fontWeight: '300',
+        color: 'white'
+    },
+    responseBox: {   
+        padding: 10,
+        backgroundColor: '#0060ff',
+        borderRadius: 5,
+        marginVertical: screenHeight * 0.01,
+        margin: 32,
+        alignSelf: 'flex-start',
     },
     sendButton: {
       width: '20%',

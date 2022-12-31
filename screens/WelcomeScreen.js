@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: screenWidth,
-    height: screenHeight * 0.30,
+    height: screenHeight * 0.35,
     marginVertical: screenHeight * 0.03,
   },
   genericText: {
