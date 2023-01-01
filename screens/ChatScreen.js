@@ -2,6 +2,7 @@ import { Dimensions, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, 
 import React, { useLayoutEffect, useState } from 'react'
 import { generateResponse } from '../functions/NLP/generateResponse';
 import { Button } from '@rneui/base';
+import { useUserContext } from '../contexts/userContext';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -10,6 +11,15 @@ const ChatScreen = ({ navigation }) => {
     const [input, setInput] = useState('')
     const [messages, setMessages]= useState([])
     const [responses, setResponses] = useState([])
+    const {logoutUser, setRecentSignIn, setSignInError} = useUserContext()
+
+    const signOut = () => {
+        logoutUser()
+        setRecentSignIn(false);
+        setSignInError(null);
+        navigation.replace("Login")
+    }
+
     useLayoutEffect(() => {
         navigation.setOptions({
         title: 'Claros AI',
