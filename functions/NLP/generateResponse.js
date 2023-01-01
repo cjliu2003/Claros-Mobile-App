@@ -50,7 +50,7 @@ export async function generateResponse(prompt) {
     return completion;
     
   } else if (classification === 0) {
-    return "I'm a artifical intillgence powered assistant trained to help with sports betting related inquires. Is there something betting related I can help with?";
+    return "I'm a artifical intelligence powered assistant trained to help with sports betting related inquires. Is there something betting related I can help with?";
   
   } else {
     return "Sorry, there was an error getting the classification. Please try again later or contact info@claros.ai for support.";

@@ -34,7 +34,7 @@ export default function App() {
           <Stack.Screen style={styles.font} name='Welcome' component={WelcomeScreen} options={{ headerShown: false }} />
           <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }}/>
           <Stack.Screen name='Create Account' component={CreateAccountScreen} options={{ headerShown: false }}/>
-           <Stack.Screen name='Chat' component={ChatScreen} options={{ headerShown: true }}/>
+           <Stack.Screen name='Chat' component={ChatScreen} options={{ headerShown: false }}/>
         </Stack.Navigator>
       </NavigationContainer>
     </UserContextProvider>
