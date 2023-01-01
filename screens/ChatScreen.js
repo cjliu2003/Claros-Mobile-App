@@ -1,6 +1,7 @@
 import { Dimensions, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, KeyboardAvoidingView } from 'react-native'
 import React, { useLayoutEffect, useState } from 'react'
 import { generateResponse } from '../functions/NLP/generateResponse';
+import { Button } from '@rneui/base';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -12,10 +13,16 @@ const ChatScreen = ({ navigation }) => {
     useLayoutEffect(() => {
         navigation.setOptions({
         title: 'Claros AI',
-        headerTitleStyle: { color: 'black' },
+        headerTitleStyle: { color: 'black'},
         headerStyle: { backgroundColor: '#fff' },
         headerTintColor: 'black',
-        headerLeft: null,
+        headerLeft: () => (
+            <View>
+                <Button onPress={() => signOut()}type="clear" style={styles.signOutButton}>
+                    <Text style={styles.signOutText}>Sign Out</Text>
+                </Button>
+            </View>
+          ),
         });
     }, []);
 
@@ -25,6 +32,10 @@ const ChatScreen = ({ navigation }) => {
         setResponses([...responses, response])
         setInput('');
     };
+
+    const handleQueryClick = (query) => {
+        setInput(query)
+    }
 
 
     return (
@@ -48,9 +59,9 @@ const ChatScreen = ({ navigation }) => {
                 <ScrollView contentContainerStyle={styles.scrollContainer}>
                     <View style={styles.infoContainer}>
                         <Text style={styles.headerText}>Example Queries</Text>
-                        <Text style={styles.text}>What's the best line on BetUS right now?</Text>
-                        <Text style={styles.text}>Show me a profitable line based on my sportsbooks.</Text>
-                        <Text style={styles.text}>Are there any good NBA bets tonight?</Text>
+                        <Text onPress={() => handleQueryClick("What's the best line on BetUS right now?")} style={styles.text}>What's the best line on BetUS right now?</Text>
+                        <Text onPress={() => handleQueryClick("Show me a profitable line based on my sportsbooks")} style={styles.text}>Show me a profitable line based on my sportsbooks.</Text>
+                        <Text onPress={() => handleQueryClick("Are there any good NBA bets tonight?")} style={styles.text}>Are there any good NBA bets tonight?</Text>
                     </View>
                     <View style={styles.infoContainer}>
                         <Text style={styles.headerText}>Limitations</Text>
@@ -140,6 +151,11 @@ const styles = StyleSheet.create({
         fontWeight: '300',
         color: 'black',
     },
+    signOutText: {
+        color: 'black',
+        fontWeight: '400',
+        fontSize: 16,
+    },
     messageText: {
         fontSize: 16,
         fontWeight: '300',
@@ -173,6 +189,10 @@ const styles = StyleSheet.create({
       borderRadius: 5,
       alignItems: 'center',
       justifyContent: 'center',
+    },
+    signOutButton: {
+        height: 50,
+        widdth: 100,
     },
     whiteText: {
         color: 'white'
