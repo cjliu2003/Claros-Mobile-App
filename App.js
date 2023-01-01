@@ -1,4 +1,3 @@
-
 import "react-native-gesture-handler";
 import React from 'react';
 import { StyleSheet } from 'react-native';
@@ -28,16 +27,14 @@ const myTheme = {
 }
 
 export default function App() {
-
-
   return (
     <UserContextProvider>
       <NavigationContainer theme={myTheme}>
-        <Stack.Navigator initialRouteName="Welcome" screenOptions={globalScreenOptions}>
+        <Stack.Navigator initialRouteName="Welcome" screensOptions={globalScreenOptions}>
           <Stack.Screen style={styles.font} name='Welcome' component={WelcomeScreen} options={{ headerShown: false }} />
           <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }}/>
           <Stack.Screen name='Create Account' component={CreateAccountScreen} options={{ headerShown: false }}/>
-           <Stack.Screen name='Chat' component={ChatScreen}/>
+           <Stack.Screen name='Chat' component={ChatScreen} options={{ headerShown: true }}/>
         </Stack.Navigator>
       </NavigationContainer>
     </UserContextProvider>

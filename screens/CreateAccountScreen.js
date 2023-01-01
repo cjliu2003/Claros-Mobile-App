@@ -59,7 +59,7 @@ const CreateAccountScreen = ( { navigation }) => {
       {/* If there is a sign-in error, display an error message */}
       {signInError && <Text style={styles.errorMessage}>We were unable to recognize an account with that email and password. Please check your spelling and try again.</Text>}
       {/* Display the page title */}
-      <Text style={styles.brandText}>create account</Text>
+      <Text style={[styles.brandText, {marginTop: screenHeight * 0.1}]}>create account</Text>
       {/* Display a message about the benefits of creating an account */}
       <Text style={styles.genericText}>You could be get access to my algorithmic analysis in less than 2 minutes. Just create an account and buy a subscription!</Text>
       {/* Display an image */}
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
       fontSize: 18,
   },
   footerText: {
-      fontSize: 16,
+      fontSize: 18,
       marginTop: 10,
       color: '#000',
       textAlign: 'center',
@@ -149,12 +149,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     width: screenWidth * 0.90,
     textAlign: 'center',
-  },  
+  },
   linkText: {
       color: '#0060ff',
-      fontWeight: '400',
-      fontSize: 16,
+      fontWeight: '600',
+      fontSize: 18,
   },
 });
-
-

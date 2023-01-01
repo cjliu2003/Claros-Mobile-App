@@ -9,6 +9,14 @@ const ChatScreen = ({ navigation }) => {
     const [input, setInput] = useState('')
     const [messages, setMessages]= useState([])
     const [responses, setResponses] = useState([])
+    
+    const signOut = () => {
+        logoutUser()
+        setRecentSignIn(false);
+        setSignInError(null);
+        navigation.replace("Login")
+    }
+    
     useLayoutEffect(() => {
         navigation.setOptions({
         title: 'Claros AI',
@@ -19,17 +27,22 @@ const ChatScreen = ({ navigation }) => {
         });
     }, []);
 
-    const addMessage = () => {
-        setMessages([...messages, input]);
-        let response = generateResponse(input)
-        setResponses([...responses, response])
-        setInput('');
+    const addMessage = async () => {
+      setMessages([...messages, input]);
+      let response;
+      try {
+        response = await generateResponse(input);
+      } catch (error) {
+        console.error(error);
+      }
+      setResponses([...responses, response]);
+      setInput('');
     };
 
 
     return (
         <View style={styles.container}>
-            {messages.length > 0 ? 
+            {messages.length > 0 ?
             <>
                 {messages.map((msg, i) => {
                     return (
@@ -48,9 +61,9 @@ const ChatScreen = ({ navigation }) => {
                 <ScrollView contentContainerStyle={styles.scrollContainer}>
                     <View style={styles.infoContainer}>
                         <Text style={styles.headerText}>Example Queries</Text>
-                        <Text style={styles.text}>What's the best line on BetUS right now?</Text>
-                        <Text style={styles.text}>Show me a profitable line based on my sportsbooks.</Text>
-                        <Text style={styles.text}>Are there any good NBA bets tonight?</Text>
+                        <Text style={styles.text}>What should I bet on?</Text>
+                        <Text style={styles.text}>Show me the best line on the market right now.</Text>
+                        <Text style={styles.text}>Are there any good presently available bets?</Text>
                     </View>
                     <View style={styles.infoContainer}>
                         <Text style={styles.headerText}>Limitations</Text>
@@ -65,13 +78,13 @@ const ChatScreen = ({ navigation }) => {
                 <View style={styles.inputContainer}>
                     <TextInput value={input} onChangeText={(text) => setInput(text)} style={styles.input} placeholder='Ask a question...' />
                     <TouchableOpacity style={styles.sendButton} onPress={() => addMessage()}>
-                    <Text style={styles.whiteText} disabled={!input}>Send</Text>
+                      <Text style={styles.whiteText} disabled={!input}>Send</Text>
                     </TouchableOpacity>
                 </View>
                 <Text style={styles.footerText}>Claros AI Betting Assistant. We aim to improve the strategies and mentalities of sports bettors and sharpen their behavior.</Text>
             </KeyboardAvoidingView>
         </View>
-    );      
+    );
 };
 
 export default ChatScreen
@@ -145,10 +158,10 @@ const styles = StyleSheet.create({
         fontWeight: '300',
         color: 'black'
     },
-    messageBox: {   
-        padding: 10,
-        backgroundColor: '#eeeeee',
-        borderRadius: 5,
+    messageBox: {
+        padding: 15,
+        backgroundColor: '#f2f2f2',
+        borderRadius: 41,
         marginVertical: screenHeight * 0.01,
         margin: 16,
         alignSelf: 'flex-end',
@@ -158,10 +171,10 @@ const styles = StyleSheet.create({
         fontWeight: '300',
         color: 'white'
     },
-    responseBox: {   
-        padding: 10,
+    responseBox: {
+        padding: 15,
         backgroundColor: '#0060ff',
-        borderRadius: 5,
+        borderRadius: 41,
         marginVertical: screenHeight * 0.01,
         margin: 32,
         alignSelf: 'flex-start',
