@@ -1,57 +1,40 @@
 import axios from 'axios';
-import { containsProfanity } from "./containsProfanity";
-import { performBinarySemanticClassification, getClassification } from "./binarySemanticClassification";
-import { invokeLambda, getLambdaResponse, parseReponseObject } from "./fetchVulcan";
+import { containsProfanity } from "./contentModeration";
+import { performSemanticClassification, getClassification } from "./semanticClassification";
+import { interpretExtraction } from "./class2Extraction";
+import { getClass2LambdaResponse, getClass1LambdaResponse, parseClass1ReponseObject } from "./fetchVulcan";
+import { getClass2Completion, getClass1Completion, getClass0Completion } from "./responseCompletion";
 const { Configuration, OpenAIApi } = require("openai");
-
-// Function returns a promise to deliver binary classification.
-async function formCompletionFromData(marketData) {
-  try {
-    const rudimentString = parseReponseObject(marketData)
-    const prompt = `Construct a completion which conveys the same semantics in a clear, happy, respectful tone.: ${rudimentString}`;
-    console.log(prompt)
-    const response = await axios.post(`https://api.openai.com/v1/engines/${'text-davinci-003'}/completions`, {
-      prompt,
-      max_tokens: 2048,
-      temperature: 1,
-      top_p: 1,
-      frequency_penalty: 0,
-      presence_penalty: 0,
-    }, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${'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'}`
-      }
-    });
-
-    const completion = response.data.choices[0].text;
-    console.log(completion);
-    return completion;
-    
-  } catch (error) {
-    // Handle any errors that occurred during the request here
-    console.error(error);
-    return null;
-  }
-}
-
-// Function makes good on the promise
-async function getCompletion(marketData) {
-  const completion = await formCompletionFromData(marketData);
-  return completion;
-}
 
 // Driver function to return appropriate, user input dependent responses
 export async function generateResponse(prompt) {
-  const classification = await performBinarySemanticClassification(prompt);
+  // First check profanity
+  if (containsProfanity(prompt) === true) {
+    return "I'm sorry if I haven't been helpful. Is there anything sportsbetting related I can help you with?"
+  }
+  
+  const classification = await performSemanticClassification(prompt);
+  console.log(classification)
   if (classification === 1) {
-    const marketData = await getLambdaResponse();
-    const completion = await getCompletion(marketData);
+    const marketData = await getClass1LambdaResponse();
+    const completion = await getClass1Completion(marketData);
     return completion;
     
-  } else if (classification === 0) {
-    return "I'm a artifical intelligence powered assistant trained to help with sports betting related inquires. Is there something betting related I can help with?";
+  } if (classification === 0) {
+    const completion = await getClass0Completion();
+    return completion;
   
+  } else if (classification === 2) {
+    
+    const books = await interpretExtraction(prompt)
+    const marketData = await getClass2LambdaResponse(books);
+    // const completion = await getClass2Completion(marketData);
+    const completion = books;
+    console.log(books)
+    console.log(marketData)
+    // console.log(completion)
+    return completion;
+    
   } else {
     return "Sorry, there was an error getting the classification. Please try again later or contact info@claros.ai for support.";
   }

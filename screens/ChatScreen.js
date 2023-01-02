@@ -60,26 +60,26 @@ const ChatScreen = ({ navigation }) => {
               </ScrollView>
             </>
             :
-                <ScrollView contentContainerStyle={styles.scrollContainer}>
-                    <View style={styles.infoContainer}>
-                        <Text style={styles.headerText}>Example Questions</Text>
-                        <Text style={styles.text}>What should I bet on?</Text>
-                        <Text style={styles.text}>Show me the best line on the market right now.</Text>
-                        <Text style={styles.text}>Are there any good presently available bets?</Text>
-                    </View>
-                    <View style={styles.infoContainer}>
-                        <Text style={styles.headerText}>Capabilities</Text>
-                        <Text style={styles.text}>Finds value bets across over 35 sportsbooks.</Text>
-                        <Text style={styles.text}>Accurately prices lines according to event outcome probabilities.</Text>
-                        <Text style={styles.text}>Engages with users about betting related market information.</Text>
-                    </View>
-                    <View style={styles.infoContainer}>
-                        <Text style={styles.headerText}>Limitations</Text>
-                        <Text style={styles.text}>May sometimes provide inaccurate information</Text>
-                        <Text style={styles.text}>May misinterpret or not recognize vague language</Text>
-                        <Text style={styles.text}>Handles only sports betting related queries</Text>
-                    </View>
-                </ScrollView>
+              <ScrollView contentContainerStyle={styles.scrollContainer}>
+                  <View style={styles.infoContainer}>
+                      <Text style={styles.headerText}>Example Questions</Text>
+                      <Text style={styles.text}>What should I bet on?</Text>
+                      <Text style={styles.text}>Show me the best line on the market right now.</Text>
+                      <Text style={styles.text}>Are there any good presently available bets?</Text>
+                  </View>
+                  <View style={styles.infoContainer}>
+                      <Text style={styles.headerText}>Capabilities</Text>
+                      <Text style={styles.text}>Finds value bets across over 35 sportsbooks.</Text>
+                      <Text style={styles.text}>Accurately prices lines according to event outcome probabilities.</Text>
+                      <Text style={styles.text}>Engages with users about betting related market information.</Text>
+                  </View>
+                  <View style={styles.infoContainer}>
+                      <Text style={styles.headerText}>Limitations</Text>
+                      <Text style={styles.text}>May sometimes provide inaccurate information</Text>
+                      <Text style={styles.text}>May misinterpret or not recognize vague language</Text>
+                      <Text style={styles.text}>Handles only sports betting related queries</Text>
+                  </View>
+              </ScrollView>
             }
             <KeyboardAvoidingView behavior='padding' style={styles.bottomContainer} keyboardVerticalOffset={100}>
               <View style={styles.inputContainer}>
