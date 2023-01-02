@@ -10,12 +10,11 @@ pool = psycopg2.pool.SimpleConnectionPool(5,
         password='getrichordietrying',
         dbname='vulcan3')
 
-def fetch_reporter(specified_bookmakers):
+def fetch_reporter(specified_bookmakers_string):
 
     conn = pool.getconn()
     cursor = conn.cursor()
-    specified_bookmakers = tuple(specified_bookmakers)
-    query = f"SELECT row_to_json(a) FROM ( SELECT * FROM reporter WHERE ( DATE(commence_time) = DATE(NOW()) OR DATE(commence_time) = DATE(NOW() + INTERVAL '1 day') ) AND bookmaker IN {specified_bookmakers} ORDER BY max_ev DESC LIMIT 1 ) AS a;"
+    query = f"SELECT row_to_json(a) FROM ( SELECT * FROM reporter WHERE ( DATE(commence_time) = DATE(NOW()) OR DATE(commence_time) = DATE(NOW() + INTERVAL '1 day') ) AND bookmaker IN ({specified_bookmakers_string}) ORDER BY max_ev DESC LIMIT 1 ) AS a;"
     print(query)
     try:
         cursor.execute(query)

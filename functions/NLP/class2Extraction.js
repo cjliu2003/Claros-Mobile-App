@@ -34,6 +34,7 @@ export async function performBookmakerExtraction(input) {
 // Function makes good on the promise
 export async function getExtraction(input) {
   const bookExtraction = await performBookmakerExtraction(input);
+  // console.log(bookExtraction)
   return bookExtraction
 }
 
@@ -44,7 +45,7 @@ export async function interpretExtraction(input) {
                         "unibet_us", "betsson", "betvictor", "bookmakereu", "matchbook", "pinnacle", "williamhill",
                         "superbook", "nordicbet", "lowvig"]
 
-  const extraction = await performBookmakerExtraction(input); // <-- Neccessarily a string (is direct NL output)
+  const extraction = await getExtraction(input); // <-- Neccessarily a string (is direct NL output)
 
   let cleanedExtraction;
   cleanedExtraction = extraction.toLowerCase(); // <-- Make everything lowercase
@@ -61,6 +62,15 @@ export async function interpretExtraction(input) {
       }
     }
   }
-  
-  return bookmakers;
+
+  let bookmakersString = ""; // <-- Decide to return bookmaker string, which we pass into AWS lambda function, which completes the PGSQL query the lambda function makes
+  for (let i = 0; i < bookmakers.length; i++) {
+    bookmakersString += "'"
+    bookmakersString += bookmakers[i];
+    bookmakersString += "'"
+    bookmakersString += ","
+  }
+  bookmakersString = bookmakersString.slice(0, -1);
+
+  return bookmakersString;
 }

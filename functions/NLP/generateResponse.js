@@ -14,7 +14,6 @@ export async function generateResponse(prompt) {
   }
   
   const classification = await performSemanticClassification(prompt);
-  console.log(classification)
   if (classification === 1) {
     const marketData = await getClass1LambdaResponse();
     const completion = await getClass1Completion(marketData);
@@ -25,14 +24,13 @@ export async function generateResponse(prompt) {
     return completion;
   
   } else if (classification === 2) {
-    
-    const books = await interpretExtraction(prompt)
+    // return "A class 2 question!"
+    const books = await interpretExtraction(prompt);
+    console.log(`Books => ${typeof books}`)
+
     const marketData = await getClass2LambdaResponse(books);
-    // const completion = await getClass2Completion(marketData);
-    const completion = books;
-    console.log(books)
-    console.log(marketData)
-    // console.log(completion)
+    const completion = await getClass2Completion(marketData);
+    console.log(completion)
     return completion;
     
   } else {

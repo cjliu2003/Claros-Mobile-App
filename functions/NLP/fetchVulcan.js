@@ -45,21 +45,21 @@ export function parseClass1ReponseObject(json) {
   if (market === "h2h") {
     return `The ${json.away_team_name} (away) take on the ${json.home_team_name} (home) at ${json.commence_time}. ${json.bookmaker}'s ${odds} on the ${teamName} moneyline looks to be a reasonable bet.`;
   } else if (market === "spreads") {
-    return `The ${json.away_team_name} (away) take on the ${json.home_team_name} (home) at ${json.commence_time}. ${json.bookmaker}'s ${odds} on the ${teamName} at ${point} looks to be a reasonable bet.`;
+    return `The ${json.away_team_name} (away) take on the ${json.home_team_name} (home) at ${json.commence_time}. ${json.bookmaker}'s ${odds} on the ${teamName} at the ${point} spread looks to be a reasonable bet.`;
   } else if (market === "totals") {
     return `The ${json.away_team_name} (away) take on the ${json.home_team_name} (home) at ${json.commence_time}. ${json.bookmaker}'s ${odds} on the ${teamName} at ${point} looks to be a reasonable bet.`;
   }
 }
 
 // Returns promise for Class 2 lambda invoke
-export async function invokeClass2Lambda(specifiedBookmaker) {
+export async function invokeClass2Lambda(specifiedBookmakers) {
   try {
     const response = axios.post('https://tyxb3xi5r3764fsfjnt4ef6rha0kwxaz.lambda-url.us-east-1.on.aws', {
       headers: {
         'Content-Type': 'application/json'
       },
       data: {
-        "bookmakers": specifiedBookmaker
+        "bookmakers": specifiedBookmakers
       }
     });
 
@@ -72,11 +72,9 @@ export async function invokeClass2Lambda(specifiedBookmaker) {
 }
 
 // Function makes good on the promise, returning relevant information from marketData object
-export async function getClass2LambdaResponse(specifiedBookmaker) {
-  const marketData = await invokeClass2Lambda(specifiedBookmaker);
-  console.log(marketData);
+export async function getClass2LambdaResponse(specifiedBookmakers) {
+  const marketData = await invokeClass2Lambda(specifiedBookmakers);
   const marketDataObject = marketData.data.data.message;
-  console.log(marketDataObject)
   return marketDataObject;
 }
 
@@ -105,7 +103,7 @@ export function parseClass2ReponseObject(json) {
   if (market === "h2h") {
     return `The ${json.away_team_name} (away) take on the ${json.home_team_name} (home) at ${json.commence_time}. ${json.bookmaker}'s ${odds} on the ${teamName} moneyline looks to be a reasonable bet.`;
   } else if (market === "spreads") {
-    return `The ${json.away_team_name} (away) take on the ${json.home_team_name} (home) at ${json.commence_time}. ${json.bookmaker}'s ${odds} on the ${teamName} at ${point} looks to be a reasonable bet.`;
+    return `The ${json.away_team_name} (away) take on the ${json.home_team_name} (home) at ${json.commence_time}. ${json.bookmaker}'s ${odds} on the ${teamName} at the ${point} spread looks to be a reasonable bet.`;
   } else if (market === "totals") {
     return `The ${json.away_team_name} (away) take on the ${json.home_team_name} (home) at ${json.commence_time}. ${json.bookmaker}'s ${odds} on the ${teamName} at ${point} looks to be a reasonable bet.`;
   }

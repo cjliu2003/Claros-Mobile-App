@@ -9,7 +9,7 @@ export async function formClass0Completion(input) {
     const response = await axios.post(`https://api.openai.com/v1/engines/${'text-davinci-003'}/completions`, {
       prompt,
       max_tokens: 2048,
-      temperature: 1,
+      temperature: 0,
       top_p: 1,
       frequency_penalty: 0,
       presence_penalty: 0,
@@ -45,7 +45,7 @@ export async function formClass1Completion(marketData) {
     const response = await axios.post(`https://api.openai.com/v1/engines/${'text-davinci-003'}/completions`, {
       prompt,
       max_tokens: 2048,
-      temperature: 0.2,
+      temperature: 0,
       top_p: 1,
       frequency_penalty: 0,
       presence_penalty: 0,
@@ -84,7 +84,7 @@ export async function formClass2Completion(marketData) {
     const response = await axios.post(`https://api.openai.com/v1/engines/${'text-davinci-003'}/completions`, {
       prompt,
       max_tokens: 2048,
-      temperature: 0.2,
+      temperature: 0,
       top_p: 1,
       frequency_penalty: 0,
       presence_penalty: 0,
