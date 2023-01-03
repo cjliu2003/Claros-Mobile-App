@@ -11,6 +11,7 @@ import { createUserWithEmailAndPassword, updateProfile, onAuthStateChanged, sign
 import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 import { REACT_APP_STRIPE_PREMIUM_WEEKLY1, REACT_APP_STRIPE_PREMIUM_MONTHLY1, REACT_APP_STRIPE_PREMIUM_WEEKLY2, REACT_APP_STRIPE_PREMIUM_MONTHLY2 } from '@env'
 import { findTodaysLines } from "../functions/lines/findTodaysLines";
+import { Alert } from "react-native";
 
 const UserContext = createContext({});
 
@@ -251,7 +252,7 @@ export const UserContextProvider = ({ children }) => {
         }, {merge: true});
     }
 
-    const registerUser = (email, password, name, phone) => {
+    const registerUser = (email, password, name) => {
         // Set the global loading state to true
         setLoading(true)
         // Attempt to create a new user with the provided email and password
@@ -266,11 +267,12 @@ export const UserContextProvider = ({ children }) => {
         .then((res) => console.log(res))
         // Write the user's phone number to the database and initialize their user data
         .then(() => {
-            writePhone(auth.currentUser, phone);
             initializeUserData(auth.currentUser);
         })
         // If there is an error, set the sign-up error state with the error message
-        .catch(err => setSignUpError(err.toString()))
+        .catch(err => {
+            Alert.alert('Sign Up Error', err.toString().substring(26), [{text: 'Ok'}])
+        })
         // Set the global loading state to false, regardless of success or failure
         .finally(() => setLoading(false));
     }

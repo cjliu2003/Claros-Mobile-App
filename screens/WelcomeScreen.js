@@ -28,15 +28,19 @@ const WelcomeScreen = ({ navigation }) => {
   
   return (
     <View style={styles.container}>
-      <Text style={styles.brandText}>claros</Text>
+      <Text style={[styles.brandText, {marginTop: screenHeight * 0.1}]}>Claros</Text>
+
       <Image source={require('../assets/claros__hero-performance.png')} style={styles.image} />
-      <Text style={styles.genericText}>The most powerful sports betting assistant</Text>
+      <Text style={styles.genericText}>The world's most powerful sports betting assistant</Text>
       <Button style={[styles.filledButton ]} type="transparent" title="Login" onPress={() => navigation.navigate('Create Account')}>
         <Text style={styles.filledButtonText}>Get Started</Text>
       </Button>
-      <View style={styles.justifyCenter}>
-        <Text style={styles.bottomLoginText}>Have an account? </Text><TouchableOpacity onPress={() => navigation.navigate("Login")}style={styles.justifyCenter}><Text style={styles.blueLink}>Login</Text></TouchableOpacity>
-      </View>
+      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+        <Text style={styles.footerText}>
+          Already have an account?{' '}
+          <Text style={styles.linkText}>Sign In</Text>
+        </Text>
+      </TouchableOpacity>
       <StatusBar style='light' />
     </View>
   );
@@ -63,7 +67,8 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     marginTop: screenHeight * 0.05,
     marginBottom: screenHeight * 0.05,
-    color: "#0060ff"
+    color: "#0060ff",
+    letterSpacing: -1,
   },
   image: {
     width: screenWidth,
@@ -81,14 +86,18 @@ const styles = StyleSheet.create({
   bottomLoginText: {
     color: 'black',
     fontWeight: '300',
-    fontSize: 16,
+    fontSize: 18,
   },
-  blueLink: {
-    color: '#0060ff',
-    fontWeight: '400',
-    fontSize: 16,
-    marginVertical: screenHeight * 0.01,
-    textDecorationLine: 'underline'
+  footerText: {
+      fontSize: 18,
+      marginTop: 10,
+      color: '#000',
+      textAlign: 'center',
+  },
+  linkText: {
+      color: '#0060ff',
+      fontWeight: '600',
+      fontSize: 18,
   },
   filledButton: {
       width: 300,

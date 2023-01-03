@@ -48,9 +48,9 @@ const LoginScreen = ( { navigation }) => {
 
 
   return (
-    <KeyboardAvoidingView behavior = 'padding' style={styles.container}>
+    <KeyboardAvoidingView behavior='padding' style={styles.container}>
       {signInError && <Text style={styles.errorMessage}>We were unable to recognize an account with that email and password. Please check your spelling and try again.</Text>}
-      <Text style={styles.brandText}>login</Text>
+      <Text style={[styles.brandText, {marginTop: screenHeight * 0.1}]}>login</Text>
       <Image source={require('../assets/login.png')} style={styles.image} />
       <TextInput
         style={styles.input}
@@ -103,12 +103,6 @@ const styles = StyleSheet.create({
     marginTop: screenHeight * 0.025,
     marginBottom: screenHeight * 0.025,
   },
-  inputContainerLabel: {
-      marginBottom: 8,
-      fontWeight: '400',
-      fontSize: 14,
-      color: '#000',
-  },
   input: {
     height: 40,
     width: screenWidth * 0.75,
@@ -147,14 +141,14 @@ const styles = StyleSheet.create({
       fontSize: 18,
   },
   footerText: {
-      fontSize: 16,
+      fontSize: 18,
       marginTop: 10,
       color: '#000',
       textAlign: 'center',
   },
   linkText: {
       color: '#0060ff',
-      fontWeight: '400',
-      fontSize: 16,
+      fontWeight: '600',
+      fontSize: 18,
   },
 });
