@@ -1,6 +1,8 @@
 import { Dimensions, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, KeyboardAvoidingView } from 'react-native'
 import React, { useLayoutEffect, useState } from 'react'
 import { generateResponse } from '../functions/NLP/generateResponse';
+import { Button } from '@rneui/base';
+import { useUserContext } from '../contexts/userContext';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -9,24 +11,7 @@ const ChatScreen = ({ navigation }) => {
     const [input, setInput] = useState('')
     const [messages, setMessages]= useState([])
     const [responses, setResponses] = useState([])
-    
-    const signOut = () => {
-        logoutUser()
-        setRecentSignIn(false);
-        setSignInError(null);
-        navigation.replace("Login")
-    }
-    
-    useLayoutEffect(() => {
-        navigation.setOptions({
-        title: 'Claros AI',
-        headerTitleStyle: { color: 'black' },
-        headerStyle: { backgroundColor: '#fff' },
-        headerTintColor: 'black',
-        headerLeft: null,
-        });
-    }, []);
-
+    const {logoutUser, setRecentSignIn, setSignInError} = useUserContext()
     const addMessage = async () => {
       setMessages([...messages, input]);
       let response;
@@ -38,6 +23,10 @@ const ChatScreen = ({ navigation }) => {
       setResponses([...responses, response]);
       setInput('');
     };
+
+    const handleQueryClick = (query) => {
+        setInput(query)
+    }
 
 
     return (
@@ -170,6 +159,11 @@ const styles = StyleSheet.create({
         fontWeight: '300',
         color: 'black',
     },
+    signOutText: {
+        color: 'black',
+        fontWeight: '400',
+        fontSize: 16,
+    },
     messageText: {
         fontSize: 16,
         fontWeight: '300',
@@ -204,6 +198,10 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         paddingHorizontal: 10,
         backgroundColor: '#0060ff',
+    },
+    signOutButton: {
+        height: 50,
+        widdth: 100,
     },
     whiteText: {
         color: 'white',
