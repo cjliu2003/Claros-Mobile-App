@@ -1,10 +1,11 @@
 // Create account screen links a user to www.claros.ai/signup
 
-import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, Linking, View, Dimensions } from 'react-native'
+import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, Linking, View, Dimensions, TextInput, Alert } from 'react-native'
 import React, { useLayoutEffect, useState, useEffect } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import { Button, Image } from "@rneui/base"
 import { useUserContext } from '../contexts/userContext'
+import { validateAccountCredentials } from '../functions/signup/validateAccountCredentials'
 
 // Get the current screen width and height
 const screenWidth = Dimensions.get('window').width;
@@ -12,7 +13,20 @@ const screenHeight = Dimensions.get('window').height;
 
 const CreateAccountScreen = ( { navigation }) => {
   // State for user information
-  const {user, signInError, recentSignIn} = useUserContext()
+  const {user, registerUser} = useUserContext()
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [nickname, setNickname] = useState('')
+  const [email, setEmail] = useState('')
+
+  const handleSignUp = () => {
+    let error = validateAccountCredentials(nickname, email, password, confirmPassword)
+    if (error === "None") {
+      registerUser(email, password, nickname);
+    } else {
+      Alert.alert('Sign Up Error', error, [{text: 'Ok'}]);
+    }
+  }
 
   // State for storing the screen orientation
   const [orientation, setOrientation] = useState(null);
@@ -25,59 +39,68 @@ const CreateAccountScreen = ( { navigation }) => {
       // Otherwise, set the orientation to portrait
       setOrientation(Dimensions.get('screen').width > Dimensions.get('screen').height ? 'landscape' : 'portrait');
     };
-
     // Call the update function initially
     updateOrientation();
-
     // Subscribe to the screen change event
     const changeEventListener = Dimensions.addEventListener('change', updateOrientation);
-
     // Return a function that removes the event listener when the component unmounts
     return () => {
       changeEventListener.remove();
     };
   }, []);
   
-  // Function for opening the Claros AI pricing page in the device's default browser
-  const openCenterURL = () => {
-    // Attempt to open the URL and log any errors that occur
-    Linking.openURL('https://claros.ai/pricing').catch((error) => console.error(error));
-  };
 
   // Use layout effect hook to navigate to the home screen if the user is authenticated and has recently signed in
   useLayoutEffect(() => {
     // If the user is authenticated and has recently signed in
-    if (user && recentSignIn) {
+    if (user) {
       // Navigate to the home screen
       navigation.replace("Chat")
     }
-  }, [user, recentSignIn])
+  }, [user])
   
 
   return (
-    <KeyboardAvoidingView behavior='padding' style={styles.container}>
-      {/* If there is a sign-in error, display an error message */}
-      {signInError && <Text style={styles.errorMessage}>We were unable to recognize an account with that email and password. Please check your spelling and try again.</Text>}
-      {/* Display the page title */}
-      <Text style={[styles.brandText, {marginTop: screenHeight * 0.1}]}>create account</Text>
-      {/* Display a message about the benefits of creating an account */}
-      <Text style={styles.genericText}>You could be get access to my algorithmic analysis in less than 2 minutes. Just create an account and buy a subscription!</Text>
-      {/* Display an image */}
-      <Image source={require('../assets/createAccount.png')} style={styles.image} />
-      
-      {/* Button for opening the Claros AI pricing page in the default browser */}
-      <Button style={styles.filledButton} type="transparent" onPress={() => openCenterURL()} title="CreateAccount">
-        <Text style={styles.filledButtonText}>Sign Up on Website</Text>
+    <KeyboardAvoidingView behavior='position' style={styles.container}>
+      <Text style={styles.brandText}>Create an Account</Text>
+      <Image source={require('../assets/login.png')} style={styles.image} />
+      <View style={styles.inputContainer}>
+        <Text style={styles.inputLabel}>Nickname</Text>
+        <TextInput
+          style={styles.input} placeholder="Enter your nickname..." placeholderTextColor={ '#222222' } paddingHorizontal = { screenWidth * 0.05 }
+           type="text" value={nickname} onChangeText={(text) => setNickname(text)}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.inputLabel}>Email</Text>
+        <TextInput
+          style={styles.input} placeholder="Enter your email..." placeholderTextColor={ '#222222' } paddingHorizontal = { screenWidth * 0.05 }
+           type="text" value={email} onChangeText={(text) => setEmail(text)}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.inputLabel}>Password</Text>
+        <TextInput
+          style={styles.input} placeholder="Enter your password..." placeholderTextColor={ '#222222' } paddingHorizontal = { screenWidth * 0.05 }
+          secureTextEntry type="password" value={password} onChangeText={(text) => setPassword(text)}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.inputLabel}>Confirm Password</Text>
+        <TextInput
+          style={styles.input} placeholder="Enter your password..." placeholderTextColor={ '#222222' } paddingHorizontal = { screenWidth * 0.05 }
+          secureTextEntry type="password" value={confirmPassword} onChangeText={(text) => setConfirmPassword(text)}
+        />
+      </View>
+      <Button style={styles.filledButton} type="transparent" onPress={() => handleSignUp()} title="Login">
+        <Text style={styles.filledButtonText}>Create Account</Text>
       </Button>
-      {/* Link to the login page */}
       <TouchableOpacity onPress={() => navigation.navigate('Login')}>
         <Text style={styles.footerText}>
-          Have an account?{' '}
-          <Text style={styles.linkText}>Login</Text>
+          Already have an account?{' '}
+          <Text style={styles.linkText}>Sign In</Text>
         </Text>
       </TouchableOpacity>
-
-      {/* Display the device's status bar */}
       <StatusBar style="light" />
     </KeyboardAvoidingView>
   )
@@ -86,6 +109,16 @@ const CreateAccountScreen = ( { navigation }) => {
 export default CreateAccountScreen
 
 const styles = StyleSheet.create({
+  brandText: {
+    fontSize: 50,
+    fontWeight: "800",
+    marginTop: screenHeight * 0.1,
+    marginBottom: screenHeight * 0.01,
+    color: "#0060ff",
+    letterSpacing: -1.5,
+    alignSelf: 'center',
+    textAlign: 'center',
+  },
   container: {
     flex: 1,
     flexDirection: 'column',
@@ -94,16 +127,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   image: {
-    width: screenWidth * 0.75,
-    height: screenHeight * 0.35,
-    marginTop: screenHeight * 0.025,
-    marginBottom: screenHeight * 0.025,
+    width: screenWidth * 0.60,
+    height: screenHeight * 0.20,
+    marginTop: screenHeight * 0.01,
+    marginBottom: screenHeight * 0.01,
   },
-  inputContainerLabel: {
-    marginBottom: 8,
-    fontWeight: '400',
-    fontSize: 14,
-    color: '#000',
+  inputContainer: {
+    marginVertical: 4
   },
   input: {
     height: 40,
@@ -115,13 +145,11 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 16,
   },
-  brandText: {
-    fontSize: 64,
-    fontWeight: "800",
-    marginTop: screenHeight * 0.05,
-    marginBottom: screenHeight * 0.05,
-    color: "#0060ff",
-    textAlign: 'center',
+  inputLabel: {
+    marginVertical: 2.5,
+    fontSize: 16,
+    fontWeight: '500',
+    color: 'black'
   },
   filledButton: {
     width: screenWidth * 0.75,
@@ -137,17 +165,9 @@ const styles = StyleSheet.create({
       fontSize: 18,
   },
   footerText: {
-      fontSize: 18,
-      marginTop: 10,
-      color: '#000',
-      textAlign: 'center',
-  },
-  genericText: {
-    fontSize: 16,
-    fontWeight: '300',
-    color: '#222222',
-    marginBottom: 10,
-    width: screenWidth * 0.90,
+    fontSize: 18,
+    marginTop: 10,
+    color: '#000',
     textAlign: 'center',
   },
   linkText: {
@@ -155,4 +175,5 @@ const styles = StyleSheet.create({
       fontWeight: '600',
       fontSize: 18,
   },
+  
 });

@@ -9,6 +9,7 @@ import LoginScreen from "./screens/LoginScreen";
 import CreateAccountScreen from "./screens/CreateAccountScreen";
 import ChatScreen from "./screens/ChatScreen";
 
+
 const Stack = createStackNavigator();
 
 const globalScreenOptions = {
@@ -30,7 +31,7 @@ export default function App() {
   return (
     <UserContextProvider>
       <NavigationContainer theme={myTheme}>
-        <Stack.Navigator initialRouteName="Welcome" screensOptions={globalScreenOptions}>
+        <Stack.Navigator initialRouteName="Create Account" screensOptions={globalScreenOptions}>
           <Stack.Screen style={styles.font} name='Welcome' component={WelcomeScreen} options={{ headerShown: false }} />
           <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }}/>
           <Stack.Screen name='Create Account' component={CreateAccountScreen} options={{ headerShown: false }}/>

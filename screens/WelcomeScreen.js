@@ -28,17 +28,17 @@ const WelcomeScreen = ({ navigation }) => {
   
   return (
     <View style={styles.container}>
-      <Text style={[styles.brandText, {marginTop: screenHeight * 0.1}]}>claros</Text>
+      <Text style={[styles.brandText, {marginTop: screenHeight * 0.1}]}>Claros</Text>
 
       <Image source={require('../assets/claros__hero-performance.png')} style={styles.image} />
       <Text style={styles.genericText}>The world's most powerful sports betting assistant</Text>
       <Button style={[styles.filledButton ]} type="transparent" title="Login" onPress={() => navigation.navigate('Create Account')}>
         <Text style={styles.filledButtonText}>Get Started</Text>
       </Button>
-      <TouchableOpacity onPress={() => navigation.navigate('Create Account')}>
+      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
         <Text style={styles.footerText}>
-          Don't have an account?{' '}
-          <Text style={styles.linkText}>Sign Up</Text>
+          Already have an account?{' '}
+          <Text style={styles.linkText}>Sign In</Text>
         </Text>
       </TouchableOpacity>
       <StatusBar style='light' />
@@ -67,7 +67,8 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     marginTop: screenHeight * 0.05,
     marginBottom: screenHeight * 0.05,
-    color: "#0060ff"
+    color: "#0060ff",
+    letterSpacing: -1,
   },
   image: {
     width: screenWidth,

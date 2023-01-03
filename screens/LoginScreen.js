@@ -103,12 +103,6 @@ const styles = StyleSheet.create({
     marginTop: screenHeight * 0.025,
     marginBottom: screenHeight * 0.025,
   },
-  inputContainerLabel: {
-      marginBottom: 8,
-      fontWeight: '400',
-      fontSize: 14,
-      color: '#000',
-  },
   input: {
     height: 40,
     width: screenWidth * 0.75,
