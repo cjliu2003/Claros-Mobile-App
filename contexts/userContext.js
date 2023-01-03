@@ -81,14 +81,6 @@ export const UserContextProvider = ({ children }) => {
         }
         setLoading(false)
     }
-
-    useEffect(() => {
-        if (customer) {
-            let date = new Date()
-            setHistoricalBetSlip(findTodaysLines(date, customer.historical_bet_slip.reverse().slice(0,10)))
-            setBetHistory(customer.historical_bet_slip)
-        }
-    }, [customer])
     
     
     useEffect(() => {
@@ -271,7 +263,7 @@ export const UserContextProvider = ({ children }) => {
         })
         // If there is an error, set the sign-up error state with the error message
         .catch(err => {
-            Alert.alert('Sign Up Error', err.toString().substring(26), [{text: 'Ok'}])
+            Alert.alert('Sign Up Error', err.toString().substring(25), [{text: 'Ok'}])
         })
         // Set the global loading state to false, regardless of success or failure
         .finally(() => setLoading(false));

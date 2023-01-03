@@ -55,7 +55,7 @@ const CreateAccountScreen = ( { navigation }) => {
     // If the user is authenticated and has recently signed in
     if (user) {
       // Navigate to the home screen
-      navigation.replace("Chat")
+      navigation.replace("Home")
     }
   }, [user])
   
@@ -63,7 +63,6 @@ const CreateAccountScreen = ( { navigation }) => {
   return (
     <KeyboardAvoidingView behavior='position' style={styles.container}>
       <Text style={styles.brandText}>Create an Account</Text>
-      <Image source={require('../assets/login.png')} style={styles.image} />
       <View style={styles.inputContainer}>
         <Text style={styles.inputLabel}>Nickname</Text>
         <TextInput
@@ -126,12 +125,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     backgroundColor: '#ffffff',
   },
-  image: {
-    width: screenWidth * 0.60,
-    height: screenHeight * 0.20,
-    marginTop: screenHeight * 0.01,
-    marginBottom: screenHeight * 0.01,
-  },
   inputContainer: {
     marginVertical: 4
   },
@@ -146,7 +139,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   inputLabel: {
-    marginVertical: 2.5,
+    marginVertical: 1.5,
     fontSize: 16,
     fontWeight: '500',
     color: 'black'

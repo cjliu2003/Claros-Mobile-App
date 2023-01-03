@@ -28,7 +28,6 @@ const ChatScreen = ({ navigation }) => {
         setInput(query)
     }
 
-
     return (
         <View style={styles.container}>
             {messages.length > 0 ?

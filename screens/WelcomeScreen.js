@@ -51,16 +51,11 @@ export default WelcomeScreen
 
 const styles = StyleSheet.create({
   container: {
-      flex: 1,
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: "flex-start",
-      backgroundColor: '#ffffff',
-  },
-  justifyCenter: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flex: 1,
+    flexDirection: 'column',
     alignItems: 'center',
+    justifyContent: "flex-start",
+    backgroundColor: '#ffffff',
   },
   brandText: {
     fontSize: 64,
@@ -71,9 +66,9 @@ const styles = StyleSheet.create({
     letterSpacing: -1,
   },
   image: {
-    width: screenWidth,
-    height: screenHeight * 0.35,
-    marginVertical: screenHeight * 0.03,
+    width: screenWidth * 0.9,
+    height: screenHeight * 0.25,
+    marginVertical: screenHeight * 0.01,
   },
   genericText: {
     width: screenWidth * 0.75,
@@ -83,33 +78,28 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "black"
   },
-  bottomLoginText: {
-    color: 'black',
-    fontWeight: '300',
-    fontSize: 18,
-  },
   footerText: {
-      fontSize: 18,
-      marginTop: 10,
-      color: '#000',
-      textAlign: 'center',
+    fontSize: 18,
+    marginTop: 10,
+    color: '#000',
+    textAlign: 'center',
   },
   linkText: {
-      color: '#0060ff',
-      fontWeight: '600',
-      fontSize: 18,
+    color: '#0060ff',
+    fontWeight: '600',
+    fontSize: 18,
   },
   filledButton: {
-      width: 300,
-      marginTop: 10,
-      paddingVertical: 10,
-      borderColor: 'transparent',
-      backgroundColor: '#0060ff',
-      borderRadius: 10,
+    width: 300,
+    marginTop: 10,
+    paddingVertical: 10,
+    borderColor: 'transparent',
+    backgroundColor: '#0060ff',
+    borderRadius: 10,
   },
   filledButtonText: {
-      color: 'white',
-      fontWeight: '600',
-      fontSize: 18,
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 18,
   },
-});
+  });

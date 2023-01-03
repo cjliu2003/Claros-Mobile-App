@@ -4,10 +4,7 @@ import { StyleSheet } from 'react-native';
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { UserContextProvider } from "./contexts/userContext";
-import WelcomeScreen from "./screens/WelcomeScreen";
-import LoginScreen from "./screens/LoginScreen";
-import CreateAccountScreen from "./screens/CreateAccountScreen";
-import ChatScreen from "./screens/ChatScreen";
+import { Welcome, Login, CreateAccount, Home, Chat } from "./screens";
 
 
 const Stack = createStackNavigator();
@@ -31,19 +28,16 @@ export default function App() {
   return (
     <UserContextProvider>
       <NavigationContainer theme={myTheme}>
-        <Stack.Navigator initialRouteName="Create Account" screensOptions={globalScreenOptions}>
-          <Stack.Screen style={styles.font} name='Welcome' component={WelcomeScreen} options={{ headerShown: false }} />
-          <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }}/>
-          <Stack.Screen name='Create Account' component={CreateAccountScreen} options={{ headerShown: false }}/>
-           <Stack.Screen name='Chat' component={ChatScreen} options={{ headerShown: false }}/>
+        <Stack.Navigator initialRouteName="Welcome" screensOptions={globalScreenOptions}>
+          <Stack.Screen style={styles.font} name='Welcome' component={Welcome} options={{ headerShown: false }} />
+          <Stack.Screen name='Login' component={Login} options={{ headerShown: false }}/>
+          <Stack.Screen name='Create Account' component={CreateAccount} options={{ headerShown: false }}/>
+          {/* <Stack.Screen name='Chat' component={Chat} options={{ headerShown: false }}/> */}
+          <Stack.Screen name='Home' component={Home} options={{ headerShown: false }}/>
         </Stack.Navigator>
       </NavigationContainer>
     </UserContextProvider>
   );
 }
 
-const styles = StyleSheet.create({
-  font: {
-    fontFamily: 'Manrope'
-  }
-});
+const styles = StyleSheet.create({});

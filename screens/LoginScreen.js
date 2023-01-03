@@ -28,7 +28,7 @@ const LoginScreen = ( { navigation }) => {
   }, []);
   
   
-  const {user, signInUserEmail, signInError, recentSignIn, setRecentSignIn} = useUserContext()
+  const {user, signInUserEmail, signInError, setRecentSignIn} = useUserContext()
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -43,8 +43,8 @@ const LoginScreen = ( { navigation }) => {
   }
 
   useLayoutEffect(() => {
-    if (user && recentSignIn) navigation.replace("Chat")
-  }, [user, recentSignIn])
+    if (user) navigation.replace("Home")
+  }, [user])
 
 
   return (
