@@ -1,11 +1,15 @@
 import { Dimensions, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import { useUserContext } from '../contexts/userContext';
 
 // Get the current screen width and height
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-const HomeScreen = () => {
+const HomeScreen = ({navigation}) => {
+  const {user, logoutUser} = useUserContext()
+  logoutUser()
+  if (!user) navigation.navigate("Home")
   return (
     <View>
       <Text style={styles.brandText}>Claros</Text>

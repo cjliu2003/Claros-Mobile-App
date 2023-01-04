@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { UserContextProvider } from "./contexts/userContext";
-import { Welcome, Login, CreateAccount, Home, Chat } from "./screens";
+import { Welcome, Login, CreateAccount, Home, Chat, Email } from "./screens";
 
 
 const Stack = createStackNavigator();
@@ -34,6 +34,7 @@ export default function App() {
           <Stack.Screen name='Create Account' component={CreateAccount} options={{ headerShown: false }}/>
           {/* <Stack.Screen name='Chat' component={Chat} options={{ headerShown: false }}/> */}
           <Stack.Screen name='Home' component={Home} options={{ headerShown: false }}/>
+          <Stack.Screen name='Email' component={Email} options={{ headerShown: true }} />
         </Stack.Navigator>
       </NavigationContainer>
     </UserContextProvider>

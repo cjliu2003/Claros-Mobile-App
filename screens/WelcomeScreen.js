@@ -1,6 +1,6 @@
 // Welcome screen provides user with option to login in or create an account. It's the top of the navigation stack.
 
-import { StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Dimensions, TouchableOpacity, Vibration } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import { Button, Image } from "@rneui/base"
@@ -26,21 +26,19 @@ const WelcomeScreen = ({ navigation }) => {
     };
   }, []);
   
+  const handleEmailButtonClick = () => {
+    Vibration.vibrate([0, 250])
+    navigation.navigate('Email')
+  }
   return (
     <View style={styles.container}>
       <Text style={[styles.brandText, {marginTop: screenHeight * 0.1}]}>Claros</Text>
 
       <Image source={require('../assets/claros__hero-performance.png')} style={styles.image} />
       <Text style={styles.genericText}>The world's most powerful sports betting assistant</Text>
-      <Button style={[styles.filledButton ]} type="transparent" title="Login" onPress={() => navigation.navigate('Create Account')}>
-        <Text style={styles.filledButtonText}>Get Started</Text>
+      <Button style={[styles.filledButton ]} type="transparent" title="Login" onPress={() => handleEmailButtonClick()}>
+        <Text style={styles.filledButtonText}>Continue</Text>
       </Button>
-      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-        <Text style={styles.footerText}>
-          Already have an account?{' '}
-          <Text style={styles.linkText}>Sign In</Text>
-        </Text>
-      </TouchableOpacity>
       <StatusBar style='light' />
     </View>
   );
@@ -74,7 +72,7 @@ const styles = StyleSheet.create({
     width: screenWidth * 0.75,
     fontSize: 30,
     fontWeight: "600",
-    marginVertical: screenHeight * 0.02,
+    marginVertical: screenHeight * 0.05,
     textAlign: "center",
     color: "black"
   },
@@ -90,12 +88,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   filledButton: {
-    width: 300,
+    width: screenWidth * 0.75,
+    alignItems: 'center',
+    justifyContent: 'center',
     marginTop: 10,
     paddingVertical: 10,
     borderColor: 'transparent',
     backgroundColor: '#0060ff',
-    borderRadius: 10,
+    borderRadius: 50,
   },
   filledButtonText: {
     color: 'white',

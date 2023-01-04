@@ -7,10 +7,9 @@
 import { createContext, useContext, useState, useEffect} from "react";
 import { auth } from "../firebase";
 import { firestore } from "../firebase";
-import { createUserWithEmailAndPassword, updateProfile, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, updateEmail} from "@firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, updateEmail, fetchSignInMethodsForEmail} from "@firebase/auth";
 import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 import { REACT_APP_STRIPE_PREMIUM_WEEKLY1, REACT_APP_STRIPE_PREMIUM_MONTHLY1, REACT_APP_STRIPE_PREMIUM_WEEKLY2, REACT_APP_STRIPE_PREMIUM_MONTHLY2 } from '@env'
-import { findTodaysLines } from "../functions/lines/findTodaysLines";
 import { Alert } from "react-native";
 
 const UserContext = createContext({});
@@ -42,7 +41,7 @@ export const UserContextProvider = ({ children }) => {
     const [betHistory, setBetHistory] = useState([]);
     // The change state is used to trigger updates to the customer state
     const [change, setChange] = useState(false);
-
+    
     // Sets the user information whenever the auth state changes
     useEffect(() => {
       setLoading(true)
@@ -61,6 +60,18 @@ export const UserContextProvider = ({ children }) => {
         findData(user)
     }
 
+    const isAuthenticatedEmail = async(email) => {
+        try {
+            const result = await fetchSignInMethodsForEmail(auth, email);
+            return result.length > 0
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    };
+      
+      
+      
     // Sets customer data whenever a user state changes
     useEffect(() => {
         if (user) {
@@ -319,6 +330,7 @@ export const UserContextProvider = ({ children }) => {
         recentSignIn, setRecentSignIn,
         historicalBetslip,
         betHistory,
+        isAuthenticatedEmail
     };
     
     return (
