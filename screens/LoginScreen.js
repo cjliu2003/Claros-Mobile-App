@@ -7,25 +7,25 @@ import { useUserContext } from '../contexts/userContext';
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-const LoginScreen = ({navigation}) => {
+const LoginScreen = ( {navigation} ) => {
     const {user, authEmail, signInUserEmail, signInError} = useUserContext()
     const [password, setPassword] = useState("")
 
     useLayoutEffect(() => {
-        navigation.setOptions({
-            title: "",
-            headerStyle: {
-                borderBottomWidth: 0,
-                borderColor: 'transparent',
-                shadowOpacity: 0,
-            },
-            headerLeft: () => (
-                <TouchableOpacity style={styles.headerLeft} onPress={() => navigation.goBack()}>
-                    <Ionicons name="ios-arrow-back" size={35} />
-                </TouchableOpacity>
-            ),
-        });
-    }, [])
+      navigation.setOptions({
+          title: "",
+          headerStyle: {
+              borderBottomWidth: 0,
+              borderColor: 'transparent',
+              shadowOpacity: 0,
+          },
+          headerLeft: () => (
+              <TouchableOpacity style={styles.headerLeft} onPress={() => navigation.goBack()}>
+                  <Ionicons name="ios-arrow-back" size={35} />
+              </TouchableOpacity>
+          ),
+      });
+  }, [])
 
     useEffect(() => {
       if (user) navigation.navigate("Home")
@@ -49,7 +49,7 @@ const LoginScreen = ({navigation}) => {
   return (
     <View style={{flex: 1}}>
         <View style={styles.container}>
-            <Text style={styles.largeBoldText}>Welcome back! What's your password?</Text>
+            <Text style={styles.largeBoldText}>Welcome Back! What's your password?</Text>
             <TextInput
                 style={styles.input}
                 placeholder="Password"

@@ -256,17 +256,11 @@ export const UserContextProvider = ({ children }) => {
         }, {merge: true});
     }
 
-    const registerUser = (email, password, name) => {
+    const registerUser = (email, password) => {
         // Set the global loading state to true
         setLoading(true)
         // Attempt to create a new user with the provided email and password
         createUserWithEmailAndPassword(auth, email, password)
-        // If the user is successfully created, update their display name
-        .then(() => {
-            return updateProfile(auth.currentUser, {
-                displayName: name,
-            });
-        })
         // Log the result of the display name update
         .then((res) => console.log(res))
         // Write the user's phone number to the database and initialize their user data

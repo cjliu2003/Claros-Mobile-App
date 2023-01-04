@@ -32,9 +32,10 @@ const EmailEntry = ( {navigation}) => {
         if (!email || email === "" || !email.includes('@')) {
             Alert.alert('Error', 'Please enter in a valid email', [{text: 'Ok'}])
         } else {
+            setAuthEmail(email)
             const isAuthenticated = await isAuthenticatedEmail(email);
             if (isAuthenticated) {
-                setAuthEmail(email)
+                console.log(email)
                 navigation.navigate('Login');
             } else {
                 navigation.navigate('Create Account');
