@@ -41,6 +41,7 @@ export const UserContextProvider = ({ children }) => {
     const [betHistory, setBetHistory] = useState([]);
     // The change state is used to trigger updates to the customer state
     const [change, setChange] = useState(false);
+    const [authEmail, setAuthEmail] = useState("");
     
     // Sets the user information whenever the auth state changes
     useEffect(() => {
@@ -330,7 +331,8 @@ export const UserContextProvider = ({ children }) => {
         recentSignIn, setRecentSignIn,
         historicalBetslip,
         betHistory,
-        isAuthenticatedEmail
+        isAuthenticatedEmail,
+        authEmail, setAuthEmail
     };
     
     return (

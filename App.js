@@ -30,7 +30,7 @@ export default function App() {
       <NavigationContainer theme={myTheme}>
         <Stack.Navigator initialRouteName="Welcome" screensOptions={globalScreenOptions}>
           <Stack.Screen style={styles.font} name='Welcome' component={Welcome} options={{ headerShown: false }} />
-          <Stack.Screen name='Login' component={Login} options={{ headerShown: false }}/>
+          <Stack.Screen name='Login' component={Login} options={{ headerShown: true }}/>
           <Stack.Screen name='Create Account' component={CreateAccount} options={{ headerShown: false }}/>
           {/* <Stack.Screen name='Chat' component={Chat} options={{ headerShown: false }}/> */}
           <Stack.Screen name='Home' component={Home} options={{ headerShown: false }}/>

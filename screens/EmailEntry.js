@@ -1,4 +1,4 @@
-import { Alert, Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Alert, Dimensions, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, Vibration, View } from 'react-native'
 import React, { useLayoutEffect, useState } from 'react'
 import {Ionicons} from '@expo/vector-icons'
 import { Button } from '@rneui/base';
@@ -8,7 +8,7 @@ const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 const EmailEntry = ( {navigation}) => {
-    const {logoutUser, isAuthenticatedEmail} = useUserContext()
+    const {setAuthEmail, isAuthenticatedEmail} = useUserContext()
     const [email, setEmail] = useState("")
 
     useLayoutEffect(() => {
@@ -27,16 +27,14 @@ const EmailEntry = ( {navigation}) => {
         });
     }, [])
 
-    logoutUser()
-
-
-
     const handleContinueClick = async () => {
+        Vibration.vibrate(0, 500)
         if (!email || email === "" || !email.includes('@')) {
             Alert.alert('Error', 'Please enter in a valid email', [{text: 'Ok'}])
         } else {
             const isAuthenticated = await isAuthenticatedEmail(email);
             if (isAuthenticated) {
+                setAuthEmail(email)
                 navigation.navigate('Login');
             } else {
                 navigation.navigate('Create Account');
@@ -45,21 +43,25 @@ const EmailEntry = ( {navigation}) => {
     };
     
   return (
-    <View style={styles.container}>
-      <Text style={styles.largeBoldText}>What's your email?</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        placeholderTextColor={ 'black' }
-        paddingHorizontal = { screenWidth * 0.05 }
-        type="Email"
-        fontSize= { 16 }
-        value={email}
-        onChangeText={(text) => setEmail(text)} 
-        />
-    <Button style={[styles.filledButton ]} type="transparent" onPress={() => handleContinueClick()}>
-        <Text style={styles.filledButtonText}>Continue</Text>
-    </Button>
+    <View style={{flex: 1}}>
+        <View style={styles.container}>
+            <Text style={styles.largeBoldText}>What's your email?</Text>
+            <TextInput
+                style={styles.input}
+                placeholder="Email"
+                placeholderTextColor={ 'black' }
+                paddingHorizontal = { screenWidth * 0.05 }
+                type="Email"
+                fontSize= { 16 }
+                value={email}
+                onChangeText={(text) => setEmail(text)} 
+                />
+        </View>
+    <KeyboardAvoidingView behavior="position" keyboardVerticalOffset={125}>
+        <Button style={[styles.filledButton ]} type="transparent" onPress={() => handleContinueClick()}>
+            <Text style={styles.filledButtonText}>Continue</Text>
+        </Button>
+    </KeyboardAvoidingView>
     </View>
   )
 }
@@ -69,7 +71,7 @@ export default EmailEntry
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        height: screenHeight * 0.75,
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: "flex-start",
@@ -82,6 +84,7 @@ const styles = StyleSheet.create({
         borderColor: 'transparent',
         backgroundColor: 'black',
         borderRadius: 50,
+        alignSelf: 'center',
     },
     filledButtonText: {
         color: 'white',
