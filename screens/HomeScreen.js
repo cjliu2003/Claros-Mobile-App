@@ -10,6 +10,7 @@ const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 const HomeScreen = ({navigation}) => {
+
   // const {user, logoutUser} = useUserContext()
   // useEffect(() => {
   //   if (!user) navigation.navigate("Welcome")
@@ -93,6 +94,72 @@ const HomeScreen = ({navigation}) => {
 }
 
 export default HomeScreen
+const modalStyles = StyleSheet.create({
+  image: {
+    height: 50,
+    width: 50,
+  },
+  popupCloseBtn: {
+    alignSelf: 'flex-end',
+  },
+  popupCloseBtnText: {
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  popupContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    backgroundColor: '#ffffff',
+    paddingHorizontal: screenWidth * 0.05,
+    paddingVertical: screenHeight * .06
+  },
+  filledButton: {
+    width: screenWidth * 0.75,
+    marginTop: 10,
+    paddingVertical: 24,
+    backgroundColor: 'black',
+    borderRadius: 50,
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  filledButtonText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 18,
+  },
+  popupHeader: {
+    fontSize: 40,
+    fontWeight: '800',
+    textAlign: 'center',
+    letterSpacing: -1.5,
+    color: '#0060ff',
+    marginTop: screenHeight * 0.02,
+    marginBottom: screenHeight * 0.02,
+  },
+  popupSubheader: {
+    fontSize: 20,
+    fontWeight: '300',
+    textAlign: 'center',
+    letterSpacing: -.5,
+    color: 'black',
+    marginTop: screenHeight * 0.005,
+    marginBottom: screenHeight * 0.05,
+  },
+  listItem: {
+    flexDirection: 'row', 
+    alignSelf: 'flex-start',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: screenHeight * 0.01,
+  },
+  listItemText: {
+    fontWeight: '500',
+    fontSize: 16,
+    color: 'black',
+  }
+})
 
 const styles = StyleSheet.create({
   container: {
