@@ -37,30 +37,32 @@ const WelcomeScreen = ({ navigation }) => {
       <Image source={require('../assets/claros__hero-performance.png')} style={styles.image} />
       <Text style={styles.genericText}>The world's most powerful sports betting assistant</Text>
       <Button style={[styles.filledButton ]} type="transparent" title="Login" onPress={() => handleEmailButtonClick()}>
-        <Text style={styles.filledButtonText}>Continue</Text>
+        <Text style={styles.filledButtonText}>Get Started</Text>
       </Button>
       <StatusBar style='light' />
     </View>
   );
 };
 
-
 export default WelcomeScreen
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    height: screenHeight,
+    width: screenWidth,
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: "flex-start",
-    backgroundColor: '#ffffff',
+    justifyContent: 'flex-start',
+    backgroundColor: '#FFFFFF',
+    borderColor: 'black'
   },
   brandText: {
     fontSize: 64,
-    fontWeight: "800",
+    fontWeight: "900",
     marginTop: screenHeight * 0.05,
     marginBottom: screenHeight * 0.05,
-    color: "#0060ff",
+    color: "#0060FF",
     letterSpacing: -1,
   },
   image: {
@@ -95,8 +97,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderColor: 'transparent',
     backgroundColor: '#0060ff',
-    borderRadius: 50,
-  },
+    borderRadius: 12,
+    position: 'relative',
+    bottom: 0,
+  },  
   filledButtonText: {
     color: 'white',
     fontWeight: '600',
