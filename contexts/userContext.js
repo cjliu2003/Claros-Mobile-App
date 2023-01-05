@@ -135,6 +135,8 @@ export const UserContextProvider = ({ children }) => {
                     setSubscription(subscription)
                 }
             }
+        } else {
+            setSubscription("none")
         }
     }
 
@@ -289,7 +291,7 @@ export const UserContextProvider = ({ children }) => {
 
     const logoutUser = () => {
         signOut(auth);
-        setSubscription(null);
+        setSubscription("none");
     }
 
     const forgotPassword = (email) => {

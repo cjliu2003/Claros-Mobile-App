@@ -3,23 +3,33 @@ import React, { useEffect, useState, useRef } from 'react'
 import { useUserContext } from '../contexts/userContext';
 import Icon from 'react-native-vector-icons/Feather';
 import { getClass1LambdaResponse } from '../functions/NLP/fetchVulcan';
-import { searchResultContainer } from '../components/SearchResult';
+import SearchResultContainer from '../components/SearchResult';
+import CTAPopup from '../components/CTAPopup';
 
 // Get the current screen width and height
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 const HomeScreen = ({navigation}) => {
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
 
-  // const {user, logoutUser} = useUserContext()
-  // useEffect(() => {
-  //   if (!user) navigation.navigate("Welcome")
-  // }, [user])
+  const {user, logoutUser, subscription} = useUserContext()
+  useEffect(() => {
+    if (!user) navigation.navigate("Welcome")
+  }, [user])
 
-  // const signOut = () => {
-  //   logoutUser()
-  //   navigation.navigate("Welcome")
-  // }
+  useEffect(() => {
+    if (subscription === "none") {
+      setIsPopupVisible(true);
+    }
+  }, [subscription])
+  
+
+  const signOut = () => {
+    setIsPopupVisible(false)
+    logoutUser()
+    navigation.navigate("Welcome")
+  }
 
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const translateY = useRef(new Animated.Value(0)).current;
@@ -65,6 +75,8 @@ const HomeScreen = ({navigation}) => {
   }
   
   return (
+    <>      
+    <CTAPopup setIsPopupVisible={setIsPopupVisible} isPopupVisible={isPopupVisible}/>
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
         <Animated.View style={[styles.container, { transform: [{ translateY }] }]}>
@@ -86,80 +98,17 @@ const HomeScreen = ({navigation}) => {
               />
             </TouchableOpacity>
           </View>
-          { showSearchResults && <searchResultContainer line={data} /> }
+          { showSearchResults && <SearchResultContainer line={data} /> }
         </Animated.View>
+    <Text onPress={() => signOut()}>click me to sign out (this helps with testing if the popup will occur on different accounts)</Text>
       </View>
     </TouchableWithoutFeedback>
+    </>
+
   )
 }
 
 export default HomeScreen
-const modalStyles = StyleSheet.create({
-  image: {
-    height: 50,
-    width: 50,
-  },
-  popupCloseBtn: {
-    alignSelf: 'flex-end',
-  },
-  popupCloseBtnText: {
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  popupContainer: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    backgroundColor: '#ffffff',
-    paddingHorizontal: screenWidth * 0.05,
-    paddingVertical: screenHeight * .06
-  },
-  filledButton: {
-    width: screenWidth * 0.75,
-    marginTop: 10,
-    paddingVertical: 24,
-    backgroundColor: 'black',
-    borderRadius: 50,
-    alignSelf: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  filledButtonText: {
-    color: 'white',
-    fontWeight: '600',
-    fontSize: 18,
-  },
-  popupHeader: {
-    fontSize: 40,
-    fontWeight: '800',
-    textAlign: 'center',
-    letterSpacing: -1.5,
-    color: '#0060ff',
-    marginTop: screenHeight * 0.02,
-    marginBottom: screenHeight * 0.02,
-  },
-  popupSubheader: {
-    fontSize: 20,
-    fontWeight: '300',
-    textAlign: 'center',
-    letterSpacing: -.5,
-    color: 'black',
-    marginTop: screenHeight * 0.005,
-    marginBottom: screenHeight * 0.05,
-  },
-  listItem: {
-    flexDirection: 'row', 
-    alignSelf: 'flex-start',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: screenHeight * 0.01,
-  },
-  listItemText: {
-    fontWeight: '500',
-    fontSize: 16,
-    color: 'black',
-  }
-})
 
 const styles = StyleSheet.create({
   container: {

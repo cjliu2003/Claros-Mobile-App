@@ -14,8 +14,6 @@
     "@react-navigation/stack": "^6.3.10",
     "@rneui/base": "github:react-native-elements/react-native-elements#base",
     "@rneui/themed": "github:react-native-elements/react-native-elements#themed",
-    "@stripe/stripe-js": "^1.46.0",
-    "@stripe/stripe-react-native": "^0.22.1",
     "axios": "^1.2.2",
     "expo": "^47.0.0",
     "expo-notifications": "~0.17.0",

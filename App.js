@@ -27,14 +27,16 @@ const myTheme = {
 export default function App() {
   return (
     <UserContextProvider>
-        <Stack.Navigator initialRouteName="Home" screensOptions={globalScreenOptions}>
-          <Stack.Screen style={styles.font} name='Welcome' component={Welcome} options={{ headerShown: false }} />
-          <Stack.Screen name='Login' component={Login} options={{ headerShown: true }} />
-          <Stack.Screen name='Create Account' component={CreateAccount} options={{ headerShown: true }} />
-          <Stack.Screen name='Chat' component={Chat} options={{ headerShown: false }} />
-          <Stack.Screen name='Home' component={Home} options={{ headerShown: false } }/>
-          <Stack.Screen name='Email' component={Email} options={{ headerShown: true }} />
-        </Stack.Navigator>
+      <NavigationContainer>
+          <Stack.Navigator initialRouteName="Home" screensOptions={globalScreenOptions}>
+            <Stack.Screen style={styles.font} name='Welcome' component={Welcome} options={{ headerShown: false }} />
+            <Stack.Screen name='Login' component={Login} options={{ headerShown: true }} />
+            <Stack.Screen name='Create Account' component={CreateAccount} options={{ headerShown: true }} />
+            <Stack.Screen name='Chat' component={Chat} options={{ headerShown: false }} />
+            <Stack.Screen name='Home' component={Home} options={{ headerShown: false } }/>
+            <Stack.Screen name='Email' component={Email} options={{ headerShown: true }} />
+          </Stack.Navigator>
+        </NavigationContainer>
     </UserContextProvider>
   );
 }
