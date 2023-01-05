@@ -1,6 +1,5 @@
 import { Dimensions, Linking, Modal, StyleSheet, Text, TouchableOpacity, Vibration, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { useUserContext } from '../contexts/userContext';
+import React from 'react'
 import { Image } from '@rneui/base';
 import {AntDesign} from '@expo/vector-icons'
 
