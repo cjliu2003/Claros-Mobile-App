@@ -11,7 +11,7 @@ import { parseDate } from '../functions/parsing/parseDate'
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-const customListItem = ({line, idx}) => {
+export const customListItem = ({line, idx}) => {
   const [orientation, setOrientation] = useState(null);
 
   useEffect(() => {
@@ -54,8 +54,6 @@ const customListItem = ({line, idx}) => {
     </ListItem>
   )
 }
-
-export default customListItem
 
 const styles = StyleSheet.create({
   lineName: {

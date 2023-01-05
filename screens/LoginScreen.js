@@ -21,7 +21,7 @@ const LoginScreen = ( {navigation} ) => {
           },
           headerLeft: () => (
               <TouchableOpacity style={styles.headerLeft} onPress={() => navigation.goBack()}>
-                  <Ionicons name="ios-arrow-back" size={35} />
+                <Ionicons name="ios-arrow-back" size={35} />
               </TouchableOpacity>
           ),
       });
@@ -48,20 +48,20 @@ const LoginScreen = ( {navigation} ) => {
     
   return (
     <View style={{flex: 1}}>
-        <View style={styles.container}>
-            <Text style={styles.largeBoldText}>Welcome Back! What's your password?</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Password"
-                placeholderTextColor={ 'black' }
-                paddingHorizontal = { screenWidth * 0.05 }
-                type="password"
-                fontSize= { 16 }
-                value={password}
-                secureTextEntry='true'
-                onChangeText={(text) => setPassword(text)} 
-                />
-        </View>
+      <View style={styles.container}>
+        <Text style={styles.largeBoldText}>Welcome Back! What's your password?</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          placeholderTextColor={ 'black' }
+          paddingHorizontal = { screenWidth * 0.05 }
+          type="password"
+          fontSize= { 16 }
+          value={password}
+          secureTextEntry='true'
+          onChangeText={(text) => setPassword(text)} 
+          />
+      </View>
     <KeyboardAvoidingView behavior="position" keyboardVerticalOffset={125}>
         <Button style={[styles.filledButton ]} type="transparent" onPress={() => signIn()}>
             <Text style={styles.filledButtonText}>Sign In</Text>

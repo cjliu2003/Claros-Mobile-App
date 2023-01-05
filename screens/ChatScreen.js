@@ -82,7 +82,7 @@ const ChatScreen = ({ navigation }) => {
     );
 };
 
-export default ChatScreen
+export default ChatScreen;
 
 const styles = StyleSheet.create({
     container: {

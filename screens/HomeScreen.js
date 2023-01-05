@@ -1,80 +1,95 @@
-import { Dimensions, Linking, Modal, StyleSheet, Text, TouchableOpacity, Vibration, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { Dimensions, StyleSheet, View, Text, TouchableOpacity, TextInput, Keyboard, Animated, TouchableWithoutFeedback, Vibration } from 'react-native'
+import React, { useEffect, useState, useRef } from 'react'
 import { useUserContext } from '../contexts/userContext';
-import { Image } from '@rneui/base';
-import {AntDesign} from '@expo/vector-icons'
+import Icon from 'react-native-vector-icons/Feather';
+import { getClass1LambdaResponse } from '../functions/NLP/fetchVulcan';
+import { searchResultContainer } from '../components/SearchResult';
 
 // Get the current screen width and height
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 const HomeScreen = ({navigation}) => {
-  const {user, logoutUser, subscription} = useUserContext()
-  const [isPopupVisible, setIsPopupVisible] = useState(false)
-  const [isPaying, setIsPaying] = useState(false)
+
+  // const {user, logoutUser} = useUserContext()
+  // useEffect(() => {
+  //   if (!user) navigation.navigate("Welcome")
+  // }, [user])
+
+  // const signOut = () => {
+  //   logoutUser()
+  //   navigation.navigate("Welcome")
+  // }
+
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const translateY = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    if (!user && !isPaying) navigation.navigate("Welcome")
-  }, [user])
+    const keyboardShowListener = Keyboard.addListener('keyboardWillShow', (event) => {
+      setKeyboardHeight(event.endCoordinates.height);
+    });
+    const keyboardHideListener = Keyboard.addListener('keyboardWillHide', () => {
+      setKeyboardHeight(0);
+    });
 
-  const benefits = ["Unlimited search queries", "35+ Onshore and Offshore Sportsbooks", "NCAA, NBA, NFL, MLB, and NHL", "Access to future developments"]
+    return () => {
+      keyboardShowListener.remove();
+      keyboardHideListener.remove();
+    };
+  }, []);
 
-  useEffect(() => {
-    if (!subscription) setIsPopupVisible(true)
-  }, [subscription])
+  Animated.spring(translateY, {
+    toValue: -1/2 * keyboardHeight,
+    duration: 10,
+    bounciness: 10,
+    useNativeDriver: true,
+  }).start();
+
+  const inputRef = React.createRef();
+
+  const [data, setData] = useState(null);
+  const [showSearchResults, setShowSearchResults] = useState(null);
+  // Function handle search - only executable on non empty input - makes PGSQL fetch 
+  // & performs animation to display search query results.
+  const handleSearch = async () => {
+    if (inputRef.current === '') {
+      // TextInput is empty, do nothing
+      return;
+    }
   
-  const signOut = async() => {
-    await logoutUser()
-    navigation.navigate("Welcome")
+    Vibration.vibrate(0, 500);
+    // Perform search
+    const data = await getClass1LambdaResponse();
+    setData(data);
+    setShowSearchResults(true);
   }
-
-  const getAccess = () => {
-    setIsPaying(true)
-    Vibration.vibrate(0, 250)
-    Linking.openURL('https://www.claros.ai/pricing')
-  };
-
-  const handleCloseButton = () => {
-    setIsPaying(false)
-    setIsPopupVisible(false)
-  }
-
   
   return (
-    <View>
-      <Modal visible={isPopupVisible}>
-        <View style={{height: screenHeight * 0.9, justifyContent: 'space-between'}}>
-          <View style={modalStyles.popupContainer}>
-            <TouchableOpacity style={modalStyles.popupCloseBtn} onPress={handleCloseButton}>
-              <Text style={modalStyles.popupCloseBtnText}>Not Now</Text>
-            </TouchableOpacity>
-            <Image source={require('../assets/claros__bot__logo.png')} style={modalStyles.image}/>
-            <Text style={modalStyles.popupHeader}>Activiate Claros AI</Text>
-            <Text style={modalStyles.popupSubheader}>Upgrade your betting game with Claros!</Text>
-            {benefits.map((benefit, i) => {
-              return (
-                <View key={benefit + i} style={modalStyles.listItem}>
-                  <AntDesign style={{paddingRight: 8}} name="checkcircle" size={25} />
-                  <Text style={modalStyles.listItemText}>{benefit}</Text>
-                </View>
-              )
-            })}
-          </View>
-          <View>
-          </View>
-          <View>
-            <TouchableOpacity style={modalStyles.filledButton} onPress={getAccess}>
-              <Text style={modalStyles.filledButtonText}>Get Access</Text>
-            </TouchableOpacity>
-          </View>
-          
-        </View>
-      </Modal>
-
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
-        
+        <Animated.View style={[styles.container, { transform: [{ translateY }] }]}>
+          <Text style={styles.brandText}>Claros</Text>
+          <Text style={styles.callToActionText}>Find your next bet with Claros!</Text>
+          <View style={styles.searchBarContainer}>
+            <TextInput
+              ref={inputRef}
+              style={styles.searchInput}
+              placeholder="Search betting markets . . ."
+              placeholderTextColor="#00000060"
+              enablesReturnKeyAutomatically="true"
+            />
+            <TouchableOpacity style={[styles.searchButton, { marginLeft: 10 }]} onPress={() => handleSearch()}>
+              <Icon
+                name="corner-right-up"
+                size={28}
+                color="#FFFFFF"
+              />
+            </TouchableOpacity>
+          </View>
+          { showSearchResults && <searchResultContainer line={data} /> }
+        </Animated.View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   )
 }
 
@@ -149,6 +164,49 @@ const modalStyles = StyleSheet.create({
 const styles = StyleSheet.create({
   container: {
     flex: 1, 
-    alignItems: 'flex-start',
-  }
-})
+    alignItems: 'center', 
+    justifyContent: 'center',
+    backgroundColor: "#FFFFFF"
+  },
+  searchBarContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  brandText: {
+    fontSize: 84,
+    fontWeight: "800",
+    color: "#0060FF",
+    letterSpacing: 0,
+  },
+  callToActionText: {
+    fontSize: 22,
+    fontWeight: '200',
+    marginTop: 10,
+    marginBottom: 60,
+  },
+  searchInput: {
+    height: 60,
+    width: screenWidth * 0.65,
+    borderRadius: 11,
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingBottom: 0,
+    fontSize: 18,
+    fontWeight: "200",
+    color: "black",
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 2,
+    shadowOpacity: 0.25,
+    backgroundColor: '#FFFFFF',
+  },  
+  searchButton: {
+    width: 70,
+    height: 60,
+    borderRadius: 11,
+    backgroundColor: '#0060FF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
