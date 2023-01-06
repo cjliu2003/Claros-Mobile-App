@@ -74,9 +74,8 @@ const HomeScreen = ({navigation}) => {
     setShowSearchResults(true);
   }
   
-  return (
-    <>      
-    <CTAPopup setIsPopupVisible={setIsPopupVisible} isPopupVisible={isPopupVisible}/>
+  return (     
+    // <CTAPopup setIsPopupVisible={setIsPopupVisible} isPopupVisible={isPopupVisible}/>
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
         <Animated.View style={[styles.container, { transform: [{ translateY }] }]}>
@@ -98,13 +97,12 @@ const HomeScreen = ({navigation}) => {
               />
             </TouchableOpacity>
           </View>
-          { showSearchResults && <SearchResultContainer line={data} /> }
+          {/* { showSearchResults && <SearchResultContainer line={data} /> } */}
         </Animated.View>
-    <Text onPress={() => signOut()}>click me to sign out (this helps with testing if the popup will occur on different accounts)</Text>
+    {/* <Text onPress={() => signOut()}>click me to sign out (this helps with testing if the popup will occur on different accounts)</Text> */}
       </View>
     </TouchableWithoutFeedback>
-    </>
-
+  
   )
 }
 
@@ -124,7 +122,7 @@ const styles = StyleSheet.create({
   },
   brandText: {
     fontSize: 84,
-    fontWeight: "800",
+    fontWeight: "900",
     color: "#0060FF",
     letterSpacing: 0,
   },

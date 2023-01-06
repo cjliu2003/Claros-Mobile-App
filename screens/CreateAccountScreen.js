@@ -1,7 +1,7 @@
-import { Alert, Dimensions, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, Vibration, View } from 'react-native'
-import React, { useEffect, useLayoutEffect, useState } from 'react'
-import {Ionicons} from '@expo/vector-icons'
+import { Alert, Dimensions, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, Vibration, View, Animated, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import React, { useEffect, useLayoutEffect, useState, useRef } from 'react'
 import { Button } from '@rneui/base';
+import Icon from 'react-native-vector-icons/Feather';
 import { useUserContext } from '../contexts/userContext';
 import { validateCredentials } from '../functions/signup/validateCredentials';
 
@@ -19,68 +19,92 @@ const CreateAccountScreen = ({navigation}) => {
             borderBottomWidth: 0,
             borderColor: 'transparent',
             shadowOpacity: 0,
+            backgroundColor: "#0060FF"
         },
         headerLeft: () => (
-            <TouchableOpacity style={styles.headerLeft} onPress={() => navigation.goBack()}>
-                <Ionicons name="ios-arrow-back" size={35} />
-            </TouchableOpacity>
-        ),
+          <TouchableOpacity style={styles.headerLeft} onPress={() => navigation.goBack()}>
+              <Icon name="chevrons-left" size={28} color={"#FFFFFF"} />
+          </TouchableOpacity>
+      ),
       });
     }, [])
 
-  useEffect(() => {
-    if (user) navigation.navigate("Home")
-  }, [user])
+  // useEffect(() => {
+  //   if (user) navigation.navigate("Home")
+  // }, [user])
   
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const translateY = useRef(new Animated.Value(0)).current;
 
+  useEffect(() => {
+    const keyboardShowListener = Keyboard.addListener('keyboardWillShow', (event) => {
+      setKeyboardHeight(event.endCoordinates.height);
+    });
+    const keyboardHideListener = Keyboard.addListener('keyboardWillHide', () => {
+      setKeyboardHeight(0);
+    });
 
-const signUpUser = () => {
-  console.log(authEmail)
-  const validation = validateCredentials(authEmail, password, confirmPassword)
-  if (!validation) {
-    registerUser(authEmail, password)
-  } else {
-    Alert.alert("Sign In Error", validation, [{Text: 'Ok'}])
+    return () => {
+      keyboardShowListener.remove();
+      keyboardHideListener.remove();
+    };
+  }, []);
+
+  Animated.spring(translateY, {
+    toValue: -1/2 * keyboardHeight,
+    duration: 10,
+    bounciness: 10,
+    useNativeDriver: true,
+  }).start();
+
+  const signUpUser = () => {
+    console.log(authEmail)
+    const validation = validateCredentials(authEmail, password, confirmPassword)
+    if (!validation) {
+      registerUser(authEmail, password)
+    } else {
+      Alert.alert("Sign In Error", validation, [{Text: 'Ok'}])
+    }
   }
-}
 
-
-useEffect(() => {
-  if (user) navigation.navigate("Home")
-}, [user])
   return (
-    <View style={{flex: 1}}>
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
-          <Text style={styles.largeBoldText}>Set your password</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            placeholderTextColor={ 'black' }
-            paddingHorizontal = { screenWidth * 0.05 }
-            type="password"
-            fontSize= { 16 }
-            value={password}
-            secureTextEntry='true'
-            onChangeText={(text) => setPassword(text)} 
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Confirm Password"
-            placeholderTextColor={ 'black' }
-            paddingHorizontal = { screenWidth * 0.05 }
-            type="password"
-            fontSize= { 16 }
-            value={confirmPassword}
-            secureTextEntry='true'
-            onChangeText={(text) => setConfirmPassword(text)} 
-          />
+        <Animated.View style={[styles.container, { transform: [{ translateY }] }]}>
+        <Text style={styles.brandText}>P-word?</Text>
+          <Text style={styles.callToActionText}>Create account password to finish!</Text>
+          <View style={styles.searchBarContainer}>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Password"
+              placeholderTextColor="#00000060"
+              enablesReturnKeyAutomatically="true"
+              type="password"
+              value={password}
+              secureTextEntry='true'
+              onChangeText={(text) => setPassword(text)} 
+            />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Confirm Password"
+              placeholderTextColor="#00000060"
+              enablesReturnKeyAutomatically="true"
+              type="password"
+              value={confirmPassword}
+              secureTextEntry='true'
+              onChangeText={(text) => setConfirmPassword(text)} 
+            />
+            <TouchableOpacity style={[styles.searchButton, { marginLeft: 10 }]} onPress={() => signUpUser()}>
+              <Icon
+                name="chevrons-right"
+                size={28}
+                color="#0060FF"
+              />
+            </TouchableOpacity>
+          </View>
+        </Animated.View>
       </View>
-      <KeyboardAvoidingView behavior="position" keyboardVerticalOffset={125}>
-          <Button style={[styles.filledButton ]} type="transparent" onPress={() => signUpUser()}>
-              <Text style={styles.filledButtonText}>Sign In</Text>
-          </Button>
-      </KeyboardAvoidingView>
-    </View>
+    </TouchableWithoutFeedback>
   )
 }
 
@@ -88,39 +112,56 @@ export default CreateAccountScreen
 
 const styles = StyleSheet.create({
   container: {
-    height: screenHeight * 0.75,
-    flexDirection: 'column',
+    flex: 1, 
+    alignItems: 'center', 
+    justifyContent: 'center',
+    backgroundColor: "#0060FF"
+  },
+  searchBarContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: "flex-start",
-    backgroundColor: '#ffffff',
-    paddingHorizontal: 8
+    justifyContent: 'center',
   },
-  filledButton: {
-      width: screenWidth * 0.75,
-      marginTop: 10,
-      paddingVertical: 10,
-      borderColor: 'transparent',
-      backgroundColor: 'black',
-      borderRadius: 50,
-      alignSelf: 'center',
+  brandText: {
+    fontSize: 84,
+    fontWeight: "900",
+    color: "#FFFFFF",
+    letterSpacing: 0,
   },
-  filledButtonText: {
-      color: 'white',
-      fontWeight: '600',
-      fontSize: 18,
+  callToActionText: {
+    fontSize: 22,
+    fontWeight: '200',
+    color: "#FFFFFF",
+    marginTop: 10,
+    marginBottom: 60,
   },
-  input: {
-      height: screenHeight * 0.075,
-      width: screenWidth * 0.8,
-      borderColor: '#00000030',
-      borderWidth: 0.5,
-      borderRadius: 8,
-      marginVertical: screenHeight * 0.01,
-      padding: 10,
-      fontSize: 16,
+  searchInput: {
+    height: 60,
+    width: screenWidth * 0.325,
+    borderRadius: 11,
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingBottom: 0,
+    fontSize: 18,
+    fontWeight: "200",
+    marginLeft: 10,
+    color: "black",
+    shadowColor: '#FFFFFF',
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 5,
+    shadowOpacity: 0.75,
+    backgroundColor: '#FFFFFF',
+  },  
+  searchButton: {
+    width: 70,
+    height: 60,
+    borderRadius: 11,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   headerLeft: {
-      paddingLeft: 8,
+      marginLeft: 20,
   },
   largeBoldText: {
       fontSize: 40,
