@@ -10,7 +10,6 @@ const screenHeight = Dimensions.get('window').height;
 const CTAPopup = ({isPopupVisible, setIsPopupVisible}) => {
   const benefits = ["Unlimited search queries", "35+ Onshore and Offshore Sportsbooks", "NCAA, NBA, NFL, MLB, and NHL", "Access to future developments"]
   const getAccess = () => {
-    setIsPaying(true)
     Vibration.vibrate(0, 250)
     Linking.openURL('https://www.claros.ai/pricing')
   };
