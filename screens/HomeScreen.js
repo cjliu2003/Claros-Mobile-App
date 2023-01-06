@@ -218,9 +218,8 @@ const HomeScreen = ({navigation}) => {
     setShowSearchResults(true);
   }
   
-  return (
-    <>      
-    <CTAPopup setIsPopupVisible={setIsPopupVisible} isPopupVisible={isPopupVisible}/>
+  return (     
+    // <CTAPopup setIsPopupVisible={setIsPopupVisible} isPopupVisible={isPopupVisible}/>
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <ScrollView contentContainerStyle={[styles.container, {overflow: 'scroll'}]}>
         <Animated.View style={[styles.container, showSearchResults ? {justifyContent: 'flex-start'} : {justifyContent: 'center'}, { transform: [{ translateY }] }]}>

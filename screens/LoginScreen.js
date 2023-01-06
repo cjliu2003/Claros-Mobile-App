@@ -1,6 +1,7 @@
-import { Alert, Dimensions, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, Vibration, View } from 'react-native'
-import React, { useEffect, useLayoutEffect, useState } from 'react'
-import {Ionicons} from '@expo/vector-icons'
+import { Alert, Dimensions, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, Vibration, View, TouchableWithoutFeedback, Keyboard, Animated } from 'react-native'
+import React, { useEffect, useLayoutEffect, useState, useRef } from 'react'
+import Icon from 'react-native-vector-icons/Feather';
+
 import { Button } from '@rneui/base';
 import { useUserContext } from '../contexts/userContext';
 
@@ -8,66 +9,98 @@ const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 const LoginScreen = ( {navigation} ) => {
-    const {user, authEmail, signInUserEmail, signInError} = useUserContext()
-    const [password, setPassword] = useState("")
+  const {user, authEmail, signInUserEmail, signInError} = useUserContext()
+  const [password, setPassword] = useState("")
 
-    useLayoutEffect(() => {
-      navigation.setOptions({
-          title: "",
-          headerStyle: {
-              borderBottomWidth: 0,
-              borderColor: 'transparent',
-              shadowOpacity: 0,
-          },
-          headerLeft: () => (
-              <TouchableOpacity style={styles.headerLeft} onPress={() => navigation.goBack()}>
-                <Ionicons name="ios-arrow-back" size={35} />
-              </TouchableOpacity>
-          ),
-      });
+  useLayoutEffect(() => {
+    navigation.setOptions({
+        title: "",
+        headerStyle: {
+            borderBottomWidth: 0,
+            borderColor: 'transparent',
+            shadowOpacity: 0,
+            backgroundColor: "#0060FF"
+        },
+        headerLeft: () => (
+          <TouchableOpacity style={styles.headerLeft} onPress={() => navigation.goBack()}>
+            <Icon name="chevrons-left" size={28} color={"#FFFFFF"} />
+          </TouchableOpacity>
+        ),
+    });
   }, [])
 
-    useEffect(() => {
-      if (user) navigation.navigate("Home")
-    }, [user])
-    
-    const signIn = async () => {
-      Vibration.vibrate(0, 500)
-      try {
-        if (authEmail && password !== "") {
-          await signInUserEmail(authEmail, password)
-        } else {
-          Alert.alert("Sign In Error", "There was an error recognizing your email and password. Please double check that both are entered correctly.", [{Text: 'Ok'}])
-        }
-      } catch (error) {
-        console.error(error)
-        Alert.alert("Sign In Error", "There was an error signing in. Please try again.", [{Text: 'Ok'}])
+  // useEffect(() => {
+  //   if (user) navigation.navigate("Home")
+  // }, [user])
+  
+  const signIn = async () => {
+    Vibration.vibrate(0, 500)
+    try {
+      if (authEmail && password !== "") {
+        // signInUserEmail and navigate to Home
+        await signInUserEmail(authEmail, password)
+        navigation.navigate("Home");
+      } else {
+        Alert.alert("Sign In Error", "There was an error recognizing your email and password. Please double check that both are entered correctly.", [{Text: 'Ok'}])
       }
+    } catch (error) {
+      console.error(error)
+      Alert.alert("Sign In Error", "There was an error signing in. Please try again.", [{Text: 'Ok'}])
     }
-    
+  }
+
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const translateY = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const keyboardShowListener = Keyboard.addListener('keyboardWillShow', (event) => {
+      setKeyboardHeight(event.endCoordinates.height);
+    });
+    const keyboardHideListener = Keyboard.addListener('keyboardWillHide', () => {
+      setKeyboardHeight(0);
+    });
+
+    return () => {
+      keyboardShowListener.remove();
+      keyboardHideListener.remove();
+    };
+  }, []);
+
+  Animated.spring(translateY, {
+    toValue: -1/2 * keyboardHeight,
+    duration: 10,
+    bounciness: 10,
+    useNativeDriver: true,
+  }).start();
     
   return (
-    <View style={{flex: 1}}>
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
-        <Text style={styles.largeBoldText}>Welcome Back! What's your password?</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          placeholderTextColor={ 'black' }
-          paddingHorizontal = { screenWidth * 0.05 }
-          type="password"
-          fontSize= { 16 }
-          value={password}
-          secureTextEntry='true'
-          onChangeText={(text) => setPassword(text)} 
-          />
+        <Animated.View style={[styles.container, { transform: [{ translateY }] }]}>
+          <Text style={styles.brandText}>P-word?</Text>
+          <Text style={styles.callToActionText}>Welcome Back - Enter your password!</Text>
+          <View style={styles.searchBarContainer}>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Password"
+              placeholderTextColor="#00000060"
+              enablesReturnKeyAutomatically="true"
+              type="password"
+              value={password}
+              secureTextEntry='true'
+              onChangeText={(text) => setPassword(text)} 
+              />
+            <TouchableOpacity style={[styles.searchButton, { marginLeft: 10 }]} onPress={() => signIn()}>
+              <Icon
+                name="chevrons-right"
+                size={28}
+                color="#0060FF"
+              />
+            </TouchableOpacity>
+          </View>
+        </Animated.View>
       </View>
-    <KeyboardAvoidingView behavior="position" keyboardVerticalOffset={125}>
-        <Button style={[styles.filledButton ]} type="transparent" onPress={() => signIn()}>
-            <Text style={styles.filledButtonText}>Sign In</Text>
-        </Button>
-    </KeyboardAvoidingView>
-    </View>
+    </TouchableWithoutFeedback>
   )
 }
 
@@ -76,12 +109,52 @@ export default LoginScreen
 
 const styles = StyleSheet.create({
     container: {
-      height: screenHeight * 0.75,
-      flexDirection: 'column',
+      flex: 1, 
+      alignItems: 'center', 
+      justifyContent: 'center',
+      backgroundColor: "#0060FF"
+    },
+    searchBarContainer: {
+      flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: "flex-start",
-      backgroundColor: '#ffffff',
-      paddingHorizontal: 8
+      justifyContent: 'center',
+    },
+    brandText: {
+      fontSize: 72,
+      fontWeight: "900",
+      color: "#FFFFFF",
+      letterSpacing: 0,
+    },
+    callToActionText: {
+      fontSize: 22,
+      fontWeight: '200',
+      color: "#FFFFFF",
+      marginTop: 10,
+      marginBottom: 60,
+    },
+    searchInput: {
+      height: 60,
+      width: screenWidth * 0.65,
+      borderRadius: 11,
+      paddingLeft: 20,
+      paddingRight: 20,
+      paddingBottom: 0,
+      fontSize: 18,
+      fontWeight: "200",
+      color: "black",
+      shadowColor: '#FFFFFF',
+      shadowOffset: { width: 0, height: 0 },
+      shadowRadius: 5,
+      shadowOpacity: 0.75,
+      backgroundColor: '#FFFFFF',
+    },
+    searchButton: {
+      width: 70,
+      height: 60,
+      borderRadius: 11,
+      backgroundColor: '#FFFFFF',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     filledButton: {
         width: screenWidth * 0.75,
@@ -108,7 +181,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     headerLeft: {
-        paddingLeft: 8,
+        marginLeft: 20,
     },
     largeBoldText: {
         fontSize: 40,

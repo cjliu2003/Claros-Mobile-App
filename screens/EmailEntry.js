@@ -1,7 +1,7 @@
-import { Alert, Dimensions, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, Vibration, View } from 'react-native'
-import React, { useLayoutEffect, useState } from 'react'
-import {Ionicons} from '@expo/vector-icons'
+import { Alert, Dimensions, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, Vibration, View, Animated, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import React, { useLayoutEffect, useState, useRef, useEffect } from 'react'
 import { Button } from '@rneui/base';
+import Icon from 'react-native-vector-icons/Feather';
 import { useUserContext } from '../contexts/userContext';
 
 const screenWidth = Dimensions.get('window').width;
@@ -18,10 +18,11 @@ const EmailEntry = ( {navigation}) => {
                 borderBottomWidth: 0,
                 borderColor: 'transparent',
                 shadowOpacity: 0,
+                backgroundColor: "#0060FF"
             },
             headerLeft: () => (
                 <TouchableOpacity style={styles.headerLeft} onPress={() => navigation.goBack()}>
-                    <Ionicons name="ios-arrow-back" size={35} />
+                    <Icon name="chevrons-left" size={28} color={"#FFFFFF"} />
                 </TouchableOpacity>
             ),
         });
@@ -30,80 +31,126 @@ const EmailEntry = ( {navigation}) => {
     const handleContinueClick = async () => {
         Vibration.vibrate(0, 500)
         if (!email || email === "" || !email.includes('@')) {
-            Alert.alert('Error', 'Please enter in a valid email', [{text: 'Ok'}])
+            Alert.alert('Error', 'Please enter in a valid email', [{text: 'Retry'}])
         } else {
             setAuthEmail(email)
             const isAuthenticated = await isAuthenticatedEmail(email);
             if (isAuthenticated) {
-                console.log(email)
                 navigation.navigate('Login');
             } else {
                 navigation.navigate('Create Account');
             }
         }
     };
+
+    const [keyboardHeight, setKeyboardHeight] = useState(0);
+    const translateY = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        const keyboardShowListener = Keyboard.addListener('keyboardWillShow', (event) => {
+        setKeyboardHeight(event.endCoordinates.height);
+        });
+        const keyboardHideListener = Keyboard.addListener('keyboardWillHide', () => {
+        setKeyboardHeight(0);
+        });
+
+        return () => {
+        keyboardShowListener.remove();
+        keyboardHideListener.remove();
+        };
+    }, []);
+
+    Animated.spring(translateY, {
+        toValue: -1/2 * keyboardHeight,
+        duration: 10,
+        bounciness: 10,
+        useNativeDriver: true,
+    }).start();
     
   return (
-    <View style={{flex: 1}}>
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <View style={styles.container}>
-            <Text style={styles.largeBoldText}>What's your email?</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Email"
-                placeholderTextColor={ 'black' }
-                paddingHorizontal = { screenWidth * 0.05 }
-                type="Email"
-                fontSize= { 16 }
-                value={email}
-                onChangeText={(text) => setEmail(text)} 
-                />
+            <Animated.View style={[styles.container, { transform: [{ translateY }] }]}>
+                <Text style={styles.brandText}>Email?</Text>
+                <Text style={styles.callToActionText}>Enter your email to get started!</Text>
+                <View style={styles.searchBarContainer}>
+                    <TextInput
+                        style={styles.searchInput}
+                        placeholder="Email"
+                        type="Email"
+                        placeholderTextColor="#00000060"
+                        enablesReturnKeyAutomatically="true"
+                        value={email}
+                        onChangeText={(text) => setEmail(text)} 
+                        >
+                    </TextInput>
+                    <TouchableOpacity style={[styles.searchButton, { marginLeft: 10 }]} onPress={() => handleContinueClick()}>
+                        <Icon
+                            name="chevrons-right"
+                            size={28}
+                            color="#0060FF"
+                        />
+                    </TouchableOpacity>
+                </View>
+            </Animated.View>
         </View>
-    <KeyboardAvoidingView behavior="position" keyboardVerticalOffset={125}>
-        <Button style={[styles.filledButton ]} type="transparent" onPress={() => handleContinueClick()}>
-            <Text style={styles.filledButtonText}>Continue</Text>
-        </Button>
-    </KeyboardAvoidingView>
-    </View>
+    </TouchableWithoutFeedback>
   )
 }
-
 
 export default EmailEntry
 
 const styles = StyleSheet.create({
     container: {
-        height: screenHeight * 0.75,
-        flexDirection: 'column',
+        flex: 1, 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        backgroundColor: "#0060FF"
+    },
+    searchBarContainer: {
+        flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: "flex-start",
-        backgroundColor: '#ffffff',
+        justifyContent: 'center',
     },
-    filledButton: {
-        width: screenWidth * 0.75,
+    brandText: {
+        fontSize: 84,
+        fontWeight: "900",
+        color: "#FFFFFF",
+        letterSpacing: 0,
+    },
+    callToActionText: {
+        fontSize: 22,
+        fontWeight: '200',
+        color: "#FFFFFF",
         marginTop: 10,
-        paddingVertical: 10,
-        borderColor: 'transparent',
-        backgroundColor: 'black',
-        borderRadius: 50,
-        alignSelf: 'center',
+        marginBottom: 60,
     },
-    filledButtonText: {
-        color: 'white',
-        fontWeight: '600',
+    searchInput: {
+        height: 60,
+        width: screenWidth * 0.65,
+        borderRadius: 11,
+        paddingLeft: 20,
+        paddingRight: 20,
+        paddingBottom: 0,
         fontSize: 18,
+        fontWeight: "200",
+        color: "black",
+        shadowColor: '#FFFFFF',
+        shadowOffset: { width: 0, height: 0 },
+        shadowRadius: 5,
+        shadowOpacity: 0.75,
+        backgroundColor: '#FFFFFF',
     },
-    input: {
-        height: screenHeight * 0.075,
-        width: screenWidth * 0.8,
-        borderColor: '#00000030',
-        borderWidth: 0.5,
-        borderRadius: 8,
-        marginBottom: screenHeight * .1,
-        padding: 10,
-        fontSize: 16,
+    searchButton: {
+        width: 70,
+        height: 60,
+        borderRadius: 11,
+        backgroundColor: '#FFFFFF',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     headerLeft: {
-        paddingLeft: 8,
+        marginLeft: 20,
     },
     largeBoldText: {
         fontSize: 40,
