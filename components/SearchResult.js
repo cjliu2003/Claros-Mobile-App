@@ -17,6 +17,10 @@ const colorMap = {
   A: {
     BG: "#35a83225",
     TXT: "#35a832",
+  },
+  F: {
+    BG: "#FF000025",
+    TXT: "#FF0000",
   }
 }
 
@@ -25,16 +29,17 @@ const SearchResultContainer = ({line}) => {
   const handleCardClick = () => {
     setFeaturedLine(line.id)
   }
+  
   return (
     <>
     {line &&
       <TouchableOpacity onPress={() => handleCardClick()}style={styles.cardContainer}>
-        {/* <Text style={styles.lineTitle}>{parseName(line.league_name, line[findSide(line.home_ev, line.away_ev) + "_team_name"], line.market, line[findSide(line.home_ev, line.away_ev) + "_point"])}</Text> */}
-        {/* <Text style={styles.lineDestination}>{parseDate(line.commence_time)}</Text> */}
+        <Text style={styles.lineTitle}>{parseName(line.league_name, line[findSide(line.home_ev, line.away_ev) + "_team_name"], line.market, line[findSide(line.home_ev, line.away_ev) + "_point"])}</Text>
+        <Text style={styles.lineDate}>{parseDate(line.commence_time)}</Text>
         <View style={styles.cardRow}>
           <View style={{justifyContent: 'center', alignItems: 'center'}}>
-            {/* <Image style={styles.cardBookLogo} source={Sportsbooks[line.bookmaker].logo}/> */}
-            {/* <Text style={styles.cardBookLabel}>{Sportsbooks[line.bookmaker].name}</Text> */}
+            <Image style={styles.cardBookLogo} source={line.bookmaker in Sportsbooks && Sportsbooks[line.bookmaker].logo}/> 
+            <Text style={styles.cardBookLabel}>{Sportsbooks[line.bookmaker].name}</Text>
           </View>
           <Text style={styles.lineOdds}>{parseOdds(line[findSide(line.home_ev, line.away_ev) + "_odds"])}</Text>
         </View>
@@ -43,9 +48,9 @@ const SearchResultContainer = ({line}) => {
           <AntDesign name="Trophy" size={20} color="black" />
           <Text style={styles.lineTeamName}>{line.home_team_name}</Text>
         </View>
-        <View style={[{backgroundColor: colorMap.A.BG, padding: 10, marginTop: screenHeight * 0.02, borderRadius: 5}, styles.cardRow]}>
-          <Text style={{color: colorMap.A.TXT}}>A Rating </Text>
-          <Text style={{color: colorMap.A.TXT}}>+ 2.5% fair value</Text>
+        <View style={[{backgroundColor: line.max_ev > 0 ? colorMap.A.BG : colorMap.F.BG, padding: 10, marginTop: screenHeight * 0.02, borderRadius: 5}, styles.cardRow]}>
+          <Text style={{color: line.max_ev > 0 ? colorMap.A.TXT : colorMap.F.TXT}}>{line.max_ev > 0 ? "A" : "F"} Rating </Text>
+          <Text style={{color: line.max_ev > 0 ? colorMap.A.TXT : colorMap.F.TXT}}>{line.max_ev > 0 && "+" }{(line.max_ev).toFixed(2)}% Fair Value</Text>
         </View>
     </TouchableOpacity>
     }
@@ -62,12 +67,12 @@ export default SearchResultContainer;
 const styles = StyleSheet.create({
   cardContainer: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 11,
-    shadowColor: '#000000',
+    borderRadius: 5,
+    shadowColor: '#00000050',
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.50,
-    shadowRadius: 2,
-    marginVertical: screenHeight * 0.02,
+    shadowRadius: 5,
+    marginVertical: screenHeight * 0.015,
     padding: 15,
     width: screenWidth * 0.9,
   },
@@ -94,9 +99,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
     color: '#000000',
-    alignSelf: 'center'
+    alignSelf: 'center',
+    textAlign: 'center',
   },
-  lineDestination: {
+  lineDate: {
     fontSize: 16,
     color: '#999',
     marginTop: 5,
@@ -108,5 +114,5 @@ const styles = StyleSheet.create({
     color: "#000000",
     maxWidth: screenWidth * 0.40,
     textAlign: 'center',
-  }
+  },
 });

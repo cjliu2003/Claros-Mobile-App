@@ -38,21 +38,6 @@ const HomeScreen = ({navigation}) => {
     navigation.navigate("Welcome")
   }
 
-  // const enlargeText = () => {
-  //   Animated.timing(scaleSize, {
-  //     toValue: 1,  // animate to just below the top of the screen
-  //     duration: 400,
-  //     useNativeDriver: true,
-  //   }).start();
-  // }
-  
-  // const shrinkText = () => {
-  //   Animated.timing(scaleSize, {
-  //     toValue: 0.6,  // animate to just below the top of the screen
-  //     duration: 400,
-  //     useNativeDriver: true,
-  //   }).start();
-  // }
   
   useEffect(() => {
     const keyboardShowListener = Keyboard.addListener('keyboardWillShow', (event) => {
@@ -117,11 +102,11 @@ const HomeScreen = ({navigation}) => {
             </View>
             </>
           : <>
-            <View style={styles.searchBarContainer}>
+           <View style={[styles.searchBarContainer, {marginBottom: 20}]}>
               <TextInput
                 style={styles.newSearchInput}
                 placeholder="Search betting markets . . ."
-                placeholderTextColor="#00000060"
+                placeholderTextColor="#00000090"
                 enablesReturnKeyAutomatically="true"
                 onChangeText={(text) => setSearchQuery(text)}
               />
@@ -133,9 +118,9 @@ const HomeScreen = ({navigation}) => {
                 />
               </TouchableOpacity>
             </View>
-            {data.map(line => {
+            {data && data.map(line => {
               return (
-                <SearchResultContainer line={line}/>
+                <SearchResultContainer key={line.id} line={line}/>
               )
             })}
             {/* <SearchResultContainer line={data[1]}/> */}
@@ -179,9 +164,7 @@ const styles = StyleSheet.create({
     height: 60,
     width: screenWidth * 0.65,
     borderRadius: 11,
-    paddingLeft: 20,
-    paddingRight: 20,
-    paddingBottom: 0,
+    paddingHorizontal: 20,
     fontSize: 18,
     fontWeight: "200",
     color: "black",
@@ -202,7 +185,7 @@ const styles = StyleSheet.create({
   newSearchInput: {
     height: 40,
     width: screenWidth * 0.65,
-    borderRadius: 11,
+    borderRadius: 5,
     paddingLeft: 15,
     fontSize: 14,
     fontWeight: "200",
@@ -216,7 +199,7 @@ const styles = StyleSheet.create({
   newSearchButton: {
     width: 70,
     height: 40,
-    borderRadius: 11,
+    borderRadius: 5,
     backgroundColor: '#0060FF',
     alignItems: 'center',
     justifyContent: 'center',

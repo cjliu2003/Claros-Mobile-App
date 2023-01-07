@@ -8,6 +8,6 @@ export const parseName = (league, team, market, point) => {
     } else if (parsedMarket === "Spreads") {
         return league + ": " + team + " " + parsePoint(point) + " " + "Spread"
     } else {
-        return league + ": " + team
+        return league + ": " + team + " " + parsePoint(point) + " Total"
     }
 } 
