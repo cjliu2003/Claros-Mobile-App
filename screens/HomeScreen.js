@@ -2,7 +2,8 @@ import { Dimensions, StyleSheet, View, ScrollView, Text, TouchableOpacity, TextI
 import React, { useEffect, useState, useRef } from 'react'
 import { useUserContext } from '../contexts/userContext';
 import Icon from 'react-native-vector-icons/Feather';
-import { getClass1LambdaResponse } from '../functions/NLP/fetchVulcan';
+import { getSearchLambdaResponse } from '../functions/search/fetchVulcan';
+import { searchIndex } from '../functions/search/processQueries';
 import SearchResultContainer from '../components/SearchResult';
 import CTAPopup from '../components/CTAPopup';
 
@@ -10,135 +11,13 @@ import CTAPopup from '../components/CTAPopup';
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-
-const dummyData = [{
-  "away_ev": -6.05126217788798,
-  "away_odds": -475,
-  "away_point": null,
-  "away_team_name": "Kansas City Chiefs",
-  "bookmaker": "mybookieag",
-  "commence_time": "2023-01-07T21:30:00Z",
-  "draw_ev": null,
-  "draw_odds": null,
-  "draw_point": null,
-  "event_id": "3c35f8beasdfads149e825f208036e6a7cef8",
-  "home_ev": 7.47283089666891,
-  "home_odds": 380,
-  "home_point": null,
-  "home_team_name": "Las Vegas Raiders",
-  "id": 182161517,
-  "league_name": "NFL",
-  "market": "h2h",
-  "max_ev": 7.47283089666891
-},
-{
-  "away_ev": -6.05126217788798,
-  "away_odds": -475,
-  "away_point": null,
-  "away_team_name": "Boston Celtics",
-  "bookmaker": "betonlineag",
-  "commence_time": "2023-01-07T21:30:00Z",
-  "draw_ev": null,
-  "draw_odds": null,
-  "draw_point": null,
-  "event_id": "3c35f8beae149e82asdf208036e6a7cef8",
-  "home_ev": 7.47283089666891,
-  "home_odds": 380,
-  "home_point": null,
-  "home_team_name": "Miami Heat",
-  "id": 182576117,
-  "league_name": "NBA",
-  "market": "h2h",
-  "max_ev": 7.47283089666891
-},
-{
-  "away_ev": -6.05126217788798,
-  "away_odds": -475,
-  "away_point": null,
-  "away_team_name": "Boston Celtics",
-  "bookmaker": "bovada",
-  "commence_time": "2023-01-07T21:30:00Z",
-  "draw_ev": null,
-  "draw_odds": null,
-  "draw_point": null,
-  "event_id": "3c35f8beae149e825f208036e6a7cef8",
-  "home_ev": 7.47283089666891,
-  "home_odds": 380,
-  "home_point": null,
-  "home_team_name": "Miami Heat",
-  "id": 1825161717,
-  "league_name": "NBA",
-  "market": "h2h",
-  "max_ev": 7.47283089666891
-},
-{
-  "away_ev": -6.05126217788798,
-  "away_odds": -475,
-  "away_point": null,
-  "away_team_name": "Kansas City Chiefs",
-  "bookmaker": "mybookieag",
-  "commence_time": "2023-01-07T21:30:00Z",
-  "draw_ev": null,
-  "draw_odds": null,
-  "draw_point": null,
-  "event_id": "3c35f8beasdfadhgn4nrte825f208036e6a7cef8",
-  "home_ev": 7.47283089666891,
-  "home_odds": 380,
-  "home_point": null,
-  "home_team_name": "Las Vegas Raiders",
-  "id": 18252717,
-  "league_name": "NFL",
-  "market": "h2h",
-  "max_ev": 7.47283089666891
-},
-{
-  "away_ev": -6.05126217788798,
-  "away_odds": -475,
-  "away_point": null,
-  "away_team_name": "Boston Celtics",
-  "bookmaker": "betonlineag",
-  "commence_time": "2023-01-07T21:30:00Z",
-  "draw_ev": null,
-  "draw_odds": null,
-  "draw_point": null,
-  "event_id": "3c35f8beae149e82asdf2nrtn08036e6a7cef8",
-  "home_ev": 7.47283089666891,
-  "home_odds": 380,
-  "home_point": null,
-  "home_team_name": "Miami Heat",
-  "id": 18217517,
-  "league_name": "NBA",
-  "market": "h2h",
-  "max_ev": 7.47283089666891
-},
-{
-  "away_ev": -6.05126217788798,
-  "away_odds": -475,
-  "away_point": null,
-  "away_team_name": "Boston Celtics",
-  "bookmaker": "bovada",
-  "commence_time": "2023-01-07T21:30:00Z",
-  "draw_ev": null,
-  "draw_odds": null,
-  "draw_point": null,
-  "event_id": "3c35f8beae149e825f20asdfvc8036e6a7cef8",
-  "home_ev": 7.47283089666891,
-  "home_odds": 380,
-  "home_point": null,
-  "home_team_name": "Miami Heat",
-  "id": 182597817,
-  "league_name": "NBA",
-  "market": "h2h",
-  "max_ev": 7.47283089666891
-},
-]
-
 const HomeScreen = ({navigation}) => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
-  const [scaleSize, setScaleSize] = useState( new Animated.Value(1))
-  const [recentSignOut, setRecentSignOut] = useState(false)
-  const [brandTextYTransform, setBrandTextYTransform] = useState( new Animated.Value(0))
-  const {user, logoutUser, subscription} = useUserContext()
+  const [scaleSize, setScaleSize] = useState( new Animated.Value(1));
+  const [recentSignOut, setRecentSignOut] = useState(false);
+  const [brandTextYTransform, setBrandTextYTransform] = useState( new Animated.Value(0));
+  const {user, logoutUser, subscription} = useUserContext();
+  const [searchQuery, setSearchQuery] = useState("");
   const [data, setData] = useState(null);
   const [showSearchResults, setShowSearchResults] = useState(false);
 
@@ -152,7 +31,6 @@ const HomeScreen = ({navigation}) => {
     }
   }, [subscription])
   
-
   const signOut = () => {
     setRecentSignOut(true)
     setIsPopupVisible(false)
@@ -160,21 +38,6 @@ const HomeScreen = ({navigation}) => {
     navigation.navigate("Welcome")
   }
 
-  // const enlargeText = () => {
-  //   Animated.timing(scaleSize, {
-  //     toValue: 1,  // animate to just below the top of the screen
-  //     duration: 400,
-  //     useNativeDriver: true,
-  //   }).start();
-  // }
-  
-  // const shrinkText = () => {
-  //   Animated.timing(scaleSize, {
-  //     toValue: 0.6,  // animate to just below the top of the screen
-  //     duration: 400,
-  //     useNativeDriver: true,
-  //   }).start();
-  // }
   
   useEffect(() => {
     const keyboardShowListener = Keyboard.addListener('keyboardWillShow', (event) => {
@@ -201,24 +64,17 @@ const HomeScreen = ({navigation}) => {
       useNativeDriver: true,
     }).start();
   }
-  
-  const inputRef = React.createRef();
-  
-  // Function handle search - only executable on non empty input - makes PGSQL fetch 
-  // & performs animation to display search query results.
+
   const handleSearch = async () => {
-    if (inputRef.current === '') {
-      // TextInput is empty, do nothing
-      return;
-    }
     Vibration.vibrate(0, 500);
-    // Perform search
-    const data = await getClass1LambdaResponse();
+
+    // Perform search from index
+    const data = await searchIndex(searchQuery);
     setData(data);
     setShowSearchResults(true);
   }
   
-  return (     
+  return (
     <>
     <CTAPopup setIsPopupVisible={setIsPopupVisible} isPopupVisible={isPopupVisible}/>
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -229,12 +85,13 @@ const HomeScreen = ({navigation}) => {
             <Text style={styles.callToActionText}>Find your next bet with Claros!</Text>
             <View style={styles.searchBarContainer}>
               <TextInput
-                ref={inputRef}
                 style={styles.searchInput}
                 placeholder="Search betting markets . . ."
                 placeholderTextColor="#00000060"
                 enablesReturnKeyAutomatically="true"
+                onChangeText={(text) => setSearchQuery(text)}
               />
+
               <TouchableOpacity style={[styles.searchButton, { marginLeft: 10 }]} onPress={() => handleSearch()}>
                 <Icon
                   name="corner-right-up"
@@ -243,13 +100,15 @@ const HomeScreen = ({navigation}) => {
                 />
               </TouchableOpacity>
             </View>
-            </> 
+            </>
           : <>
-            <View style={styles.searchBarContainer}>
+           <View style={[styles.searchBarContainer, {marginBottom: 20}]}>
               <TextInput
                 style={styles.newSearchInput}
                 placeholder="Search betting markets . . ."
-                placeholderTextColor="#00000060"
+                placeholderTextColor="#00000090"
+                enablesReturnKeyAutomatically="true"
+                onChangeText={(text) => setSearchQuery(text)}
               />
               <TouchableOpacity style={[styles.newSearchButton, { marginLeft: 10 }]} onPress={() => handleSearch()}>
                 <Icon
@@ -259,18 +118,15 @@ const HomeScreen = ({navigation}) => {
                 />
               </TouchableOpacity>
             </View>
-            {dummyData.map(line => {
+            {data && data.map(line => {
               return (
                 <SearchResultContainer key={line.id} line={line}/>
               )
             })}
-
-            {/* REPLACE WITH THE ACTUAL DATA DONE */}
-            {/* <SearchResultContainer line={data}/> */}
+            {/* <SearchResultContainer line={data[1]}/> */}
           </> }
         </Animated.View>
-
-
+        
     <Text onPress={() => signOut()}>click me to sign out (this helps with testing if the popup will occur on different accounts)</Text>
       </ScrollView>
     </TouchableWithoutFeedback>
@@ -283,7 +139,7 @@ export default HomeScreen
 const styles = StyleSheet.create({
   container: {
     paddingVertical: screenHeight * 0.025,
-    alignItems: 'center', 
+    alignItems: 'center',
     backgroundColor: "#FFFFFF",
     minHeight: screenHeight,
   },
@@ -293,7 +149,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   brandText: {
-    fontWeight: "800",
+    fontWeight: "900",
     color: "#0060FF",
     letterSpacing: 0,
     marginBottom: screenHeight * 0.02,
@@ -308,9 +164,7 @@ const styles = StyleSheet.create({
     height: 60,
     width: screenWidth * 0.65,
     borderRadius: 11,
-    paddingLeft: 20,
-    paddingRight: 20,
-    paddingBottom: 0,
+    paddingHorizontal: 20,
     fontSize: 18,
     fontWeight: "200",
     color: "black",
@@ -319,7 +173,7 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     shadowOpacity: 0.25,
     backgroundColor: '#FFFFFF',
-  },  
+  },
   searchButton: {
     width: 70,
     height: 60,
@@ -341,7 +195,7 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     shadowOpacity: 0.25,
     backgroundColor: '#FFFFFF',
-  },  
+  },
   newSearchButton: {
     width: 70,
     height: 40,

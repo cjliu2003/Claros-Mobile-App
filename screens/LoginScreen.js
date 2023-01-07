@@ -78,7 +78,7 @@ const LoginScreen = ( {navigation} ) => {
       <View style={styles.container}>
         <Animated.View style={[styles.container, { transform: [{ translateY }] }]}>
           <Text style={styles.brandText}>P-word?</Text>
-          <Text style={styles.callToActionText}>Welcome Back - Enter your password!</Text>
+          <Text style={styles.callToActionText}>Welcome Back! Enter your password.</Text>
           <View style={styles.searchBarContainer}>
             <TextInput
               style={styles.searchInput}

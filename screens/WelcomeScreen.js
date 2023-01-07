@@ -35,7 +35,7 @@ const WelcomeScreen = ({ navigation }) => {
     <View style={styles.container}>
       <Animated.View style={styles.container}>
         <Text style={[styles.brandText, {marginTop: screenHeight * 0.1}]}>Claros</Text>
-        <Text style={styles.callToActionText}>Your personal sports betting assistant!</Text>
+        <Text style={styles.callToActionText}>Your personal sports betting assistant.</Text>
 
         {/* <Image source={require('../assets/claros__hero-performance.png')} style={styles.image} /> */}
         {/* <Text style={styles.genericText}>The world's most powerful sports betting assistant</Text> */}
