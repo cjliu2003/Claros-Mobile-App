@@ -6,6 +6,7 @@ import { getSearchLambdaResponse } from '../functions/search/fetchVulcan';
 import { searchIndex } from '../functions/search/processQueries';
 import SearchResultContainer from '../components/SearchResult';
 import CTAPopup from '../components/CTAPopup';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 // Get the current screen width and height
 const screenWidth = Dimensions.get('window').width;
@@ -83,7 +84,7 @@ const HomeScreen = ({navigation}) => {
           <Animated.Text style={[styles.brandText, showSearchResults ? {fontSize: 48} : {fontSize: 84},{transform: [{translateY: brandTextYTransform}]}]}>Claros</Animated.Text>
           {!showSearchResults ? <>
             <Text style={styles.callToActionText}>Find your next bet with Claros!</Text>
-            <View style={styles.searchBarContainer}>
+            <View style={styles.rowContainer}>
               <TextInput
                 style={styles.searchInput}
                 placeholder="Search betting markets . . ."
@@ -102,7 +103,7 @@ const HomeScreen = ({navigation}) => {
             </View>
             </>
           : <>
-           <View style={[styles.searchBarContainer, {marginBottom: 20}]}>
+           <View style={[styles.rowContainer, {marginBottom: 20}]}>
               <TextInput
                 style={styles.newSearchInput}
                 placeholder="Search betting markets . . ."
@@ -117,6 +118,13 @@ const HomeScreen = ({navigation}) => {
                   color="#FFFFFF"
                 />
               </TouchableOpacity>
+            </View>
+            <View style={styles.rowSpaceBetween}>
+              <TouchableOpacity style={styles.filterButtonContainer}>
+                <FontAwesome5 name="filter" size={16} color="#0060ff" />
+                <Text style={styles.filterButtonText}>Filters</Text>
+              </TouchableOpacity>
+              <Text style={styles.numReturnedText}>{data && data.length + " Lines Fetched"}</Text>
             </View>
             {data && data.map(line => {
               return (
@@ -142,11 +150,39 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: "#FFFFFF",
     minHeight: screenHeight,
+    width: screenWidth
   },
-  searchBarContainer: {
+  filterButtonContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: '#00000025',
+    borderRadius: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  filterButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: 'black',
+    marginLeft: 8,
+  },
+  numReturnedText: {
+    fontSize: 16,
+    fontWeight: '300',
+    color: 'black',
+  },
+  rowContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  rowSpaceBetween: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '85%',
+    marginVertical: 8
   },
   brandText: {
     fontWeight: "900",
