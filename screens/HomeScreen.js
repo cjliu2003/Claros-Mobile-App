@@ -91,7 +91,6 @@ const HomeScreen = ({navigation}) => {
     Vibration.vibrate(0, 500);
     // Perform search
     const data = await getSearchLambdaResponse();
-    console.log(data);
     setData(data);
     setShowSearchResults(true);
   }
@@ -137,9 +136,8 @@ const HomeScreen = ({navigation}) => {
                 />
               </TouchableOpacity>
             </View>
-
-            {/* REPLACE WITH THE ACTUAL DATA DONE */}
-            {/* <SearchResultContainer line={data}/> */}
+            
+            <SearchResultContainer line={data}/>
           </> }
         </Animated.View>
         
