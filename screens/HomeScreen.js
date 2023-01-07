@@ -2,136 +2,13 @@ import { Dimensions, StyleSheet, View, ScrollView, Text, TouchableOpacity, TextI
 import React, { useEffect, useState, useRef } from 'react'
 import { useUserContext } from '../contexts/userContext';
 import Icon from 'react-native-vector-icons/Feather';
-import { getClass1LambdaResponse } from '../functions/NLP/fetchVulcan';
+import { getSearchLambdaResponse } from '../functions/search/fetchVulcan';
 import SearchResultContainer from '../components/SearchResult';
 import CTAPopup from '../components/CTAPopup';
 
 // Get the current screen width and height
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
-
-
-const dummyData = [{
-  "away_ev": -6.05126217788798,
-  "away_odds": -475,
-  "away_point": null,
-  "away_team_name": "Kansas City Chiefs",
-  "bookmaker": "mybookieag",
-  "commence_time": "2023-01-07T21:30:00Z",
-  "draw_ev": null,
-  "draw_odds": null,
-  "draw_point": null,
-  "event_id": "3c35f8beasdfads149e825f208036e6a7cef8",
-  "home_ev": 7.47283089666891,
-  "home_odds": 380,
-  "home_point": null,
-  "home_team_name": "Las Vegas Raiders",
-  "id": 182161517,
-  "league_name": "NFL",
-  "market": "h2h",
-  "max_ev": 7.47283089666891
-},
-{
-  "away_ev": -6.05126217788798,
-  "away_odds": -475,
-  "away_point": null,
-  "away_team_name": "Boston Celtics",
-  "bookmaker": "betonlineag",
-  "commence_time": "2023-01-07T21:30:00Z",
-  "draw_ev": null,
-  "draw_odds": null,
-  "draw_point": null,
-  "event_id": "3c35f8beae149e82asdf208036e6a7cef8",
-  "home_ev": 7.47283089666891,
-  "home_odds": 380,
-  "home_point": null,
-  "home_team_name": "Miami Heat",
-  "id": 182576117,
-  "league_name": "NBA",
-  "market": "h2h",
-  "max_ev": 7.47283089666891
-},
-{
-  "away_ev": -6.05126217788798,
-  "away_odds": -475,
-  "away_point": null,
-  "away_team_name": "Boston Celtics",
-  "bookmaker": "bovada",
-  "commence_time": "2023-01-07T21:30:00Z",
-  "draw_ev": null,
-  "draw_odds": null,
-  "draw_point": null,
-  "event_id": "3c35f8beae149e825f208036e6a7cef8",
-  "home_ev": 7.47283089666891,
-  "home_odds": 380,
-  "home_point": null,
-  "home_team_name": "Miami Heat",
-  "id": 1825161717,
-  "league_name": "NBA",
-  "market": "h2h",
-  "max_ev": 7.47283089666891
-},
-{
-  "away_ev": -6.05126217788798,
-  "away_odds": -475,
-  "away_point": null,
-  "away_team_name": "Kansas City Chiefs",
-  "bookmaker": "mybookieag",
-  "commence_time": "2023-01-07T21:30:00Z",
-  "draw_ev": null,
-  "draw_odds": null,
-  "draw_point": null,
-  "event_id": "3c35f8beasdfadhgn4nrte825f208036e6a7cef8",
-  "home_ev": 7.47283089666891,
-  "home_odds": 380,
-  "home_point": null,
-  "home_team_name": "Las Vegas Raiders",
-  "id": 18252717,
-  "league_name": "NFL",
-  "market": "h2h",
-  "max_ev": 7.47283089666891
-},
-{
-  "away_ev": -6.05126217788798,
-  "away_odds": -475,
-  "away_point": null,
-  "away_team_name": "Boston Celtics",
-  "bookmaker": "betonlineag",
-  "commence_time": "2023-01-07T21:30:00Z",
-  "draw_ev": null,
-  "draw_odds": null,
-  "draw_point": null,
-  "event_id": "3c35f8beae149e82asdf2nrtn08036e6a7cef8",
-  "home_ev": 7.47283089666891,
-  "home_odds": 380,
-  "home_point": null,
-  "home_team_name": "Miami Heat",
-  "id": 18217517,
-  "league_name": "NBA",
-  "market": "h2h",
-  "max_ev": 7.47283089666891
-},
-{
-  "away_ev": -6.05126217788798,
-  "away_odds": -475,
-  "away_point": null,
-  "away_team_name": "Boston Celtics",
-  "bookmaker": "bovada",
-  "commence_time": "2023-01-07T21:30:00Z",
-  "draw_ev": null,
-  "draw_odds": null,
-  "draw_point": null,
-  "event_id": "3c35f8beae149e825f20asdfvc8036e6a7cef8",
-  "home_ev": 7.47283089666891,
-  "home_odds": 380,
-  "home_point": null,
-  "home_team_name": "Miami Heat",
-  "id": 182597817,
-  "league_name": "NBA",
-  "market": "h2h",
-  "max_ev": 7.47283089666891
-},
-]
 
 const HomeScreen = ({navigation}) => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
@@ -204,7 +81,7 @@ const HomeScreen = ({navigation}) => {
   
   const inputRef = React.createRef();
   
-  // Function handle search - only executable on non empty input - makes PGSQL fetch 
+  // Function handle search - only executable on non empty input - makes PGSQL fetch
   // & performs animation to display search query results.
   const handleSearch = async () => {
     if (inputRef.current === '') {
@@ -213,12 +90,13 @@ const HomeScreen = ({navigation}) => {
     }
     Vibration.vibrate(0, 500);
     // Perform search
-    const data = await getClass1LambdaResponse();
+    const data = await getSearchLambdaResponse();
+    console.log(data);
     setData(data);
     setShowSearchResults(true);
   }
   
-  return (     
+  return (
     <>
     <CTAPopup setIsPopupVisible={setIsPopupVisible} isPopupVisible={isPopupVisible}/>
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -243,7 +121,7 @@ const HomeScreen = ({navigation}) => {
                 />
               </TouchableOpacity>
             </View>
-            </> 
+            </>
           : <>
             <View style={styles.searchBarContainer}>
               <TextInput
@@ -259,18 +137,12 @@ const HomeScreen = ({navigation}) => {
                 />
               </TouchableOpacity>
             </View>
-            {dummyData.map(line => {
-              return (
-                <SearchResultContainer key={line.id} line={line}/>
-              )
-            })}
 
             {/* REPLACE WITH THE ACTUAL DATA DONE */}
             {/* <SearchResultContainer line={data}/> */}
           </> }
         </Animated.View>
-
-
+        
     <Text onPress={() => signOut()}>click me to sign out (this helps with testing if the popup will occur on different accounts)</Text>
       </ScrollView>
     </TouchableWithoutFeedback>
@@ -283,7 +155,7 @@ export default HomeScreen
 const styles = StyleSheet.create({
   container: {
     paddingVertical: screenHeight * 0.025,
-    alignItems: 'center', 
+    alignItems: 'center',
     backgroundColor: "#FFFFFF",
     minHeight: screenHeight,
   },
@@ -293,7 +165,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   brandText: {
-    fontWeight: "800",
+    fontWeight: "900",
     color: "#0060FF",
     letterSpacing: 0,
     marginBottom: screenHeight * 0.02,
@@ -319,7 +191,7 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     shadowOpacity: 0.25,
     backgroundColor: '#FFFFFF',
-  },  
+  },
   searchButton: {
     width: 70,
     height: 60,
@@ -341,7 +213,7 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     shadowOpacity: 0.25,
     backgroundColor: '#FFFFFF',
-  },  
+  },
   newSearchButton: {
     width: 70,
     height: 40,
