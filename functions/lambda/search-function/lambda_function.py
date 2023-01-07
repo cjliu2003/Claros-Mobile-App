@@ -16,7 +16,7 @@ def fetch_reporter():
     conn = pool.getconn()
     cursor = conn.cursor()
 
-    query = "SELECT row_to_json(a) FROM ( SELECT * FROM reporter LIMIT 100) a;"
+    query = "SELECT row_to_json(a) FROM ( SELECT * FROM reporter) a LIMIT 50;"
     
     try:
         cursor.execute(query)

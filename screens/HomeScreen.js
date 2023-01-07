@@ -29,7 +29,6 @@ const HomeScreen = ({navigation}) => {
     }
   }, [subscription])
   
-
   const signOut = () => {
     setRecentSignOut(true)
     setIsPopupVisible(false)
@@ -91,6 +90,7 @@ const HomeScreen = ({navigation}) => {
     Vibration.vibrate(0, 500);
     // Perform search
     const data = await getSearchLambdaResponse();
+    
     setData(data);
     setShowSearchResults(true);
   }
@@ -112,6 +112,7 @@ const HomeScreen = ({navigation}) => {
                 placeholderTextColor="#00000060"
                 enablesReturnKeyAutomatically="true"
               />
+
               <TouchableOpacity style={[styles.searchButton, { marginLeft: 10 }]} onPress={() => handleSearch()}>
                 <Icon
                   name="corner-right-up"
@@ -136,8 +137,12 @@ const HomeScreen = ({navigation}) => {
                 />
               </TouchableOpacity>
             </View>
-            
-            <SearchResultContainer line={data}/>
+            {data.map(line => {
+              return (
+                <SearchResultContainer line={line}/>
+              )
+            })}
+            {/* <SearchResultContainer line={data[1]}/> */}
           </> }
         </Animated.View>
         
