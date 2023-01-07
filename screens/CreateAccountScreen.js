@@ -1,6 +1,5 @@
-import { Alert, Dimensions, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, Vibration, View, Animated, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { Alert, Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, Vibration, View, Animated, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import React, { useEffect, useLayoutEffect, useState, useRef } from 'react'
-import { Button } from '@rneui/base';
 import Icon from 'react-native-vector-icons/Feather';
 import { useUserContext } from '../contexts/userContext';
 import { validateCredentials } from '../functions/signup/validateCredentials';
@@ -102,6 +101,7 @@ const CreateAccountScreen = ({navigation}) => {
               />
             </TouchableOpacity>
           </View>
+          <Text>By creating an account, you are agreeing to our terms and conditions and privacy policy</Text>
         </Animated.View>
       </View>
     </TouchableWithoutFeedback>

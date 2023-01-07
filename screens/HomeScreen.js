@@ -6,7 +6,7 @@ import { getSearchLambdaResponse } from '../functions/search/fetchVulcan';
 import { searchIndex } from '../functions/search/processQueries';
 import SearchResultContainer from '../components/SearchResult';
 import CTAPopup from '../components/CTAPopup';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 // Get the current screen width and height
 const screenWidth = Dimensions.get('window').width;
@@ -74,6 +74,10 @@ const HomeScreen = ({navigation}) => {
     setData(data);
     setShowSearchResults(true);
   }
+
+  const handleCenterButtonClick = () => {
+    navigation.navigate("Center")
+  }
   
   return (
     <>
@@ -81,7 +85,10 @@ const HomeScreen = ({navigation}) => {
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <ScrollView contentContainerStyle={[styles.container, {overflow: 'scroll'}]}>
         <Animated.View style={[styles.container, showSearchResults ? {justifyContent: 'flex-start'} : {justifyContent: 'center'}, { transform: [{ translateY }] }]}>
-          <Animated.Text style={[styles.brandText, showSearchResults ? {fontSize: 48} : {fontSize: 84},{transform: [{translateY: brandTextYTransform}]}]}>Claros</Animated.Text>
+            <Animated.Text style={[styles.brandText, showSearchResults ? {fontSize: 48} : {fontSize: 84},{transform: [{translateY: brandTextYTransform}]}]}>Claros</Animated.Text>
+            <TouchableOpacity style={styles.centerButton} onPress={handleCenterButtonClick}>
+              <Ionicons name="person-circle" size={40} color="#00000050" />
+            </TouchableOpacity>
           {!showSearchResults ? <>
             <Text style={styles.callToActionText}>Find your next bet with Claros!</Text>
             <View style={styles.rowContainer}>
@@ -120,11 +127,11 @@ const HomeScreen = ({navigation}) => {
               </TouchableOpacity>
             </View>
             <View style={styles.rowSpaceBetween}>
-              <TouchableOpacity style={styles.filterButtonContainer}>
+              {/* <TouchableOpacity style={styles.filterButtonContainer}>
                 <FontAwesome5 name="filter" size={16} color="#0060ff" />
                 <Text style={styles.filterButtonText}>Filters</Text>
-              </TouchableOpacity>
-              <Text style={styles.numReturnedText}>{data && data.length + " Lines Fetched"}</Text>
+              </TouchableOpacity> */}
+              <Text style={styles.numReturnedText}>{data && data.length + " Results"}</Text>
             </View>
             {data && data.map(line => {
               return (
@@ -152,6 +159,11 @@ const styles = StyleSheet.create({
     minHeight: screenHeight,
     width: screenWidth
   },
+  centerButton: {
+    position: 'absolute',
+    top: 25,
+    right: 25,
+  },
   filterButtonContainer: {
     paddingHorizontal: 16,
     paddingVertical: 8,
@@ -169,8 +181,8 @@ const styles = StyleSheet.create({
   },
   numReturnedText: {
     fontSize: 16,
-    fontWeight: '300',
-    color: 'black',
+    fontWeight: '500',
+    color: '#00000075',
   },
   rowContainer: {
     flexDirection: 'row',

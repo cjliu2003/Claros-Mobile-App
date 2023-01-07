@@ -368,6 +368,15 @@ const Sportsbooks = {
         NHL: "https://www.nordicbet.com/no/odds/ishockey/nhl/nhl",
         MLB: "https://www.nordicbet.com/no/odds/baseball/mlb/mlb",
     },
+    pinnacle: {
+        logo: null,
+        name: "Pinnacle",
+        location: {
+            US: false,
+            EU: true
+        },
+        link: "https://pinnacle.com",
+    }, 
     pointsbetus: {
         logo: PointsBet,
         name: "PointsBet",

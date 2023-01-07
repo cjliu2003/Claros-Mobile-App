@@ -1,15 +1,14 @@
-import { Alert, Dimensions, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, Vibration, View, TouchableWithoutFeedback, Keyboard, Animated } from 'react-native'
+import { Alert, Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, Vibration, View, TouchableWithoutFeedback, Keyboard, Animated } from 'react-native'
 import React, { useEffect, useLayoutEffect, useState, useRef } from 'react'
 import Icon from 'react-native-vector-icons/Feather';
 
-import { Button } from '@rneui/base';
 import { useUserContext } from '../contexts/userContext';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 const LoginScreen = ( {navigation} ) => {
-  const {user, authEmail, signInUserEmail, signInError} = useUserContext()
+  const {authEmail, signInUserEmail} = useUserContext()
   const [password, setPassword] = useState("")
 
   useLayoutEffect(() => {
