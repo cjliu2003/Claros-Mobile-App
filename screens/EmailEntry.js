@@ -72,7 +72,7 @@ const EmailEntry = ( {navigation}) => {
         <View style={styles.container}>
             <Animated.View style={[styles.container, { transform: [{ translateY }] }]}>
                 <Text style={styles.brandText}>Email?</Text>
-                <Text style={styles.callToActionText}>Enter your email to get started!</Text>
+                <Text style={styles.callToActionText}>Enter your email to get started.</Text>
                 <View style={styles.searchBarContainer}>
                     <TextInput
                         style={styles.searchInput}

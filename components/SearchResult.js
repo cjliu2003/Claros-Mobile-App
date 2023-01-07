@@ -21,7 +21,6 @@ const colorMap = {
 }
 
 const SearchResultContainer = ({line}) => {
-  console.log(line);
   const [featuredLine, setFeaturedLine] = useState(null)
   const handleCardClick = () => {
     setFeaturedLine(line.id)
@@ -62,13 +61,11 @@ export default SearchResultContainer;
 
 const styles = StyleSheet.create({
   cardContainer: {
-    backgroundColor: '#fff',
-    borderWidth: 0.5,
-    borderColor: '#ddd',
-    borderRadius: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 11,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.50,
     shadowRadius: 2,
     marginVertical: screenHeight * 0.02,
     padding: 15,

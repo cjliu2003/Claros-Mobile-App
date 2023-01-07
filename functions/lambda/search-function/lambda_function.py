@@ -10,14 +10,21 @@ pool = psycopg2.pool.SimpleConnectionPool(5,
         password='getrichordietrying',
         dbname='vulcan3')
 
-
-def fetch_reporter():
+def fetch_reporter(tokenized_search_query):
 
     conn = pool.getconn()
     cursor = conn.cursor()
 
-    query = "SELECT row_to_json(a) FROM ( SELECT * FROM reporter) a LIMIT 50;"
-    
+    # Build the WHERE portion of the PGSQL query, from the tokenized_search_query
+    where_string = "WHERE "
+    for token in tokenized_search_query:
+        component = f" LOWER(league_name) LIKE '%{token}%' OR LOWER(home_team_name) LIKE '%{token}%' OR  LOWER(away_team_name) LIKE '%{token}%' OR LOWER(bookmaker) LIKE '%{token}%' OR LOWER(market) LIKE '%{token}%' OR"
+        where_string += component
+
+    where_string = where_string[:-3]
+
+    query = f"SELECT row_to_json(a) FROM ( SELECT * FROM reporter {where_string} ) as a;"
+    print(query)
     try:
         cursor.execute(query)
     except:
@@ -25,21 +32,20 @@ def fetch_reporter():
 
     query_output = cursor.fetchall()
     
-    clean_output = []
-    for row in query_output:
-        clean_output.append(row[0])
-    
     # Close the cursor and connection
     cursor.close()
     conn.close()
 
     # Return the connection to the pool
     pool.putconn(conn)
-
-    return clean_output # <-- Fetches most receent snapshot from all 'lines' tables for events occuring today
+    return query_output[0][0] # <-- Fetches most receent snapshot from all 'lines' tables for events occuring today
 
 def lambda_handler(event, context):
-    response = fetch_reporter()
+    request_body_str = event['body']
+    request_body = json.loads(request_body_str)
+    specified_bookmakers = request_body['data']['bookmakers']
+
+    response = fetch_reporter(specified_bookmakers)
     message = {
         'message': response
     }
@@ -53,3 +59,8 @@ def lambda_handler(event, context):
             "data": message
         })
     }
+
+search_query = "Best lines for the lakers vs suns game"
+tokenized_search_query = ["best", "lines", "for", "the", "lakers", "vs", "suns", "game"]
+
+fetch_reporter(tokenized_search_query)

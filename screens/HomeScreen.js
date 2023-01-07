@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import { useUserContext } from '../contexts/userContext';
 import Icon from 'react-native-vector-icons/Feather';
 import { getSearchLambdaResponse } from '../functions/search/fetchVulcan';
+import { returnSearchQuery } from '../functions/search/processQueries';
 import SearchResultContainer from '../components/SearchResult';
 import CTAPopup from '../components/CTAPopup';
 
@@ -12,10 +13,11 @@ const screenHeight = Dimensions.get('window').height;
 
 const HomeScreen = ({navigation}) => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
-  const [scaleSize, setScaleSize] = useState( new Animated.Value(1))
-  const [recentSignOut, setRecentSignOut] = useState(false)
-  const [brandTextYTransform, setBrandTextYTransform] = useState( new Animated.Value(0))
-  const {user, logoutUser, subscription} = useUserContext()
+  const [scaleSize, setScaleSize] = useState( new Animated.Value(1));
+  const [recentSignOut, setRecentSignOut] = useState(false);
+  const [brandTextYTransform, setBrandTextYTransform] = useState( new Animated.Value(0));
+  const {user, logoutUser, subscription} = useUserContext();
+  const [searchQuery, setSearchQuery] = useState("");
   const [data, setData] = useState(null);
   const [showSearchResults, setShowSearchResults] = useState(false);
 
@@ -77,20 +79,15 @@ const HomeScreen = ({navigation}) => {
       useNativeDriver: true,
     }).start();
   }
-  
-  const inputRef = React.createRef();
-  
-  // Function handle search - only executable on non empty input - makes PGSQL fetch
-  // & performs animation to display search query results.
+
   const handleSearch = async () => {
-    if (inputRef.current === '') {
-      // TextInput is empty, do nothing
-      return;
-    }
+    console.log(searchQuery);
+    const cleanedSearchQuery = returnSearchQuery(searchQuery)
+    console.log(cleanedSearchQuery);
+
     Vibration.vibrate(0, 500);
     // Perform search
     const data = await getSearchLambdaResponse();
-    
     setData(data);
     setShowSearchResults(true);
   }
@@ -106,11 +103,11 @@ const HomeScreen = ({navigation}) => {
             <Text style={styles.callToActionText}>Find your next bet with Claros!</Text>
             <View style={styles.searchBarContainer}>
               <TextInput
-                ref={inputRef}
                 style={styles.searchInput}
                 placeholder="Search betting markets . . ."
                 placeholderTextColor="#00000060"
                 enablesReturnKeyAutomatically="true"
+                onChangeText={(text) => setSearchQuery(text)}
               />
 
               <TouchableOpacity style={[styles.searchButton, { marginLeft: 10 }]} onPress={() => handleSearch()}>
@@ -128,6 +125,8 @@ const HomeScreen = ({navigation}) => {
                 style={styles.newSearchInput}
                 placeholder="Search betting markets . . ."
                 placeholderTextColor="#00000060"
+                enablesReturnKeyAutomatically="true"
+                onChangeText={(text) => setSearchQuery(text)}
               />
               <TouchableOpacity style={[styles.newSearchButton, { marginLeft: 10 }]} onPress={() => handleSearch()}>
                 <Icon
@@ -206,7 +205,7 @@ const styles = StyleSheet.create({
   newSearchInput: {
     height: 40,
     width: screenWidth * 0.65,
-    borderRadius: 5,
+    borderRadius: 11,
     paddingLeft: 15,
     fontSize: 14,
     fontWeight: "200",
@@ -220,7 +219,7 @@ const styles = StyleSheet.create({
   newSearchButton: {
     width: 70,
     height: 40,
-    borderRadius: 5,
+    borderRadius: 11,
     backgroundColor: '#0060FF',
     alignItems: 'center',
     justifyContent: 'center',

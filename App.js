@@ -6,7 +6,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { UserContextProvider } from "./contexts/userContext";
 import { Welcome, Login, CreateAccount, Home, Chat, Email } from "./screens";
 
-
 const Stack = createStackNavigator();
 
 const globalScreenOptions = {
