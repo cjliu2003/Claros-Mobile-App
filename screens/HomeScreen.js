@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import { useUserContext } from '../contexts/userContext';
 import Icon from 'react-native-vector-icons/Feather';
 import { getSearchLambdaResponse } from '../functions/search/fetchVulcan';
-import { returnSearchQuery } from '../functions/search/processQueries';
+import { searchIndex } from '../functions/search/processQueries';
 import SearchResultContainer from '../components/SearchResult';
 import CTAPopup from '../components/CTAPopup';
 
@@ -81,13 +81,10 @@ const HomeScreen = ({navigation}) => {
   }
 
   const handleSearch = async () => {
-    console.log(searchQuery);
-    const cleanedSearchQuery = returnSearchQuery(searchQuery)
-    console.log(cleanedSearchQuery);
-
     Vibration.vibrate(0, 500);
-    // Perform search
-    const data = await getSearchLambdaResponse();
+
+    // Perform search from index
+    const data = await searchIndex(searchQuery);
     setData(data);
     setShowSearchResults(true);
   }

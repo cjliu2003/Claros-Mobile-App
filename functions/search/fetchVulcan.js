@@ -17,6 +17,6 @@ export async function invokeSearchLambda() {
 // Function makes good on the promise from Claros Search invoke
 export async function getSearchLambdaResponse() {
   const marketData = await invokeSearchLambda();
+  console.log(marketData);
   return marketData;
 }
-
