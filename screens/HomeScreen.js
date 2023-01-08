@@ -83,12 +83,12 @@ const HomeScreen = ({navigation}) => {
     <>
     <CTAPopup setIsPopupVisible={setIsPopupVisible} isPopupVisible={isPopupVisible}/>
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <ScrollView contentContainerStyle={[styles.container, {overflow: 'scroll'}]}>
+    <ScrollView contentContainerStyle={[styles.container, {overflow: 'scroll', backgroundColor: 'white'}]}>
         <Animated.View style={[styles.container, showSearchResults ? {justifyContent: 'flex-start'} : {justifyContent: 'center'}, { transform: [{ translateY }] }]}>
-            <Animated.Text style={[styles.brandText, showSearchResults ? {fontSize: 48} : {fontSize: 84},{transform: [{translateY: brandTextYTransform}]}]}>Claros</Animated.Text>
-            <TouchableOpacity style={styles.centerButton} onPress={handleCenterButtonClick}>
-              <Ionicons name="person-circle" size={40} color="#00000050" />
-            </TouchableOpacity>
+          <Animated.Text style={[styles.brandText, showSearchResults ? {fontSize: 48} : {fontSize: 84},{transform: [{translateY: brandTextYTransform}]}]}>Claros</Animated.Text>
+          <TouchableOpacity style={styles.centerButton} onPress={handleCenterButtonClick}>
+            <Ionicons name="person-circle" size={30} color="#0060FF" />
+          </TouchableOpacity>
           {!showSearchResults ? <>
             <Text style={styles.callToActionText}>Find your next bet with Claros!</Text>
             <View style={styles.rowContainer}>
@@ -98,8 +98,10 @@ const HomeScreen = ({navigation}) => {
                 placeholderTextColor="#00000060"
                 enablesReturnKeyAutomatically="true"
                 onChangeText={(text) => setSearchQuery(text)}
+                // onSubmitEditing={() => handleSearch()}
+                // returnKeyType="search"
+                // returnKeyLabel='\u23CE'
               />
-
               <TouchableOpacity style={[styles.searchButton, { marginLeft: 10 }]} onPress={() => handleSearch()}>
                 <Icon
                   name="corner-right-up"
@@ -111,34 +113,31 @@ const HomeScreen = ({navigation}) => {
             </>
           : <>
            <View style={[styles.rowContainer, {marginBottom: 20}]}>
-              <TextInput
-                style={styles.newSearchInput}
-                placeholder="Search betting markets . . ."
-                placeholderTextColor="#00000090"
-                enablesReturnKeyAutomatically="true"
-                onChangeText={(text) => setSearchQuery(text)}
-              />
-              <TouchableOpacity style={[styles.newSearchButton, { marginLeft: 10 }]} onPress={() => handleSearch()}>
-                <Icon
-                  name="corner-right-up"
-                  size={28}
-                  color="#FFFFFF"
+              <View style={styles.newSearchViewContainer}>
+                <Ionicons name="search" size={16} color="#000000" />
+                <TextInput
+                  style={styles.newSearchInput}
+                  placeholder="Search betting markets . . ."
+                  placeholderTextColor="#000000"
+                  enablesReturnKeyAutomatically="true"
+                  onChangeText={(text) => setSearchQuery(text)}
+                  onSubmitEditing={() => handleSearch()}
+                  returnKeyType="search"
                 />
-              </TouchableOpacity>
+              </View>
             </View>
-            <View style={styles.rowSpaceBetween}>
-              {/* <TouchableOpacity style={styles.filterButtonContainer}>
+            {/* <View style={styles.rowSpaceBetween}>
+              <TouchableOpacity style={styles.filterButtonContainer}>
                 <FontAwesome5 name="filter" size={16} color="#0060ff" />
                 <Text style={styles.filterButtonText}>Filters</Text>
-              </TouchableOpacity> */}
+              </TouchableOpacity>
               <Text style={styles.numReturnedText}>{data && data.length + " Results"}</Text>
-            </View>
+            </View> */}
             {data && data.map(line => {
               return (
                 <SearchResultContainer key={line.id} line={line}/>
               )
             })}
-            {/* <SearchResultContainer line={data[1]}/> */}
           </> }
         </Animated.View>
         
@@ -230,10 +229,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  newSearchInput: {
+  newSearchViewContainer: {
     height: 40,
-    width: screenWidth * 0.65,
-    borderRadius: 5,
+    width: screenWidth * 0.9,
+    borderRadius: 11,
     paddingLeft: 15,
     fontSize: 14,
     fontWeight: "200",
@@ -243,13 +242,15 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     shadowOpacity: 0.25,
     backgroundColor: '#FFFFFF',
-  },
-  newSearchButton: {
-    width: 70,
-    height: 40,
-    borderRadius: 5,
-    backgroundColor: '#0060FF',
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+  },
+  newSearchInput: {
+    height: 40,
+    width: screenWidth * 0.8,
+    fontSize: 14,
+    fontWeight: "200",
+    color: "#000000",
+    marginLeft: 10,
   },
 });

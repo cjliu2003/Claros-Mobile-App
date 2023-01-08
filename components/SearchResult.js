@@ -39,7 +39,7 @@ const SearchResultContainer = ({line}) => {
         <View style={styles.cardRow}>
           <View style={{justifyContent: 'center', alignItems: 'center'}}>
             <Image style={styles.cardBookLogo} source={line.bookmaker in Sportsbooks && Sportsbooks[line.bookmaker].logo}/> 
-            <Text style={styles.cardBookLabel}>{line.bookmaker in Sportsbooks && Sportsbooks[line.bookmaker].name}</Text>
+            {/* <Text style={styles.cardBookLabel}>{line.bookmaker in Sportsbooks && Sportsbooks[line.bookmaker].name}</Text> */}
           </View>
           <Text style={styles.lineOdds}>{parseOdds(line[findSide(line.home_ev, line.away_ev) + "_odds"])}</Text>
         </View>
@@ -67,11 +67,11 @@ export default SearchResultContainer;
 const styles = StyleSheet.create({
   cardContainer: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 5,
-    shadowColor: '#00000050',
+    borderRadius: 11,
+    shadowColor: '#00000060',
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.50,
-    shadowRadius: 5,
+    shadowRadius: 3,
     marginVertical: screenHeight * 0.015,
     padding: 15,
     width: screenWidth * 0.9,

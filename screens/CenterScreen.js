@@ -54,7 +54,7 @@ export default CenterScreen
 const styles = StyleSheet.create({
     container: {
       flex: 1, 
-      alignItems: 'center', 
+      alignItems: 'center',
       padding: 16,
       justifyContent: 'center',
       backgroundColor: "#0060FF"
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     manageSubscriptionButton: {
         height: 60,
         width: screenWidth * 0.65,
-        borderRadius: 5,
+        borderRadius: 11,
         shadowColor: '#FFFFFF',
         shadowOffset: { width: 0, height: 0 },
         shadowRadius: 5,
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     signOutButton: {
         height: 60,
         width: screenWidth * 0.65,
-        borderRadius: 5,
+        borderRadius: 11,
         shadowColor: '#FFFFFF',
         shadowOffset: { width: 0, height: 0 },
         shadowRadius: 5,

@@ -81,7 +81,8 @@ const CreateAccountScreen = ({navigation}) => {
               type="password"
               value={password}
               secureTextEntry='true'
-              onChangeText={(text) => setPassword(text)} 
+              onChangeText={(text) => setPassword(text)}
+              returnKeyType="next"
             />
             <TextInput
               style={styles.searchInput}
@@ -92,6 +93,8 @@ const CreateAccountScreen = ({navigation}) => {
               value={confirmPassword}
               secureTextEntry='true'
               onChangeText={(text) => setConfirmPassword(text)} 
+              onSubmitEditing={() => signUpUser()}
+              returnKeyType="done"
             />
             <TouchableOpacity style={[styles.searchButton, { marginLeft: 10 }]} onPress={() => signUpUser()}>
               <Icon
