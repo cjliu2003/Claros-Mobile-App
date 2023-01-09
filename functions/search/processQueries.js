@@ -1,8 +1,8 @@
 // This script processes seach queries, returning market data in response
 const algoliasearch = require('algoliasearch')
 
-const client = algoliasearch('N6218C146E', '4af2629cfd5d781f7d21f06f8254179a')
-const index = client.initIndex('test_index')
+const client = algoliasearch('N6218C146E', '4af2629cfd5d781f7d21f06f8254179a');
+const index = client.initIndex('test_index');
 
 export const searchIndex = async (searchQuery) => {
     let indexingResults;
@@ -36,7 +36,7 @@ export const searchIndex = async (searchQuery) => {
         
             jsonData.push(lineObject);
         };
-        console.log(jsonData)
+        // console.log(jsonData)
         return jsonData;
 
     } catch (err) {

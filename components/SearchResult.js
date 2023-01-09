@@ -34,11 +34,11 @@ const SearchResultContainer = ({line}) => {
     <>
     {line &&
       <TouchableOpacity onPress={() => handleCardClick()}style={styles.cardContainer}>
-        <Text style={styles.lineTitle}>{parseName(line.league_name, line[findSide(line.home_ev, line.away_ev) + "_team_name"], line.market, line[findSide(line.home_ev, line.away_ev) + "_point"])}</Text>
-        <Text style={styles.lineDate}>{parseDate(line.commence_time)}</Text>
+        {/* <Text style={styles.lineTitle}>{parseName(line.league_name, line[findSide(line.home_ev, line.away_ev) + "_team_name"], line.market, line[findSide(line.home_ev, line.away_ev) + "_point"])}</Text> */}
+        {/* <Text style={styles.lineDate}>{parseDate(line.commence_time)}</Text> */}
         <View style={styles.cardRow}>
           <View style={{justifyContent: 'center', alignItems: 'center'}}>
-            <Image style={styles.cardBookLogo} source={line.bookmaker in Sportsbooks && Sportsbooks[line.bookmaker].logo}/> 
+            {/* <Image style={styles.cardBookLogo} source={line.bookmaker in Sportsbooks && Sportsbooks[line.bookmaker].logo}/>  */}
             {/* <Text style={styles.cardBookLabel}>{line.bookmaker in Sportsbooks && Sportsbooks[line.bookmaker].name}</Text> */}
           </View>
           <Text style={styles.lineOdds}>{parseOdds(line[findSide(line.home_ev, line.away_ev) + "_odds"])}</Text>
