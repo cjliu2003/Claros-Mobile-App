@@ -7,7 +7,8 @@ const index = client.initIndex('test_index');
 export const searchIndex = async (searchQuery) => {
     let indexingResults;
     try {
-        const { hits } = await index.search(searchQuery);
+        const { hits } = await index.search(searchQuery, {'hitsPerPage': 100});
+        console.log(hits.length);
         indexingResults = hits;
         
         // Now for each element in the response array, we extract desired JSON data
