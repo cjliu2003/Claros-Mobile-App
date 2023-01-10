@@ -99,12 +99,9 @@ const SearchResultContainer = ({line}) => {
     <>
     {line &&
       <TouchableOpacity onPress={() => handleCardClick()}style={styles.cardContainer}>
-        {/* <Text style={styles.lineTitle}>{parseName(line.league_name, line[findSide(line.home_ev, line.away_ev) + "_team_name"], line.market, line[findSide(line.home_ev, line.away_ev) + "_point"])}</Text> */}
-        {/* <Text style={styles.lineDate}>{parseDate(line.commence_time)}</Text> */}
         <View style={styles.cardRow1}>
           <View style={{justifyContent: 'center', alignItems: 'center'}}>
             {/* <Image style={styles.cardBookLogo} source={line.bookmaker in Sportsbooks && Sportsbooks[line.bookmaker].logo}/>  */}
-            {/* <Text style={styles.cardBookLabel}>{line.bookmaker in Sportsbooks && Sportsbooks[line.bookmaker].name}</Text> */}
           </View>
           <View style={styles.lineTitleBackground}>
             <Text style={styles.lineTitle}>{parseOdds(line[findSide(line.home_ev, line.away_ev) + "_odds"])} on {team} {marketTag}</Text>
@@ -134,7 +131,6 @@ const SearchResultContainer = ({line}) => {
           <View style={styles.ratingsMetricView}>
             <Text style={[styles.ratingsMetricText, {color: textColor}]}>{line.max_ev > 0 && "+" }{(line.max_ev).toFixed(2)}% Fair Value</Text>
           </View>
-          
         </View>
     </TouchableOpacity>
     }

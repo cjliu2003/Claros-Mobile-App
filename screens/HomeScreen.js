@@ -22,10 +22,12 @@ const HomeScreen = ({navigation}) => {
   const [data, setData] = useState(null);
   const [showSearchResults, setShowSearchResults] = useState(false);
 
+  // useEffect to detect non users and send them to welcome
   useEffect(() => {
     if (!user) navigation.navigate("Welcome")
   }, [user])
 
+  // useEffect to show subscription prompt pop up iof the user is not a subscriber
   useEffect(() => {
     if (subscription === "none" && !recentSignOut) {
       setIsPopupVisible(true);
@@ -39,13 +41,15 @@ const HomeScreen = ({navigation}) => {
     navigation.navigate("Welcome")
   }
 
-  
+  // useEffect to detect future keyboard presence. Used for TouchableWithoutFeedback Animation. Distinct from past keyboard presence.
   useEffect(() => {
     const keyboardShowListener = Keyboard.addListener('keyboardWillShow', (event) => {
       setKeyboardHeight(event.endCoordinates.height);
+      setKeyboardVisible(true);
     });
     const keyboardHideListener = Keyboard.addListener('keyboardWillHide', () => {
       setKeyboardHeight(0);
+      setKeyboardVisible(false);
     });
     
     return () => {
@@ -55,6 +59,7 @@ const HomeScreen = ({navigation}) => {
   }, []);
   
   const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
   const translateY = useRef(new Animated.Value(0)).current;
 
   if (!showSearchResults) {
@@ -82,68 +87,63 @@ const HomeScreen = ({navigation}) => {
   return (
     <>
     <CTAPopup setIsPopupVisible={setIsPopupVisible} isPopupVisible={isPopupVisible}/>
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-    <ScrollView contentContainerStyle={[styles.container, {overflow: 'scroll', backgroundColor: 'white'}]}>
-        <Animated.View style={[styles.container, showSearchResults ? {justifyContent: 'flex-start'} : {justifyContent: 'center'}, { transform: [{ translateY }] }]}>
-          <Animated.Text style={[styles.brandText, showSearchResults ? {fontSize: 48} : {fontSize: 84},{transform: [{translateY: brandTextYTransform}]}]}>Claros</Animated.Text>
-          <TouchableOpacity style={styles.centerButton} onPress={handleCenterButtonClick}>
-            <Ionicons name="person-circle" size={30} color="#0060FF" />
-          </TouchableOpacity>
-          {!showSearchResults ? <>
-            <Text style={styles.callToActionText}>Find your next bet with Claros!</Text>
-            <View style={styles.rowContainer}>
-              <TextInput
-                style={styles.searchInput}
-                placeholder="Search betting markets . . ."
-                placeholderTextColor="#00000060"
-                enablesReturnKeyAutomatically="true"
-                onChangeText={(text) => setSearchQuery(text)}
-                // onSubmitEditing={() => handleSearch()}
-                // returnKeyType="search"
-                // returnKeyLabel='\u23CE'
-              />
-              <TouchableOpacity style={[styles.searchButton, { marginLeft: 10 }]} onPress={() => handleSearch()}>
-                <Icon
-                  name="corner-right-up"
-                  size={28}
-                  color="#FFFFFF"
-                />
-              </TouchableOpacity>
-            </View>
-            </>
-          : <>
-           <View style={[styles.rowContainer, {marginBottom: 20}]}>
-              <View style={styles.newSearchViewContainer}>
-                <Ionicons name="search" size={16} color="#000000" />
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        <ScrollView contentContainerStyle={[styles.container, {overflow: 'scroll', backgroundColor: 'white'}]}>
+          <Animated.View style={[styles.container, showSearchResults ? {justifyContent: 'flex-start'} : {justifyContent: 'center'}, { transform: [{ translateY }] }]}>
+            <Animated.Text style={[styles.brandText, showSearchResults ? {fontSize: 48} : {fontSize: 84},{transform: [{translateY: brandTextYTransform}]}]}>Claros</Animated.Text>
+            <TouchableOpacity style={styles.centerButton} onPress={handleCenterButtonClick}>
+              <Ionicons name="person-circle" size={30} color="#0060FF" />
+            </TouchableOpacity>
+            {!showSearchResults ? <>
+              <Text style={styles.callToActionText}>Find your next bet with Claros!</Text>
+              <View style={styles.rowContainer}>
                 <TextInput
-                  style={styles.newSearchInput}
+                  style={styles.searchInput}
                   placeholder="Search betting markets . . ."
-                  placeholderTextColor="#000000"
+                  placeholderTextColor="#00000060"
                   enablesReturnKeyAutomatically="true"
                   onChangeText={(text) => setSearchQuery(text)}
-                  onSubmitEditing={() => handleSearch()}
-                  returnKeyType="search"
+                  // onSubmitEditing={() => handleSearch()}
+                  // returnKeyType="search"
+                  // returnKeyLabel='\u23CE'
                 />
+                <TouchableOpacity style={[styles.searchButton, { marginLeft: 10 }]} onPress={() => handleSearch()}>
+                  <Icon
+                    name="corner-right-up"
+                    size={28}
+                    color="#FFFFFF"
+                  />
+                </TouchableOpacity>
               </View>
-            </View>
-            {/* <View style={styles.rowSpaceBetween}>
-              <TouchableOpacity style={styles.filterButtonContainer}>
-                <FontAwesome5 name="filter" size={16} color="#0060ff" />
-                <Text style={styles.filterButtonText}>Filters</Text>
-              </TouchableOpacity>
-              <Text style={styles.numReturnedText}>{data && data.length + " Results"}</Text>
-            </View> */}
-            {data && data.map(line => {
-              return (
-                <SearchResultContainer key={line.id} line={line}/>
-              )
-            })}
-          </> }
-        </Animated.View>
-        
-    <Text onPress={() => signOut()}>click me to sign out (this helps with testing if the popup will occur on different accounts)</Text>
-      </ScrollView>
-    </TouchableWithoutFeedback>
+              </>
+            : <>
+            <View style={[styles.rowContainer, {marginBottom: 20}]}>
+                <View style={styles.newSearchViewContainer}>
+                  <Ionicons name="search" size={16} color="#000000" />
+                  <TextInput
+                    style={styles.newSearchInput}
+                    placeholder="Search betting markets . . ."
+                    placeholderTextColor="#000000"
+                    enablesReturnKeyAutomatically="true"
+                    onChangeText={(text) => setSearchQuery(text)}
+                    onSubmitEditing={() => handleSearch()}
+                    returnKeyType="search"
+                  />
+                </View>
+              </View>
+              {/* <View style={keyboardVisible? styles.searchResultsMasterContainerBlurred : styles.searchResultsMasterContainerDefault}> */}
+              {data && data.map(line => {
+                return (
+                  <SearchResultContainer key={line.id} line={line}/>
+                )
+              })}
+              {/* </View> */}
+              
+            </> }
+          </Animated.View>
+          {/* <Text onPress={() => signOut()}>click me to sign out (this helps with testing if the popup will occur on different accounts)</Text> */}
+        </ScrollView>
+      </TouchableWithoutFeedback>
     </>
   )
 }
@@ -151,6 +151,9 @@ const HomeScreen = ({navigation}) => {
 export default HomeScreen
 
 const styles = StyleSheet.create({
+  backLayerView: {
+    backgroundColor: "#FFFFFF",
+  },
   container: {
     paddingVertical: screenHeight * 0.025,
     alignItems: 'center',
@@ -253,4 +256,10 @@ const styles = StyleSheet.create({
     color: "#000000",
     marginLeft: 10,
   },
+  searchResultsMasterContainerDefault: {
+    
+  },
+  searchResultsMasterContainerBlurred: {
+    filter: 10
+  }
 });
