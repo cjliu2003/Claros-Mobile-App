@@ -30,8 +30,6 @@ const colorMap = {
   }
 }
 
-
-
 const SearchResultContainer = ({line}) => {
   const [featuredLine, setFeaturedLine] = useState(null)
   const handleCardClick = () => {
@@ -126,18 +124,24 @@ const SearchResultContainer = ({line}) => {
         <View style={styles.cardRow4}>
           <Text style={styles.lineDate}>{parseDate(line.commence_time)}</Text>
         </View>
-        <View style={[{backgroundColor: backgroundColor}, styles.cardRow5]}>
-          <SimpleLineIcons name="info" size={16} color={textColor}></SimpleLineIcons>
-          <Text style={[styles.ratingsText, {color: textColor}]}>{line.max_ev > 1 ? "A" : line.max_ev > -1 && line.max_ev < 1 ? "B" : "C"} Rating </Text>
-          <Text style={[styles.ratingsText, {color: textColor}]}>{line.max_ev > 0 && "+" }{(line.max_ev).toFixed(2)}% Fair Value</Text>
+        <View style={[{backgroundColor: backgroundColor, flex: 1}, styles.cardRow5]}>
+          <View style={styles.infoIconView}>
+            <SimpleLineIcons name="info" size={16} color={textColor}></SimpleLineIcons>
+          </View>
+          <View style={styles.ratingsCategoryView}>
+            <Text style={[styles.ratingsCategoryText, {color: textColor}]}>{line.max_ev > 1 ? "A" : line.max_ev > -1 && line.max_ev < 1 ? "B" : "C"} Rating </Text>
+          </View>
+          <View style={styles.ratingsMetricView}>
+            <Text style={[styles.ratingsMetricText, {color: textColor}]}>{line.max_ev > 0 && "+" }{(line.max_ev).toFixed(2)}% Fair Value</Text>
+          </View>
+          
         </View>
     </TouchableOpacity>
     }
     <Modal transparent={true} animationType="slide" animationIn="bottom" visible={featuredLine === line.id}>
-      <LinePage setFeaturedLine={setFeaturedLine} line={line}/>
+      <LinePage setFeaturedLine={setFeaturedLine} line={line}></LinePage>
     </Modal>
     </>
-    
   )
 }
 
@@ -193,38 +197,54 @@ const styles = StyleSheet.create({
     borderRadius: 5
   },
   lineTitle: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '700',
     color: '#000000',
     textAlign: 'right',
   },
   lineTitleBackground: {
     backgroundColor: "#00E0FF12",
-    padding: 3,
+    padding: 5,
     borderRadius: 5
   },
   lineTeamName: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '600',
     color: "#000000",
     maxWidth: screenWidth * 0.40,
     textAlign: 'center',
   },
   lineLocation: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '400',
     color: "#7B7D86",
     maxWidth: screenWidth * 0.40,
     textAlign: 'center',
   },
   lineDate: {
-    fontSize: 9,
+    fontSize: 10,
     fontWeight: '400',
     color: '#7B7D86',
     alignSelf: 'center',
   },
-  ratingsText: {
+  ratingsCategoryText: {
     fontSize: 12,
     fontWeight: '400',
+    alignSelf: 'flex-start'
+  },
+  ratingsMetricText: {
+    fontSize: 12,
+    fontWeight: '400',
+    alignSelf: 'flex-end'
+  },
+  infoIconView: {
+    flex: 0,
+  },
+  ratingsCategoryView: {
+    flex: 1,
+    marginLeft: 10
+  },
+  ratingsMetricView: {
+    flex: 1,
   },
 });
