@@ -75,7 +75,7 @@ const SearchResultContainer = ({line}) => {
   // We find the tag for the line header, communicating what it is to bet on
   let marketTag;
   if (line.market == 'h2h') {
-    marketTag = 'Moneyline';
+    marketTag = 'ML';
   } else if (line.market == 'spreads') {
     // If a spread, check the side to get the correct point
     let point;
@@ -93,7 +93,7 @@ const SearchResultContainer = ({line}) => {
     } else if (team == 'Under') {
       point = line.away_point;
     }
-    marketTag = `${point} Total Points`;
+    marketTag = `${point} Total pts`;
   }
 
   return (
@@ -102,7 +102,8 @@ const SearchResultContainer = ({line}) => {
       <TouchableOpacity onPress={() => handleCardClick()}style={styles.cardContainer}>
         <View style={styles.cardRow1}>
           <View style={{justifyContent: 'center', alignItems: 'center'}}>
-            {/* <Image style={styles.cardBookLogo} source={line.bookmaker in Sportsbooks && Sportsbooks[line.bookmaker].logo}/>  */}
+            {/* <Text style={styles.bookmakerTitle}>{line.bookmaker in Sportsbooks && Sportsbooks[line.bookmaker].name}</Text> */}
+              <Image style={styles.cardBookLogo} source={line.bookmaker in Sportsbooks && Sportsbooks[line.bookmaker].logo}/> 
           </View>
           <View style={styles.lineTitleBackground}>
             <Text style={styles.lineTitle}>{parseOdds(line[findSide(line.home_ev, line.away_ev) + "_odds"])} on {team} {marketTag}</Text>
@@ -135,9 +136,9 @@ const SearchResultContainer = ({line}) => {
         </View>
     </TouchableOpacity>
     }
-    {/* <Modal transparent={false} animationType="fade" visible={featuredLine === line.id}>
+    <Modal transparent={false} animationType="fade" visible={featuredLine === line.id}>
       <InAppWebBrowser setFeaturedLine={setFeaturedLine} line={line}></InAppWebBrowser>
-    </Modal> */}
+    </Modal>
     </>
   )
 }
@@ -153,12 +154,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.50,
     shadowRadius: 3,
     marginVertical: screenHeight * 0.015,
-    padding: 15,
+    paddingHorizontal: 15,
+    paddingVertical: 15,
     width: screenWidth * 0.9,
   },
   cardBookLogo: {
-    width: 50,
-    height: 15,
+    height: 20,
+    width: 80,
+    resizeMode: 'contain',
   },
   cardBookLabel: {
     fontSize: 12,
@@ -193,22 +196,31 @@ const styles = StyleSheet.create({
     marginTop: screenHeight * 0.02, 
     borderRadius: 5
   },
+  bookmakerTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: "#000000",
+    textAlign: 'left',
+  },
   lineTitle: {
     fontSize: 14,
     fontWeight: '700',
     color: '#000000',
     textAlign: 'right',
+    ellipsizeMode: 'true',
   },
   lineTitleBackground: {
+    flex: 0,
     backgroundColor: "#00E0FF12",
     padding: 5,
-    borderRadius: 5
+    borderRadius: 5,
+    maxWidth: '60%'
   },
   lineTeamName: {
     fontSize: 14,
     fontWeight: '600',
     color: "#000000",
-    maxWidth: screenWidth * 0.40,
+    maxWidth: screenWidth * 0.25,
     textAlign: 'center',
   },
   lineLocation: {
