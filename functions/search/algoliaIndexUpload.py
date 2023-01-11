@@ -15,7 +15,7 @@ def fetch_reporter(): # <-- Fetches entire contents of `reporter`
     conn = pool.getconn()
     cursor = conn.cursor()
 
-    query = f"SELECT row_to_json(a) FROM ( SELECT * FROM reporter ORDER BY max_ev DESC) as a;"
+    query = "SELECT row_to_json(a) FROM ( SELECT * FROM reporter ORDER BY max_ev DESC) as a;"
     try:
         cursor.execute(query)
     except Exception as e:
@@ -33,14 +33,31 @@ def fetch_reporter(): # <-- Fetches entire contents of `reporter`
     pool.putconn(conn)
     return json_output # <-- Fetches most receent snapshot from all 'lines' tables for events occuring today
 
-def clean_for_algolia(json_data): # <-- Prepares data by adding objectId
+def prepare_for_algolia(json_data): # <-- Prepares data by adding objectId, and splitting into three distinct betting objects (i.e. lines)
 
     count = 0
+    prepared_data = [] # <-- We push json_data to a list of objects where each object is one side of a bettable line
     for item in json_data:
-        item['objectID'] = count
+        home_json = {}
+        away_json = {}
+        draw_json = {}
+        
+        for key in item:
+            home_json[key] = item[key]
+            away_json[key] = item[key]
+            draw_json[key] = item[key]
+            
+        home_json['objectID'] = count
+        away_json['objectID'] = count
+        draw_json['objectID'] = count
+
+        prepared_data.append(home_json)
+        prepared_data.append(away_json)
+        prepared_data.append(draw_json)
+
         count += 1
 
-    return json_data
+    return prepared_data
 
 
 def upload_to_algolia(json_data): # <-- Takes in a list of json objects from PGSQL
@@ -52,5 +69,6 @@ def upload_to_algolia(json_data): # <-- Takes in a list of json objects from PGS
 
 
 reporterContents = fetch_reporter()
-clean_data = clean_for_algolia(reporterContents)
-upload_to_algolia(clean_data)
+prepared_data = prepare_for_algolia(reporterContents)
+print(len(prepared_data))
+# upload_to_algolia(prepared_data)

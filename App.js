@@ -9,7 +9,7 @@ import { Welcome, Login, CreateAccount, Home, Chat, Email, Center } from "./scre
 const Stack = createStackNavigator();
 
 const globalScreenOptions = {
-  headerStyle: { backgroundColor: "#ffffff"},
+  headerStyle: { backgroundColor: "#FFFFFF"},
   headerTitleStyle: {color: "black"},
   headerTintColor: "black",
 }

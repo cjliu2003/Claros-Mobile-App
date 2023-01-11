@@ -9,6 +9,7 @@ import {parseDate} from '../functions/parsing/parseDate';
 import { AntDesign } from '@expo/vector-icons';
 import { SimpleLineIcons } from '@expo/vector-icons';
 import LinePage from './LinePage';
+import InAppWebBrowser from './WebBrowser'
 
 // Get the current screen width and height
 const screenWidth = Dimensions.get('window').width;
@@ -134,9 +135,9 @@ const SearchResultContainer = ({line}) => {
         </View>
     </TouchableOpacity>
     }
-    <Modal transparent={true} animationType="slide" animationIn="bottom" visible={featuredLine === line.id}>
-      <LinePage setFeaturedLine={setFeaturedLine} line={line}></LinePage>
-    </Modal>
+    {/* <Modal transparent={false} animationType="fade" visible={featuredLine === line.id}>
+      <InAppWebBrowser setFeaturedLine={setFeaturedLine} line={line}></InAppWebBrowser>
+    </Modal> */}
     </>
   )
 }
@@ -193,7 +194,7 @@ const styles = StyleSheet.create({
     borderRadius: 5
   },
   lineTitle: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '700',
     color: '#000000',
     textAlign: 'right',
@@ -204,32 +205,32 @@ const styles = StyleSheet.create({
     borderRadius: 5
   },
   lineTeamName: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '600',
     color: "#000000",
     maxWidth: screenWidth * 0.40,
     textAlign: 'center',
   },
   lineLocation: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '400',
     color: "#7B7D86",
     maxWidth: screenWidth * 0.40,
     textAlign: 'center',
   },
   lineDate: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '400',
     color: '#7B7D86',
     alignSelf: 'center',
   },
   ratingsCategoryText: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '400',
     alignSelf: 'flex-start'
   },
   ratingsMetricText: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '400',
     alignSelf: 'flex-end'
   },

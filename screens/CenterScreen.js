@@ -20,7 +20,7 @@ const CenterScreen = ( {navigation} ) => {
         },
         headerLeft: () => (
           <TouchableOpacity style={styles.headerLeft} onPress={() => navigation.goBack()}>
-            <Icon name="chevrons-left" size={40} color={"#FFFFFF"} />
+            <Icon name="chevrons-left" size={28} color={"#FFFFFF"} />
           </TouchableOpacity>
         ),
     });
