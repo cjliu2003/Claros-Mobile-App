@@ -49,7 +49,7 @@ const CenterScreen = ( {navigation} ) => {
             <Text style={styles.legalLinkText}>Terms and Conditions</Text>
             <Text style={styles.legalLinkText}>Privacy Policy</Text>
         </View>
-        <Modal transparent={false} animationType="fade" visible={isManageSubPressed}>
+        <Modal transparent={true} animationType="fade" visible={isManageSubPressed}>
           <InAppWebBrowser url={'https://billing.stripe.com/p/login/00gbLJ0Zgd7U7IYcMM'} setIsManagedSubPressed={setIsManagedSubPressed}></InAppWebBrowser>
         </Modal>
       </View>
