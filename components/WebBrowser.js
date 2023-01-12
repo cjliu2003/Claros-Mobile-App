@@ -1,51 +1,64 @@
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View, ScrollView, FlatList, PanResponder } from 'react-native'
+import { Dimensions, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
 import React from 'react'
-import { parseName } from '../functions/parsing/parseName';
-import { findSide } from '../functions/parsing/findSide';
-import { parseOdds } from '../functions/parsing/parseOdds';
-import { parseDate } from '../functions/parsing/parseDate';
-import {calculateIP} from '../functions/calculations/calculateIP'
-import { LinearGradient } from 'expo-linear-gradient';
 import {useUserContext} from '../contexts/userContext'
-import { Entypo } from '@expo/vector-icons';
 import { WebView } from 'react-native-webview';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Icons from '../assets/Icons';
+import { clickProps } from 'react-native-web/dist/cjs/modules/forwardedProps';
 
 // Get the current screen width and height
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-const InAppWebBrowser = ({setFeaturedLine, line}) => {
+const InAppWebBrowser = (props) => {
     const {subscription} = useUserContext()
     const handleCloseButtonClick = () => {
-        setFeaturedLine(null)
+        props.setIsManagedSubPressed(false);
     }
 
     return (
         <View style={styles.container}>
             <View style={styles.headerContainer}>
+                {/* <View style={styles.headerCloseContainer}> */}
                 <TouchableOpacity onPress={handleCloseButtonClick}>
                     <Text style={styles.headerCloseText}>Close</Text>
                 </TouchableOpacity>
+                {/* </View> */}
                 <View style={styles.headerCenterpiece}>
-                    <Ionicons name="ios-lock-closed" color="#000000" size="16" />
-                    <Text style={styles.urlText}>betonline.ag</Text>
-                    
+                    <Ionicons name="ios-lock-closed" color="#000000" size="16"></Ionicons>
+                    {/* <Image style={styles.padlockProps} source={Icons.Padlock} /> */}
+                    <Text style={styles.urlText}>decrypt.co</Text>
                 </View>
-                <AntDesign name="reload1" color="#0060FF" size="16" />
+                {/* <View style={styles.headerReloadContainer}> */}
+                <TouchableOpacity>
+                    <AntDesign name="reload1" color="#0060FF" size="18" />
+                </TouchableOpacity>
+                {/* </View> */}
+                
             </View>
-            <WebView source={{ uri: 'https://decrypt.co/118545/developers-burn-5-trillion-bonk-as-solana-based-meme-coin-slides' }} startInLoadingState={true} scalesPageToFit={true}>
+            <WebView source={{ uri: props.url }} startInLoadingState={true} scalesPageToFit={true}>
             </WebView>
-
-
             <View style={styles.footerContainer}>
-                <Ionicons name="ios-chevron-back" color="#0060FF" size="30" />
-                <Ionicons name="ios-chevron-forward" color="#0060FF" size="30" />
-                <Ionicons name="ios-share-outline" color="#0060FF" size="30" />
-                <FontAwesome name="safari" color="#0060FF" size="30" />
+                <TouchableOpacity>
+                    <Entypo name="chevron-thin-left" color="#0060FF" size="22" />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                    <Entypo name="chevron-thin-right" color="#0060FF" size="22" />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                    <Feather name="share" color="#0060FF" size="22" />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                    <MaterialCommunityIcons name="apple-safari" color="#0060FF" size="24" />
+                </TouchableOpacity>
+                
+                
             </View>
             {/* <StatusBar style='light' /> */}
         </View>
@@ -64,10 +77,12 @@ const styles = StyleSheet.create({
         height: screenHeight * 0.1,
         flexDirection: 'row',
         alignItems: 'flex-end',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         borderBottomColor: "#BDBDBD",
         borderBottomWidth: 0.5,
-        padding: 12,
+        paddingBottom: 12,
+        paddingRight: 17,
+        paddingLeft: 17,
     },
     headerCloseText: {
         color: "#0060FF",
@@ -75,10 +90,28 @@ const styles = StyleSheet.create({
         fontWeight: '400',
         alignItems: 'flex-start',
     },
+    headerCloseContainer: {
+        flex: 1,
+        borderColor: "#000000",
+        borderWidth: 1
+    },
     headerCenterpiece: {
-        flexDirection: 'row',
+        display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        flexDirection: 'row',
+
+    },
+    headerReloadContainer: {
+        flex: 1,
+        borderColor: "#000000",
+        borderWidth: 1
+    },
+    padlockProps: {
+        flex: 0,
+        width: 16,
+        height: 16,
+        resizeMode: 'contain'
     },
     urlText: {
         fontSize: 17,
@@ -87,12 +120,14 @@ const styles = StyleSheet.create({
     },
     footerContainer: {
         backgroundColor: "#F3F3F3",
-        height: screenHeight * 0.1,
+        height: screenHeight * 0.09,
         flexDirection: 'row',
         alignItems: 'flex-start',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         borderTopColor: "#BDBDBD",
         borderTopWidth: 0.5,
-        padding: 12,
+        paddingTop: 12,
+        paddingRight: 17,
+        paddingLeft: 17,
     },
   })

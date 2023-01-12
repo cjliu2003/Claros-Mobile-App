@@ -22,17 +22,17 @@ const HomeScreen = ({navigation}) => {
   const [data, setData] = useState(null);
   const [showSearchResults, setShowSearchResults] = useState(false);
 
-  // // useEffect to detect non users and send them to welcome
-  // useEffect(() => {
-  //   if (!user) navigation.navigate("Welcome")
-  // }, [user])
+  // useEffect to detect non users and send them to welcome
+  useEffect(() => {
+    if (!user) navigation.navigate("Welcome")
+  }, [user])
 
-  // // useEffect to show subscription prompt pop up iof the user is not a subscriber
-  // useEffect(() => {
-  //   if (subscription === "none" && !recentSignOut) {
-  //     setIsPopupVisible(true);
-  //   }
-  // }, [subscription])
+  // useEffect to show subscription prompt pop up iof the user is not a subscriber
+  useEffect(() => {
+    if (subscription === "none" && !recentSignOut) {
+      setIsPopupVisible(true);
+    }
+  }, [subscription])
   
   const signOut = () => {
     setRecentSignOut(true)

@@ -136,9 +136,9 @@ const SearchResultContainer = ({line}) => {
         </View>
     </TouchableOpacity>
     }
-    <Modal transparent={false} animationType="fade" visible={featuredLine === line.id}>
+    {/* <Modal transparent={false} animationType="fade" visible={featuredLine === line.id}>
       <InAppWebBrowser setFeaturedLine={setFeaturedLine} line={line}></InAppWebBrowser>
-    </Modal>
+    </Modal> */}
     </>
   )
 }
