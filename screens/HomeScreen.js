@@ -7,6 +7,8 @@ import { searchIndex } from '../functions/search/processQueries';
 import SearchResultContainer from '../components/SearchResult';
 import CTAPopup from '../components/CTAPopup';
 import { Ionicons } from '@expo/vector-icons';
+import Spinner from 'react-native-loading-spinner-overlay';
+import { ClipLoader } from 'react-spinners';
 
 // Get the current screen width and height
 const screenWidth = Dimensions.get('window').width;
@@ -21,18 +23,19 @@ const HomeScreen = ({navigation}) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [data, setData] = useState(null);
   const [showSearchResults, setShowSearchResults] = useState(false);
+  const [isAwaitingFetch, setIsAwaitingFetch] = useState(false);
 
-  // // useEffect to detect non users and send them to welcome
-  // useEffect(() => {
-  //   if (!user) navigation.navigate("Welcome")
-  // }, [user])
+  // useEffect to detect non users and send them to welcome
+  useEffect(() => {
+    if (!user) navigation.navigate("Welcome")
+  }, [user])
 
-  // // useEffect to show subscription prompt pop up iof the user is not a subscriber
-  // useEffect(() => {
-  //   if (subscription === "none" && !recentSignOut) {
-  //     setIsPopupVisible(true);
-  //   }
-  // }, [subscription])
+  // useEffect to show subscription prompt pop up iof the user is not a subscriber
+  useEffect(() => {
+    if (subscription === "none" && !recentSignOut) {
+      setIsPopupVisible(true);
+    }
+  }, [subscription])
   
   const signOut = () => {
     setRecentSignOut(true)
@@ -72,11 +75,13 @@ const HomeScreen = ({navigation}) => {
   }
 
   const handleSearch = async () => {
-    Vibration.vibrate(0, 500);
+    setIsAwaitingFetch(true); // Update the state to loading
+    // Vibration.vibrate(0, 500);
 
     // Perform search from index
     const data = await searchIndex(searchQuery);
     setData(data);
+    setIsAwaitingFetch(false);
     setShowSearchResults(true);
   }
 
@@ -84,16 +89,44 @@ const HomeScreen = ({navigation}) => {
     navigation.navigate("Center")
   }
   
+  const handleBackToBrandedSearch = () => {
+    setShowSearchResults(false);
+  }
+  console.log(showSearchResults);
+  
   return (
     <>
-    <CTAPopup setIsPopupVisible={setIsPopupVisible} isPopupVisible={isPopupVisible}/>
+      <CTAPopup setIsPopupVisible={setIsPopupVisible} isPopupVisible={isPopupVisible}/>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <ScrollView contentContainerStyle={[styles.container, {overflow: 'scroll', backgroundColor: 'white'}]}>
+          <Spinner
+            visible={isAwaitingFetch}
+            color="#0060FF"
+            overlayColor="#FFFFFF"
+            animation="none"
+          />
+          {/* <ClipLoader
+            color="#0060FF"
+            loading={isAwaitingFetch}
+            size={150}
+            // aria-label="Loading Spinner"
+            // data-testid="loader"
+          /> */}
+
           <Animated.View style={[styles.container, showSearchResults ? {justifyContent: 'flex-start'} : {justifyContent: 'center'}, { transform: [{ translateY }] }]}>
             <Animated.Text style={[styles.brandText, showSearchResults ? {fontSize: 48} : {fontSize: 84},{transform: [{translateY: brandTextYTransform}]}]}>Claros</Animated.Text>
-            <TouchableOpacity style={styles.centerButton} onPress={handleCenterButtonClick}>
-              <Ionicons name="person-circle" size={30} color="#0060FF" />
-            </TouchableOpacity>
+            
+            { showSearchResults ?
+              <>
+                <TouchableOpacity style={styles.centerButton} onPress={handleCenterButtonClick}>
+                  <Ionicons name="person-circle" size={30} color="#0060FF" />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.backButton} onPress={handleBackToBrandedSearch}>
+                  <Icon name="chevrons-left" size={28} color={"#0060FF"} />
+                </TouchableOpacity>
+              </>
+             : null
+            }            
             {!showSearchResults ? <>
               <Text style={styles.callToActionText}>Find your next bet with Claros!</Text>
               <View style={styles.rowContainer}>
@@ -163,8 +196,13 @@ const styles = StyleSheet.create({
   },
   centerButton: {
     position: 'absolute',
-    top: 25,
+    top: 35,
     right: 25,
+  },
+  backButton: {
+    position: 'absolute',
+    top: 35,
+    left: 25,
   },
   filterButtonContainer: {
     paddingHorizontal: 16,
