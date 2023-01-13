@@ -56,23 +56,6 @@ const SearchResultContainer = ({line}) => {
 
   let textColor = handleGradeTextColor(line.max_ev)
   let backgroundColor = handleGradeBackgroundColor(line.max_ev)
-  let textColor;
-  if (line.max_ev >= 1) {
-    textColor = colorMap.A.TXT;
-  } else if (line.max_ev > -1 && line.max_ev < 1) {
-    textColor = colorMap.B.TXT;
-  } else {
-    textColor = colorMap.C.TXT;
-  }
-
-  let backgroundColor;
-  if (line.max_ev >= 1) {
-    backgroundColor = colorMap.A.BG;
-  } else if (line.max_ev > -1 && line.max_ev < 1) {
-    backgroundColor = colorMap.B.BG;
-  } else {
-    backgroundColor = colorMap.C.BG;
-  }
 
   let team;
   if (line.market == 'h2h' || line.market == 'spreads') {
