@@ -81,6 +81,7 @@ const HomeScreen = ({navigation}) => {
     // Perform search from index
     const data = await searchIndex(searchQuery);
     setData(data);
+    console.log(data)
     setIsAwaitingFetch(false);
     setKeyboardHeight(0);
     setKeyboardVisible(false);
@@ -171,8 +172,11 @@ const HomeScreen = ({navigation}) => {
                   <SearchResultContainer key={line.id} line={line}/>
                 )
               })}
-              {/* </View> */}
-              
+              {(showSearchResults && data.length === 0) && 
+                <View style={styles.noResultsFoundContainer}>
+                  <Text style={styles.noResultsFoundText}>No Search Results Found.</Text>
+                </View>
+              }
             </> }
           </Animated.View>
           {/* <Text onPress={() => signOut()}>click me to sign out (this helps with testing if the popup will occur on different accounts)</Text> */}
@@ -286,6 +290,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  noResultsFoundContainer: {
+    marginTop: screenHeight * 0.2
+  },
+  noResultsFoundText: {
+    fontSize: 16,
+    color: '#000000',
+    fontWeight: '400'
   },
   newSearchInput: {
     height: 40,
