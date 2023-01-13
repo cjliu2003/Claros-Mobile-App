@@ -11,6 +11,8 @@ import { createUserWithEmailAndPassword, updateProfile, onAuthStateChanged, sign
 import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 import { REACT_APP_STRIPE_PREMIUM_WEEKLY1, REACT_APP_STRIPE_PREMIUM_MONTHLY1, REACT_APP_STRIPE_PREMIUM_WEEKLY2, REACT_APP_STRIPE_PREMIUM_MONTHLY2 } from '@env'
 import { Alert } from "react-native";
+import { parseFirebaseSignInError } from "../functions/parsing/parseFirebaseSignInError";
+import { parseFirebaseSignUpError } from "../functions/parsing/parseFirebaseSignUpError";
 
 const UserContext = createContext({});
 
@@ -258,20 +260,20 @@ export const UserContextProvider = ({ children }) => {
         }, {merge: true});
     }
 
-    const registerUser = (email, password) => {
+    const registerUser = (password) => {
         // Set the global loading state to true
         setLoading(true)
         // Attempt to create a new user with the provided email and password
-        createUserWithEmailAndPassword(auth, email, password)
+        createUserWithEmailAndPassword(auth, authEmail, password)
         // Log the result of the display name update
-        .then((res) => console.log(res))
-        // Write the user's phone number to the database and initialize their user data
-        .then(() => {
-            initializeUserData(auth.currentUser);
-        })
         // If there is an error, set the sign-up error state with the error message
         .catch(err => {
-            Alert.alert('Sign Up Error', err.toString().substring(25), [{text: 'Ok'}])
+            if (err) {
+                Alert.alert('Sign Up Error', parseFirebaseSignUpError(err))
+            }
+        }).then((res) => console.log(res))
+        .then(() => {
+            initializeUserData(auth.currentUser);
         })
         // Set the global loading state to false, regardless of success or failure
         .finally(() => setLoading(false));
@@ -284,7 +286,7 @@ export const UserContextProvider = ({ children }) => {
             console.log(email)
         })
         .catch(err => {
-            setSignInError(err.toString())
+            Alert.alert("Sign In Error", parseFirebaseSignInError(err))
         })
         .finally(() => setLoading(false));
     }

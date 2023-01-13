@@ -19,7 +19,8 @@ const screenHeight = Dimensions.get('window').height;
 const InAppWebBrowser = (props) => {
     const {subscription} = useUserContext()
     const handleCloseButtonClick = () => {
-        props.setIsManagedSubPressed(false);
+        console.log(props.currWebview)
+        props.setCurrWebview("");
     }
 
     return (
@@ -57,8 +58,6 @@ const InAppWebBrowser = (props) => {
                 <TouchableOpacity>
                     <MaterialCommunityIcons name="apple-safari" color="#0060FF" size="24" />
                 </TouchableOpacity>
-                
-                
             </View>
             {/* <StatusBar style='light' /> */}
         </View>
