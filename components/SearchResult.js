@@ -43,11 +43,13 @@ const SearchResultContainer = ({line}) => {
   // Store a ref to the cardContainer to get its position. Initialize card's position as well
   const cardContainerRef = React.createRef();
   const [cardContainerPosition, setCardContainerPosition] = useState({ x: 0, y: 0 });
+  const [cardContainerAspect, setCardContainerAspect] = useState({ width: 0, height: 0 });
 
   const handleInfoClick = () => {
     setIsRatingInfoPressed(true);
-    cardContainerRef.current.measure((x, y, width, height, pageX, pageY) => {
+    cardContainerRef.current.measure((x, y, width, height, pageX, pageY, pageWidth, pageHeight) => {
       setCardContainerPosition({ x: pageX, y: pageY });
+      setCardContainerAspect({ width: width, height: height });
     });
   }
 
@@ -138,9 +140,7 @@ const SearchResultContainer = ({line}) => {
           <Text style={styles.lineDate}>{parseDate(line.commence_time)}</Text>
         </View>
         <TouchableOpacity style={[{backgroundColor: backgroundColor, flex: 1}, styles.cardRow5]} onPress={handleInfoClick}>
-          <TouchableOpacity style={styles.infoIconView}>
-            <SimpleLineIcons name="info" size={16} color={textColor}></SimpleLineIcons>
-          </TouchableOpacity>
+          <SimpleLineIcons name="info" size={16} color={textColor}></SimpleLineIcons>
           <View style={styles.ratingsCategoryView}>
             <Text style={[styles.ratingsCategoryText, {color: textColor}]}>{line.max_ev > 1 ? "A" : line.max_ev > -1 && line.max_ev < 1 ? "B" : "C"} Rating </Text>
           </View>
@@ -156,6 +156,7 @@ const SearchResultContainer = ({line}) => {
           <RatingInfoPopUp 
             setIsRatingInfoPressed={setIsRatingInfoPressed} 
             position={{ top: cardContainerPosition.y, left: cardContainerPosition.x }}
+            aspect={{ width: cardContainerAspect.width, height: cardContainerAspect.height }}
             />
         </Modal>
       </View>

@@ -25,17 +25,17 @@ const HomeScreen = ({navigation}) => {
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [isAwaitingFetch, setIsAwaitingFetch] = useState(false);
 
-  // useEffect to detect non users and send them to welcome
-  useEffect(() => {
-    if (!user) navigation.navigate("Welcome")
-  }, [user])
+  // // useEffect to detect non users and send them to welcome
+  // useEffect(() => {
+  //   if (!user) navigation.navigate("Welcome")
+  // }, [user])
 
-  // useEffect to show subscription prompt pop up iof the user is not a subscriber
-  useEffect(() => {
-    if (subscription === "none" && !recentSignOut) {
-      setIsPopupVisible(true);
-    }
-  }, [subscription])
+  // // useEffect to show subscription prompt pop up iof the user is not a subscriber
+  // useEffect(() => {
+  //   if (subscription === "none" && !recentSignOut) {
+  //     setIsPopupVisible(true);
+  //   }
+  // }, [subscription])
   
   const signOut = () => {
     setRecentSignOut(true)
@@ -92,7 +92,6 @@ const HomeScreen = ({navigation}) => {
   const handleBackToBrandedSearch = () => {
     setShowSearchResults(false);
   }
-  console.log(showSearchResults);
   
   return (
     <>
@@ -132,13 +131,13 @@ const HomeScreen = ({navigation}) => {
               <View style={styles.rowContainer}>
                 <TextInput
                   style={styles.searchInput}
-                  placeholder="Search betting markets . . ."
+                  placeholder="Sportsbook, League, Team" 
                   placeholderTextColor="#00000060"
                   enablesReturnKeyAutomatically="true"
                   onChangeText={(text) => setSearchQuery(text)}
-                  // onSubmitEditing={() => handleSearch()}
-                  // returnKeyType="search"
-                  // returnKeyLabel='\u23CE'
+                  onSubmitEditing={() => handleSearch()}
+                  returnKeyType="search"
+                  returnKeyLabel='\u23CE'
                 />
                 <TouchableOpacity style={[styles.searchButton, { marginLeft: 10 }]} onPress={() => handleSearch()}>
                   <Icon
@@ -155,7 +154,7 @@ const HomeScreen = ({navigation}) => {
                   <Ionicons name="search" size={16} color="#000000" />
                   <TextInput
                     style={styles.newSearchInput}
-                    placeholder="Search betting markets . . ."
+                    placeholder="Search by sportsbook, league, team . . ."
                     placeholderTextColor="#000000"
                     enablesReturnKeyAutomatically="true"
                     onChangeText={(text) => setSearchQuery(text)}

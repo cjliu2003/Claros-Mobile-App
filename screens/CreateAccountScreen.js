@@ -104,7 +104,7 @@ const CreateAccountScreen = ({navigation}) => {
               />
             </TouchableOpacity>
           </View>
-          <Text>By creating an account, you are agreeing to our terms and conditions and privacy policy</Text>
+          <Text style={styles.legalText}>By creating an account, you agree to our terms and conditions.</Text>
         </Animated.View>
       </View>
     </TouchableWithoutFeedback>
@@ -133,6 +133,13 @@ const styles = StyleSheet.create({
   },
   callToActionText: {
     fontSize: 22,
+    fontWeight: '200',
+    color: "#FFFFFF",
+    marginTop: 10,
+    marginBottom: 60,
+  },
+  legalText: {
+    fontSize: 18,
     fontWeight: '200',
     color: "#FFFFFF",
     marginTop: 10,
