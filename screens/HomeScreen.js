@@ -82,6 +82,8 @@ const HomeScreen = ({navigation}) => {
     const data = await searchIndex(searchQuery);
     setData(data);
     setIsAwaitingFetch(false);
+    setKeyboardHeight(0);
+    setKeyboardVisible(false);
     setShowSearchResults(true);
   }
 

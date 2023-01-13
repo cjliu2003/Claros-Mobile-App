@@ -31,15 +31,24 @@ const RatingInfoPopUp = (props) => {
                 promote the general welfare.
               </Text>
             </View>
-            <View style={styles.cardRow3}>
+            <View style={styles.cardRow5}>
               <TouchableOpacity style={styles.infoButton}>
                 <SimpleLineIcons name="info" size={20} color="#E05656" />
               </TouchableOpacity>
               <TouchableOpacity style={styles.closeButton} onPress={handleCloseButtonClick}>
-                <Text>Close</Text>
+                <Text style={styles.closeButtonText}>Close</Text>
               </TouchableOpacity>
 
             </View>
+            <TouchableOpacity style={[{backgroundColor: "#0060FF12", flex: 1}, styles.cardRow5]}>
+              <SimpleLineIcons name="info" size={16} color="#0060FF"></SimpleLineIcons>
+              <View style={styles.ratingsCategoryView}>
+                <Text style={[styles.ratingsCategoryText, {color: "#0060FF"}]}>Rating</Text>
+              </View>
+              <View style={styles.ratingsMetricView}>
+                <Text style={[styles.ratingsMetricText, {color: "#0060FF"}]}>% Fair Value</Text>
+              </View>
+            </TouchableOpacity>
       </View>
 
     )
@@ -64,6 +73,7 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
+      marginBottom: 10,
     },
     cardRow2: {
       flexDirection: 'row',
@@ -74,12 +84,20 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      height: 33,
-      borderColor: '#000000',
-      borderWidth: 1,
-      borderRadius: 5,
     },
-    ratingTitle: {
+    cardRow4: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    cardRow5: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: 10, 
+      marginTop: screenHeight * 0.02, 
+      borderRadius: 5
+    },    ratingTitle: {
       fontSize: 18,
       fontWeight: '400',
       color: "#E05656",
@@ -100,12 +118,17 @@ const styles = StyleSheet.create({
       justifyContent: 'center'
     },
     closeButton: {
-      backgroundColor: "#E0565612",
+      backgroundColor: "#F3F3F3",
       borderRadius: 5,
       height: 33,
       width: 39,
       alignItems: 'center',
-      justifyContent: 'center'
+      justifyContent: 'center',
+      padding: 5,
+    },
+    closeButtonText: {
+      color: "#7B7D86",
+      fontSize: 10,
+      fontWeight: '400',
     },
   });
-  
