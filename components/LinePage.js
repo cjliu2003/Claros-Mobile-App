@@ -33,8 +33,9 @@ const LinePage = ({setFeaturedLine, line}) => {
                 <Text style={styles.lineOdds}>{parseOdds(line[findSide(line.home_ev, line.away_ev) + "_odds"])}</Text>
                 <Text style={styles.IPLabel}>Breakeven Hit Percentage: {(calculateIP(line[findSide(line.home_ev, line.away_ev) + "_odds"])).toFixed(2) + "%"}</Text>
                 <View style={styles.edgeIndicator}>
-                    {/* <View style={[styles.edgeBar, { width: `${(calculateIP(line[findSide(line.home_ev, line.away_ev) + "_odds"])).toFixed(2) + "%"}` }]} >
-                    </View> */}
+                    <View style={[styles.edgeBar, { width: `${(calculateIP(line[findSide(line.home_ev, line.away_ev) + "_odds"])).toFixed(2) + "%"}` }]} >
+                    
+                    </View>
                     <LinearGradient colors={['#0060ff', '#39AAF3']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[styles.edgeBar, { width: `${(calculateIP(line[findSide(line.home_ev, line.away_ev) + "_odds"])).toFixed(2) + "%"}` }]}></LinearGradient>
                 </View>
                 <View style={styles.AIFeaturesContainer}>

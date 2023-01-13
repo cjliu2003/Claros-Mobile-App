@@ -54,7 +54,7 @@ const SearchResultContainer = ({line}) => {
   }
 
   let textColor;
-  if (line.max_ev > 1) {
+  if (line.max_ev >= 1) {
     textColor = colorMap.A.TXT;
   } else if (line.max_ev > -1 && line.max_ev < 1) {
     textColor = colorMap.B.TXT;
@@ -63,7 +63,7 @@ const SearchResultContainer = ({line}) => {
   }
 
   let backgroundColor;
-  if (line.max_ev > 1) {
+  if (line.max_ev >= 1) {
     backgroundColor = colorMap.A.BG;
   } else if (line.max_ev > -1 && line.max_ev < 1) {
     backgroundColor = colorMap.B.BG;
@@ -142,7 +142,7 @@ const SearchResultContainer = ({line}) => {
         <TouchableOpacity style={[{backgroundColor: backgroundColor, flex: 1}, styles.cardRow5]} onPress={handleInfoClick}>
           <SimpleLineIcons name="info" size={16} color={textColor}></SimpleLineIcons>
           <View style={styles.ratingsCategoryView}>
-            <Text style={[styles.ratingsCategoryText, {color: textColor}]}>{line.max_ev > 1 ? "A" : line.max_ev > -1 && line.max_ev < 1 ? "B" : "C"} Rating </Text>
+            <Text style={[styles.ratingsCategoryText, {color: textColor}]}>{line.max_ev >= 1 ? "A" : line.max_ev > -1 && line.max_ev < 1 ? "B" : "C"} Rating </Text>
           </View>
           <View style={styles.ratingsMetricView}>
             <Text style={[styles.ratingsMetricText, {color: textColor}]}>{line.max_ev > 0 && "+" }{(line.max_ev).toFixed(2)}% Fair Value</Text>
