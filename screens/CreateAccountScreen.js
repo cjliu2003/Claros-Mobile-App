@@ -81,7 +81,8 @@ const CreateAccountScreen = ({navigation}) => {
               type="password"
               value={password}
               secureTextEntry='true'
-              onChangeText={(text) => setPassword(text)} 
+              onChangeText={(text) => setPassword(text)}
+              returnKeyType="next"
             />
             <TextInput
               style={styles.searchInput}
@@ -92,6 +93,8 @@ const CreateAccountScreen = ({navigation}) => {
               value={confirmPassword}
               secureTextEntry='true'
               onChangeText={(text) => setConfirmPassword(text)} 
+              onSubmitEditing={() => signUpUser()}
+              returnKeyType="done"
             />
             <TouchableOpacity style={[styles.searchButton, { marginLeft: 10 }]} onPress={() => signUpUser()}>
               <Icon
@@ -101,7 +104,7 @@ const CreateAccountScreen = ({navigation}) => {
               />
             </TouchableOpacity>
           </View>
-          <Text>By creating an account, you are agreeing to our terms and conditions and privacy policy</Text>
+          <Text style={styles.legalText}>By creating an account, you agree to our terms and conditions.</Text>
         </Animated.View>
       </View>
     </TouchableWithoutFeedback>
@@ -130,6 +133,13 @@ const styles = StyleSheet.create({
   },
   callToActionText: {
     fontSize: 22,
+    fontWeight: '200',
+    color: "#FFFFFF",
+    marginTop: 10,
+    marginBottom: 60,
+  },
+  legalText: {
+    fontSize: 18,
     fontWeight: '200',
     color: "#FFFFFF",
     marginTop: 10,

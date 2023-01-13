@@ -7,7 +7,10 @@ import { parseName } from '../functions/parsing/parseName';
 import {parseOdds} from '../functions/parsing/parseOdds'
 import {parseDate} from '../functions/parsing/parseDate';
 import { AntDesign } from '@expo/vector-icons';
+import { SimpleLineIcons } from '@expo/vector-icons';
 import LinePage from './LinePage';
+import InAppWebBrowser from './WebBrowser'
+import RatingInfoPopUp from './RatingInfoPopup';
 
 // Get the current screen width and height
 const screenWidth = Dimensions.get('window').width;
@@ -15,50 +18,154 @@ const screenHeight = Dimensions.get('window').height;
 
 const colorMap = {
   A: {
-    BG: "#35a83225",
-    TXT: "#35a832",
+    BG: "#4BC15712",
+    TXT: "#4BC157",
   },
-  F: {
-    BG: "#FF000025",
-    TXT: "#FF0000",
+  B: {
+    BG: "#E1C52E12",
+    TXT: "#E1C52E"
+    
+  },
+  C: {
+    BG: "#E0565612",
+    TXT: "#E05656",
   }
 }
 
 const SearchResultContainer = ({line}) => {
   const [featuredLine, setFeaturedLine] = useState(null)
+  const [isRatingInfoPressed, setIsRatingInfoPressed] = useState(false);
+
   const handleCardClick = () => {
-    setFeaturedLine(line.id)
+    setFeaturedLine(line.id);
+  }
+
+  // Store a ref to the cardContainer to get its position. Initialize card's position as well
+  const cardContainerRef = React.createRef();
+  const [cardContainerPosition, setCardContainerPosition] = useState({ x: 0, y: 0 });
+  const [cardContainerAspect, setCardContainerAspect] = useState({ width: 0, height: 0 });
+
+  const handleInfoClick = () => {
+    setIsRatingInfoPressed(true);
+    cardContainerRef.current.measure((x, y, width, height, pageX, pageY, pageWidth, pageHeight) => {
+      setCardContainerPosition({ x: pageX, y: pageY });
+      setCardContainerAspect({ width: width, height: height });
+    });
+  }
+
+  let textColor;
+  if (line.max_ev > 1) {
+    textColor = colorMap.A.TXT;
+  } else if (line.max_ev > -1 && line.max_ev < 1) {
+    textColor = colorMap.B.TXT;
+  } else {
+    textColor = colorMap.C.TXT;
+  }
+
+  let backgroundColor;
+  if (line.max_ev > 1) {
+    backgroundColor = colorMap.A.BG;
+  } else if (line.max_ev > -1 && line.max_ev < 1) {
+    backgroundColor = colorMap.B.BG;
+  } else {
+    backgroundColor = colorMap.C.BG;
+  }
+
+  let team;
+  if (line.market == 'h2h' || line.market == 'spreads') {
+    if (line.max_ev == line.home_ev) {
+      team = line.home_team_name;
+    } else if (line.max_ev == line.away_ev) {
+      team = line.away_team_name;
+    } else {
+      team = "Draw";
+    }
+  } else if (line.market == 'totals') {
+    if (line.max_ev == line.home_ev) {
+      team = 'Over';
+    } else if (line.max_ev == line.away_ev) {
+      team = 'Under';
+    }
   }
   
+  // We find the tag for the line header, communicating what it is to bet on
+  let marketTag;
+  if (line.market == 'h2h') {
+    marketTag = 'ML';
+  } else if (line.market == 'spreads') {
+    // If a spread, check the side to get the correct point
+    let point;
+    if (team == line.home_team_name) {
+      point = line.home_point;
+    } else if (team == line.away_team_name) {
+      point = line.away_point;
+    }
+    marketTag = `@ ${point}`;
+  } else if (line.market == 'totals') {
+    // If a total, get the point
+    let point;
+    if (team == 'Over') {
+      point = line.home_point;
+    } else if (team == 'Under') {
+      point = line.away_point;
+    }
+    marketTag = `${point} Total pts`;
+  }
+
   return (
     <>
     {line &&
-      <TouchableOpacity onPress={() => handleCardClick()}style={styles.cardContainer}>
-        <Text style={styles.lineTitle}>{parseName(line.league_name, line[findSide(line.home_ev, line.away_ev) + "_team_name"], line.market, line[findSide(line.home_ev, line.away_ev) + "_point"])}</Text>
-        <Text style={styles.lineDate}>{parseDate(line.commence_time)}</Text>
-        <View style={styles.cardRow}>
+      <View ref={cardContainerRef} style={styles.cardContainer}>
+        <View style={styles.cardRow1}>
           <View style={{justifyContent: 'center', alignItems: 'center'}}>
-            <Image style={styles.cardBookLogo} source={line.bookmaker in Sportsbooks && Sportsbooks[line.bookmaker].logo}/> 
-            <Text style={styles.cardBookLabel}>{line.bookmaker in Sportsbooks && Sportsbooks[line.bookmaker].name}</Text>
+            {/* <Text style={styles.bookmakerTitle}>{line.bookmaker in Sportsbooks && Sportsbooks[line.bookmaker].name}</Text> */}
+              <Image style={styles.cardBookLogo} source={line.bookmaker in Sportsbooks && Sportsbooks[line.bookmaker].logo}/> 
           </View>
-          <Text style={styles.lineOdds}>{parseOdds(line[findSide(line.home_ev, line.away_ev) + "_odds"])}</Text>
+          <View style={styles.lineTitleBackground}>
+            <Text style={styles.lineTitle}>{parseOdds(line[findSide(line.home_ev, line.away_ev) + "_odds"])} on {team} {marketTag}</Text>
+          </View>
+          
         </View>
-        <View style={styles.cardRow}>
-          <Text style={styles.lineTeamName}>{line.away_team_name}</Text>
-          <AntDesign name="Trophy" size={20} color="black" />
-          <Text style={styles.lineTeamName}>{line.home_team_name}</Text>
+        <View style={styles.cardRow2}>
+          <Text style={[styles.lineTeamName, {flex: 1, textAlign: 'left'}]}>{line.away_team_name}</Text>
+          <AntDesign name="Trophy" size={16} color="black" style={{flex: 0}} />
+          <Text style={[styles.lineTeamName, {flex: 1, textAlign: 'right'}]}>{line.home_team_name}</Text>
         </View>
-        <View style={[{backgroundColor: line.max_ev > 0 ? colorMap.A.BG : colorMap.F.BG, padding: 10, marginTop: screenHeight * 0.02, borderRadius: 5}, styles.cardRow]}>
-          <Text style={{color: line.max_ev > 0 ? colorMap.A.TXT : colorMap.F.TXT}}>{line.max_ev > 0 ? "A" : "F"} Rating </Text>
-          <Text style={{color: line.max_ev > 0 ? colorMap.A.TXT : colorMap.F.TXT}}>{line.max_ev > 0 && "+" }{(line.max_ev).toFixed(2)}% Fair Value</Text>
+
+        <View style={styles.cardRow3}>
+          <Text style={styles.lineLocation}>Away</Text>
+          <Text style={styles.lineLocation}>Home</Text>
         </View>
-    </TouchableOpacity>
+        <View style={styles.cardRow4}>
+          <Text style={styles.lineDate}>{parseDate(line.commence_time)}</Text>
+        </View>
+        <TouchableOpacity style={[{backgroundColor: backgroundColor, flex: 1}, styles.cardRow5]} onPress={handleInfoClick}>
+          <SimpleLineIcons name="info" size={16} color={textColor}></SimpleLineIcons>
+          <View style={styles.ratingsCategoryView}>
+            <Text style={[styles.ratingsCategoryText, {color: textColor}]}>{line.max_ev > 1 ? "A" : line.max_ev > -1 && line.max_ev < 1 ? "B" : "C"} Rating </Text>
+          </View>
+          <View style={styles.ratingsMetricView}>
+            <Text style={[styles.ratingsMetricText, {color: textColor}]}>{line.max_ev > 0 && "+" }{(line.max_ev).toFixed(2)}% Fair Value</Text>
+          </View>
+        </TouchableOpacity>
+        <Modal 
+          transparent={true} 
+          animationType="fade" 
+          visible={isRatingInfoPressed}
+          >
+          <RatingInfoPopUp 
+            setIsRatingInfoPressed={setIsRatingInfoPressed} 
+            position={{ top: cardContainerPosition.y, left: cardContainerPosition.x }}
+            aspect={{ width: cardContainerAspect.width, height: cardContainerAspect.height }}
+            />
+        </Modal>
+      </View>
     }
-    <Modal transparent={true} animationType="slide" animationIn="bottom" visible={featuredLine === line.id}>
-      <LinePage setFeaturedLine={setFeaturedLine} line={line}/>
-    </Modal>
-    </>
     
+    {/* <Modal transparent={false} animationType="fade" visible={featuredLine === line.id}>
+      <InAppWebBrowser setFeaturedLine={setFeaturedLine} line={line}></InAppWebBrowser>
+    </Modal> */}
+    </>
   )
 }
 
@@ -67,52 +174,112 @@ export default SearchResultContainer;
 const styles = StyleSheet.create({
   cardContainer: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 5,
-    shadowColor: '#00000050',
+    borderRadius: 11,
+    shadowColor: '#00000060',
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.50,
-    shadowRadius: 5,
+    shadowRadius: 3,
     marginVertical: screenHeight * 0.015,
-    padding: 15,
+    paddingHorizontal: 15,
+    paddingVertical: 15,
     width: screenWidth * 0.9,
   },
   cardBookLogo: {
-    width: 50,
-    height: 50,
+    height: 20,
+    width: 80,
+    resizeMode: 'contain',
   },
   cardBookLabel: {
     fontSize: 12,
     color: '#333'
   },
-  lineOdds: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: '#333333',
-  },
-  cardRow: {
+  cardRow1: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginVertical: screenHeight * 0.005,
+    marginBottom: 10,
+  },
+  cardRow2: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  cardRow3: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  cardRow4: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cardRow5: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 10, 
+    marginTop: screenHeight * 0.02, 
+    borderRadius: 5
+  },
+  bookmakerTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: "#000000",
+    textAlign: 'left',
   },
   lineTitle: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: '700',
     color: '#000000',
-    alignSelf: 'center',
+    textAlign: 'right',
+    ellipsizeMode: 'true',
+  },
+  lineTitleBackground: {
+    flex: 0,
+    backgroundColor: "#00E0FF12",
+    padding: 5,
+    borderRadius: 5,
+    maxWidth: '60%'
+  },
+  lineTeamName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: "#000000",
+    maxWidth: screenWidth * 0.25,
+    textAlign: 'center',
+  },
+  lineLocation: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: "#7B7D86",
+    maxWidth: screenWidth * 0.40,
     textAlign: 'center',
   },
   lineDate: {
-    fontSize: 16,
-    color: '#999',
-    marginTop: 5,
+    fontSize: 11,
+    fontWeight: '400',
+    color: '#7B7D86',
     alignSelf: 'center',
   },
-  lineTeamName: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: "#000000",
-    maxWidth: screenWidth * 0.40,
-    textAlign: 'center',
+  ratingsCategoryText: {
+    fontSize: 14,
+    fontWeight: '400',
+    alignSelf: 'flex-start'
+  },
+  ratingsMetricText: {
+    fontSize: 14,
+    fontWeight: '400',
+    alignSelf: 'flex-end'
+  },
+  infoIconView: {
+    flex: 0,
+  },
+  ratingsCategoryView: {
+    flex: 1,
+    marginLeft: 10
+  },
+  ratingsMetricView: {
+    flex: 1,
   },
 });

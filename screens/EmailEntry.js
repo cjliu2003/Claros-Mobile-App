@@ -82,6 +82,8 @@ const EmailEntry = ( {navigation}) => {
                         enablesReturnKeyAutomatically="true"
                         value={email}
                         onChangeText={(text) => setEmail(text)} 
+                        onSubmitEditing={() => handleContinueClick()}
+                        returnKeyType="next"
                         >
                     </TextInput>
                     <TouchableOpacity style={[styles.searchButton, { marginLeft: 10 }]} onPress={() => handleContinueClick()}>

@@ -1,13 +1,16 @@
-import { Dimensions, StyleSheet, Text, TouchableOpacity, Vibration, View, Linking } from 'react-native'
-import React, { useLayoutEffect } from 'react'
+import { Dimensions, StyleSheet, Text, TouchableOpacity, Vibration, View, Linking, Modal } from 'react-native'
+import React, { useLayoutEffect, useState } from 'react'
 import Icon from 'react-native-vector-icons/Feather';
 import { useUserContext } from '../contexts/userContext';
+import InAppWebBrowser from '../components/WebBrowser'
+
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 const CenterScreen = ( {navigation} ) => {
   const {user, logoutUser} = useUserContext()
+  const [isManageSubPressed, setIsManagedSubPressed] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -20,7 +23,7 @@ const CenterScreen = ( {navigation} ) => {
         },
         headerLeft: () => (
           <TouchableOpacity style={styles.headerLeft} onPress={() => navigation.goBack()}>
-            <Icon name="chevrons-left" size={40} color={"#FFFFFF"} />
+            <Icon name="chevrons-left" size={28} color={"#FFFFFF"} />
           </TouchableOpacity>
         ),
     });
@@ -33,9 +36,11 @@ const CenterScreen = ( {navigation} ) => {
 
   const handleManageSubscription = () => {
     Vibration.vibrate(0, 250)
-    Linking.openURL('https://billing.stripe.com/p/login/00gbLJ0Zgd7U7IYcMM')
+    setIsManagedSubPressed(true);
+
+    // Linking.openURL('https://billing.stripe.com/p/login/00gbLJ0Zgd7U7IYcMM')
   }
-    
+
   return (
       <View style={styles.container}>
         <TouchableOpacity onPress={handleManageSubscription} style={styles.manageSubscriptionButton}><Text style={styles.manageSubscriptionButtonText}>Manage Subscription</Text></TouchableOpacity>
@@ -44,6 +49,9 @@ const CenterScreen = ( {navigation} ) => {
             <Text style={styles.legalLinkText}>Terms and Conditions</Text>
             <Text style={styles.legalLinkText}>Privacy Policy</Text>
         </View>
+        <Modal transparent={true} animationType="fade" visible={isManageSubPressed}>
+          <InAppWebBrowser url={'https://billing.stripe.com/p/login/00gbLJ0Zgd7U7IYcMM'} setIsManagedSubPressed={setIsManagedSubPressed}></InAppWebBrowser>
+        </Modal>
       </View>
   )
 }
@@ -54,7 +62,7 @@ export default CenterScreen
 const styles = StyleSheet.create({
     container: {
       flex: 1, 
-      alignItems: 'center', 
+      alignItems: 'center',
       padding: 16,
       justifyContent: 'center',
       backgroundColor: "#0060FF"
@@ -77,7 +85,7 @@ const styles = StyleSheet.create({
     manageSubscriptionButton: {
         height: 60,
         width: screenWidth * 0.65,
-        borderRadius: 5,
+        borderRadius: 11,
         shadowColor: '#FFFFFF',
         shadowOffset: { width: 0, height: 0 },
         shadowRadius: 5,
@@ -95,7 +103,7 @@ const styles = StyleSheet.create({
     signOutButton: {
         height: 60,
         width: screenWidth * 0.65,
-        borderRadius: 5,
+        borderRadius: 11,
         shadowColor: '#FFFFFF',
         shadowOffset: { width: 0, height: 0 },
         shadowRadius: 5,

@@ -87,7 +87,9 @@ const LoginScreen = ( {navigation} ) => {
               type="password"
               value={password}
               secureTextEntry='true'
-              onChangeText={(text) => setPassword(text)} 
+              onChangeText={(text) => setPassword(text)}
+              onSubmitEditing={() => signIn()}
+              returnKeyType="done"
               />
             <TouchableOpacity style={[styles.searchButton, { marginLeft: 10 }]} onPress={() => signIn()}>
               <Icon
