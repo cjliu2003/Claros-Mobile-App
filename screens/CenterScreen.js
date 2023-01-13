@@ -1,5 +1,5 @@
 import { Dimensions, StyleSheet, Text, TouchableOpacity, Vibration, View, Linking, Modal } from 'react-native'
-import React, { useLayoutEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import Icon from 'react-native-vector-icons/Feather';
 import { useUserContext } from '../contexts/userContext';
 import InAppWebBrowser from '../components/WebBrowser'
@@ -10,8 +10,7 @@ const screenHeight = Dimensions.get('window').height;
 
 const CenterScreen = ( {navigation} ) => {
   const {user, logoutUser} = useUserContext()
-  const [isManageSubPressed, setIsManagedSubPressed] = useState(false);
-
+  const [currWebview, setCurrWebview] = useState("")
   useLayoutEffect(() => {
     navigation.setOptions({
         title: "",
@@ -29,6 +28,11 @@ const CenterScreen = ( {navigation} ) => {
     });
   }, [])
 
+  useEffect(() => {
+    if (!user) navigation.replace("Welcome")
+  }, [user])
+  
+
   const signOut = () => {
     Vibration.vibrate(0, 250)
     logoutUser()
@@ -36,9 +40,17 @@ const CenterScreen = ( {navigation} ) => {
 
   const handleManageSubscription = () => {
     Vibration.vibrate(0, 250)
-    setIsManagedSubPressed(true);
+    setCurrWebview("stripe");
+  }
 
-    // Linking.openURL('https://billing.stripe.com/p/login/00gbLJ0Zgd7U7IYcMM')
+  const handleTermsClick = () => {
+    Vibration.vibrate(0, 250)
+    setCurrWebview("terms")
+  }
+
+  const handlePrivClick = () => {
+    Vibration.vibrate(0, 250)
+    setCurrWebview("terms")
   }
 
   return (
@@ -46,11 +58,17 @@ const CenterScreen = ( {navigation} ) => {
         <TouchableOpacity onPress={handleManageSubscription} style={styles.manageSubscriptionButton}><Text style={styles.manageSubscriptionButtonText}>Manage Subscription</Text></TouchableOpacity>
         <TouchableOpacity onPress={signOut} style={styles.signOutButton}><Text style={styles.signOutButtonText}>Sign Out: {user && user.email}</Text></TouchableOpacity>
         <View style={styles.legalRow}>
-            <Text style={styles.legalLinkText}>Terms and Conditions</Text>
-            <Text style={styles.legalLinkText}>Privacy Policy</Text>
+            <Text onPress={handleTermsClick} style={styles.legalLinkText}>Terms and Conditions</Text>
+            <Text onPress={handlePrivClick} style={styles.legalLinkText}>Privacy Policy</Text>
         </View>
-        <Modal transparent={true} animationType="fade" visible={isManageSubPressed}>
-          <InAppWebBrowser url={'https://billing.stripe.com/p/login/00gbLJ0Zgd7U7IYcMM'} setIsManagedSubPressed={setIsManagedSubPressed}></InAppWebBrowser>
+        <Modal transparent={true} animationType="fade" visible={currWebview === "stripe"}>
+          <InAppWebBrowser url={'https://billing.stripe.com/p/login/00gbLJ0Zgd7U7IYcMM'} currWebview={currWebview} setCurrWebview={setCurrWebview}></InAppWebBrowser>
+        </Modal>
+        <Modal transparent={true} animationType="fade" visible={currWebview === "terms"}>
+          <InAppWebBrowser url={'https://www.claros.ai/termsandconditions'} currWebview={currWebview} setCurrWebview={setCurrWebview}></InAppWebBrowser>
+        </Modal>
+        <Modal transparent={true} animationType="fade" visible={currWebview === "priv"}>
+          <InAppWebBrowser url={'https://www.claros.ai/privacypolicy'} currWebview={currWebview} setCurrWebview={setCurrWebview}></InAppWebBrowser>
         </Modal>
       </View>
   )

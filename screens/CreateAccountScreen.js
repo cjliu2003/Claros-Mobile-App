@@ -1,8 +1,9 @@
-import { Alert, Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, Vibration, View, Animated, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { Alert, Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, Vibration, View, Animated, TouchableWithoutFeedback, Keyboard, Modal } from 'react-native'
 import React, { useEffect, useLayoutEffect, useState, useRef } from 'react'
 import Icon from 'react-native-vector-icons/Feather';
 import { useUserContext } from '../contexts/userContext';
 import { validateCredentials } from '../functions/signup/validateCredentials';
+import InAppWebBrowser from '../components/WebBrowser';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -11,6 +12,9 @@ const CreateAccountScreen = ({navigation}) => {
   const {user, authEmail, registerUser} = useUserContext()
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+  const [acceptTerms, setAcceptTerms] = useState(false);
+  const [currWebview, setCurrWebview] = useState("")
+
   useLayoutEffect(() => {
     navigation.setOptions({
         title: "",
@@ -28,9 +32,9 @@ const CreateAccountScreen = ({navigation}) => {
       });
     }, [])
 
-  // useEffect(() => {
-  //   if (user) navigation.navigate("Home")
-  // }, [user])
+  useEffect(() => {
+    if (user) navigation.replace("Home")
+  }, [user])
   
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const translateY = useRef(new Animated.Value(0)).current;
@@ -57,16 +61,25 @@ const CreateAccountScreen = ({navigation}) => {
   }).start();
 
   const signUpUser = () => {
-    console.log(authEmail)
-    const validation = validateCredentials(authEmail, password, confirmPassword)
-    if (!validation) {
-      registerUser(authEmail, password)
+    if (!acceptTerms) {
+      Alert.alert("Please accept the terms and conditions")
     } else {
-      Alert.alert("Sign In Error", validation, [{Text: 'Ok'}])
+      const validation = validateCredentials(authEmail, password, confirmPassword)
+      if (!validation) {
+        registerUser(password)
+      } else {
+        Alert.alert("Sign Up Error", validation, [{Text: 'Ok'}])
+      }
     }
   }
 
+  const handleTermsClick = () => {
+    Vibration.vibrate(0,250)
+    setCurrWebview("terms")
+  }
+
   return (
+    <>
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
         <Animated.View style={[styles.container, { transform: [{ translateY }] }]}>
@@ -104,10 +117,20 @@ const CreateAccountScreen = ({navigation}) => {
               />
             </TouchableOpacity>
           </View>
-          <Text style={styles.legalText}>By creating an account, you agree to our terms and conditions.</Text>
+          <View style={styles.termsContainer}>
+            <TouchableOpacity style={styles.checkbox} onPress={() => setAcceptTerms(!acceptTerms)}>
+                <Icon name={acceptTerms ? "check-square" : "square"} size={28} color={"#ffffff"} />
+            </TouchableOpacity>
+            <Text onPress={handleTermsClick} style={styles.legalText}>I accept the terms and conditions</Text>
+          </View>
+
         </Animated.View>
       </View>
     </TouchableWithoutFeedback>
+      <Modal transparent={true} animationType="fade" visible={currWebview === "terms"}>
+        <InAppWebBrowser url={'https://www.claros.ai/termsandconditions'} currWebview={currWebview} setCurrWebview={setCurrWebview}></InAppWebBrowser>
+      </Modal>
+      </>
   )
 }
 
@@ -125,6 +148,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  termsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: screenHeight * 0.02,
+  },
+  checkbox: {
+    marginRight: 10,
+  },  
   brandText: {
     fontSize: 84,
     fontWeight: "900",
@@ -142,8 +173,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '200',
     color: "#FFFFFF",
-    marginTop: 10,
-    marginBottom: 60,
   },
   searchInput: {
     height: 60,
