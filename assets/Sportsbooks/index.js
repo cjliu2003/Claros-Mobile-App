@@ -122,7 +122,7 @@ const Sportsbooks = {
             US: true,
             EU: true
         },
-        link: "https://www.betonline.ag/",
+        link: "https://www.betonline.ag/sportsbook",
         NBA: "https://www.betonline.ag/sportsbook/basketball/nba",
         NFL: "https://www.betonline.ag/sportsbook/football/nfl",
         NCAAF: "https://www.betonline.ag/sportsbook/football/ncaa",
@@ -440,7 +440,7 @@ const Sportsbooks = {
             US: true,
             EU: false
         },
-        link: "https://www.williamhill.com/us/nj/bet/",
+        link: "https://nj.unibet.com",
         NBA: "https://nj.unibet.com/sports/#sports-hub/basketball/nba",
         NFL: "https://nj.unibet.com/sports/#sports-hub/american_football/nfl",
         NCAAF: "https://www.williamhill.com/us/nj/bet/",
@@ -454,7 +454,7 @@ const Sportsbooks = {
             US: false,
             EU: true
         },
-        link: "https://www.williamhill.com/us/nj/bet/",
+        link: "https://nj.unibet.com",
     }, 
     williamhill: {
         logo: WilliamHill,

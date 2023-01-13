@@ -1,6 +1,6 @@
 import { Dimensions, Share, StyleSheet, Text, TouchableOpacity, View, Image, Linking } from 'react-native'
-import React, { useRef } from 'react'
-import {useUserContext} from '../contexts/userContext'
+import React, { useRef, useState } from 'react'
+import { useUserContext } from '../contexts/userContext'
 import { WebView } from 'react-native-webview';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
@@ -11,13 +11,17 @@ import { Feather } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Icons from '../assets/Icons';
 import { clickProps } from 'react-native-web/dist/cjs/modules/forwardedProps';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 // Get the current screen width and height
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 const InAppWebBrowser = (props) => {
+    const [pageIsLoading, setPageIsLoading] = useState("false");
+
     const handleCloseButtonClick = () => {
+        setPageIsLoading(false);
         props.setCurrWebview("");
     }
     const handleSafariButtonClick = () => {
@@ -35,6 +39,18 @@ const InAppWebBrowser = (props) => {
     const handleForwardButtonClick = () => {
         webViewRef.current.goForward();
     }
+    const handleReloadClick = () => {
+        webViewRef.current.reload();
+    }
+
+    const handleOnLoadStart = () => {
+        setPageIsLoading(true);
+    }
+    
+    const handleOnLoadEnd = () => {
+        setPageIsLoading(false);
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.headerContainer}>
@@ -45,23 +61,26 @@ const InAppWebBrowser = (props) => {
                 {/* </View> */}
                 <View style={styles.headerCenterpiece}>
                     <Ionicons name="ios-lock-closed" color="#000000" size="16"></Ionicons>
-                    {/* <Image style={styles.padlockProps} source={Icons.Padlock} /> */}
-                    <Text style={styles.urlText}>Claros AI</Text>
+                    <Text style={styles.urlText}>claros.ai</Text>
                 </View>
-                {/* <View style={styles.headerReloadContainer}> */}
-                <TouchableOpacity>
+                <TouchableOpacity onPress={handleReloadClick}>
                     <AntDesign name="reload1" color="#0060FF" size="18" />
                 </TouchableOpacity>
-                {/* </View> */}
                 
             </View>
-            <WebView ref={webViewRef} source={{ uri: props.url }} startInLoadingState={true} scalesPageToFit={true}>
+            <WebView 
+                ref={webViewRef} 
+                source={{ uri: props.url }} 
+                startInLoadingState={true} 
+                scalesPageToFit={true}
+                onLoadStart={handleOnLoadStart}
+                onLoadEnd={handleOnLoadEnd}
+                >
             </WebView>
             <View style={styles.footerContainer}>
                 <TouchableOpacity onPress={handleBackButtonClick}>
                     <Entypo name="chevron-thin-left" color="#0060FF" size="22" />
                 </TouchableOpacity>
-
                 <TouchableOpacity onPress={handleForwardButtonClick}>
                     <Entypo name="chevron-thin-right" color="#0060FF" size="22" />
                 </TouchableOpacity>
@@ -141,5 +160,9 @@ const styles = StyleSheet.create({
         paddingTop: 12,
         paddingRight: 17,
         paddingLeft: 17,
+    },
+    loadingScreen: {
+        top: screenHeight * 0.1,
+        bottom: screenHeight * 0.09,
     },
   })

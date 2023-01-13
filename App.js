@@ -29,7 +29,7 @@ export default function App() {
   return (
     <UserContextProvider>
       <NavigationContainer>
-          <Stack.Navigator initialRouteName="Pricing" screensOptions={globalScreenOptions}>
+          <Stack.Navigator initialRouteName="Welcome" screensOptions={globalScreenOptions}>
             <Stack.Screen name='Welcome' component={Welcome} options={{ headerShown: false }} />
             <Stack.Screen name='Login' component={Login} options={{ headerShown: true }} />
             <Stack.Screen name='Create Account' component={CreateAccount} options={{ headerShown: true }} />

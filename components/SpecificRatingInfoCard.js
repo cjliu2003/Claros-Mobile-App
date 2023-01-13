@@ -1,16 +1,14 @@
 import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { LinearGradient } from 'expo-linear-gradient';
-import {useUserContext} from '../contexts/userContext'
-import { Entypo } from '@expo/vector-icons';
-import { AntDesign } from '@expo/vector-icons';
 import { SimpleLineIcons } from '@expo/vector-icons';
 
 // Get the current screen width and height
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-const RatingInfoPopUp = (props) => {
+const SpecificRatingInfoCard = (props) => {
+  
     const handleCloseButtonClick = () => {
         props.setIsRatingInfoPressed(false);
     }
@@ -23,28 +21,40 @@ const RatingInfoPopUp = (props) => {
 
     return (
       <View style={[styles.cardContainer, { top , left }, { width, height }]}>
-          <View style={styles.cardRow1}></View>
-            <Text style={[styles.ratingTitle, {backgroundColor: props.backgroundColor, color: props.textColor}]}>{props.line.max_ev > 1 ? "A" : props.line.max_ev > -1 && props.line.max_ev < 1 ? "B" : "C"} Rating</Text>
-          <View style={styles.cardRow2}>
-            <Text style={styles.ratingExplanation}>
-              We the people of the United States, in order to form a more perfect Union,
-              establish justice, ensure domestic tranquility, provide for the common defense,
-              promot
-            </Text>
+          <View style={styles.cardRow1}>
+            <Text style={[styles.ratingTitle, {color: props.textColor}]}>{props.line.max_ev > 1 ? "A" : props.line.max_ev > -1 && props.line.max_ev < 1 ? "B" : "C"} Rating</Text>
           </View>
-          {/* <View style={styles.cardRow5}>
-            <TouchableOpacity style={styles.infoButton}>
-              <SimpleLineIcons name="info" size={20} color="#E05656" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.closeButton} onPress={handleCloseButtonClick}>
-              <Text style={styles.closeButtonText}>Close</Text>
-            </TouchableOpacity>
-
-          </View> */}
+          <View style={styles.cardRow2}>
+           {props.line.max_ev > 1 ? 
+            <>
+              <Text style={styles.ratingExplanation}>
+                Our ratings indicate the long term profitability of betting assets. A-rated assets are the highest rated lines. 
+                {"\n"}
+                {"\n"}
+                Learn more about ratings below.
+              </Text>
+            </> : 
+            props.line.max_ev > -1 && props.line.max_ev < 1 ? 
+            <>
+              <Text style={styles.ratingExplanation}>
+                Our ratings indicate the long term profitability of betting assets. B-rated assets are the mid-tier rated lines. 
+                {"\n"}
+                {"\n"}
+                Learn more about ratings below.
+              </Text>
+            </> : 
+            <>
+              <Text style={styles.ratingExplanation}>
+                Our ratings indicate the long term profitability of betting assets. C-rated assets are the lowest rated lines. 
+                {"\n"}
+                {"\n"}
+                Learn more about ratings below.
+              </Text>
+            </> }
+          </View>
           <View style={styles.cardRow3}></View>
           <View style={styles.cardRow4}></View>
           <View style={styles.cardRow5}>
-            <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
               <TouchableOpacity style={[styles.infoButton, {backgroundColor: props.backgroundColor}]}>
                 <SimpleLineIcons name="info" size={16} color={props.textColor} />
               </TouchableOpacity>
@@ -52,24 +62,23 @@ const RatingInfoPopUp = (props) => {
               <TouchableOpacity style={styles.closeButton} onPress={handleCloseButtonClick}>
                 <Text style={styles.closeButtonText}>Close</Text>
               </TouchableOpacity>
-            </View>
       
-            <View style={styles.edgeIndicator}>
+            {/* <View style={styles.edgeIndicator}>
                 <View style={[styles.edgeBar, { width: '50%' }]} >
                 
                 </View>
                 <LinearGradient colors={['#0060ff', '#39AAF3']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[styles.edgeBar, { width: '50%' }]}></LinearGradient>
-            </View>
+            </View> */}
           </View>
       </View>
-
     )
 }
 
-export default RatingInfoPopUp;
+export default SpecificRatingInfoCard;
 
 const styles = StyleSheet.create({
     cardContainer: {
+      flex: 1,
       backgroundColor: '#FFFFFF',
       borderRadius: 11,
       shadowColor: '#00000060',
@@ -77,7 +86,6 @@ const styles = StyleSheet.create({
       shadowOpacity: 0.50,
       shadowRadius: 3,
       padding: 15,
-      width: screenWidth * 0.9,
       position: 'absolute',
     },
     cardRow1: {
@@ -101,16 +109,16 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
+      flex: 1,
     },
     cardRow5: {
       flex: 0,
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'space-between',
+      justifyContent: 'flex-start',
       padding: 0, 
-      marginTop: screenHeight * 0.01, 
-      borderRadius: 5
-    },    
+      borderRadius: 5,
+    },
     ratingTitle: {
       fontSize: 18,
       fontWeight: '400',
@@ -128,7 +136,7 @@ const styles = StyleSheet.create({
       height: 33,
       width: 33,
       alignItems: 'center',
-      justifyContent: 'center'
+      justifyContent: 'center',
     },
     closeButton: {
       backgroundColor: "#F3F3F3",
@@ -137,6 +145,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
       padding: 5,
+      marginLeft: 7.5,
     },
     closeButtonText: {
       color: "#7B7D86",

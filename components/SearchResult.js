@@ -10,7 +10,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { SimpleLineIcons } from '@expo/vector-icons';
 import LinePage from './LinePage';
 import InAppWebBrowser from './WebBrowser'
-import RatingInfoPopUp from './RatingInfoPopup';
+import SpecificRatingInfoCard from './SpecificRatingInfoCard';
 import { handleGradeBackgroundColor, handleGradeTextColor } from '../functions/styling/handleGradeColor';
 
 // Get the current screen width and height
@@ -36,6 +36,8 @@ const colorMap = {
 const SearchResultContainer = ({line}) => {
   const [featuredLine, setFeaturedLine] = useState(null)
   const [isRatingInfoPressed, setIsRatingInfoPressed] = useState(false);
+  const [isLineTitlePressed, setIsLineTitlePressed] = useState(false);
+  const [currWebview, setCurrWebview] = useState("");
 
   const handleCardClick = () => {
     setFeaturedLine(line.id);
@@ -52,6 +54,24 @@ const SearchResultContainer = ({line}) => {
       setCardContainerPosition({ x: pageX, y: pageY });
       setCardContainerAspect({ width: width, height: height });
     });
+  }
+
+  // Function handleLineTitlePress is deplyed when end-user presses lineTitle
+  // Function opens App-native WebBrowser to allow for in app bet placement.
+  const handleLineTitlePress = () => {
+    setIsLineTitlePressed(true);
+    setCurrWebview("sportsbook");
+  }
+
+  // Get the semi-deep bookmaker link
+  const getBookmakerLink = (line) => {
+    let link;
+    if (Sportsbooks[line.bookmaker].hasOwnProperty(line.league_name)) {
+      link = Sportsbooks[line.bookmaker][line.league_name];
+    } else {
+      link = Sportsbooks[line.bookmaker].link;
+    }
+    return link;
   }
 
   let textColor = handleGradeTextColor(line.max_ev)
@@ -104,12 +124,11 @@ const SearchResultContainer = ({line}) => {
       <View ref={cardContainerRef} style={styles.cardContainer}>
         <View style={styles.cardRow1}>
           <View style={{justifyContent: 'center', alignItems: 'center'}}>
-            {/* <Text style={styles.bookmakerTitle}>{line.bookmaker in Sportsbooks && Sportsbooks[line.bookmaker].name}</Text> */}
               <Image style={styles.cardBookLogo} source={line.bookmaker in Sportsbooks && Sportsbooks[line.bookmaker].logo}/> 
           </View>
-          <View style={styles.lineTitleBackground}>
+          <TouchableOpacity style={styles.lineTitleBackground} onPress={handleLineTitlePress}>
             <Text style={styles.lineTitle}>{parseOdds(line[findSide(line.home_ev, line.away_ev) + "_odds"])} on {team} {marketTag}</Text>
-          </View>
+          </TouchableOpacity>
           
         </View>
         <View style={styles.cardRow2}>
@@ -139,7 +158,7 @@ const SearchResultContainer = ({line}) => {
           animationType="fade" 
           visible={isRatingInfoPressed}
           >
-          <RatingInfoPopUp 
+          <SpecificRatingInfoCard 
             setIsRatingInfoPressed={setIsRatingInfoPressed} 
             position={{ top: cardContainerPosition.y, left: cardContainerPosition.x }}
             aspect={{ width: cardContainerAspect.width, height: cardContainerAspect.height }}
@@ -147,6 +166,19 @@ const SearchResultContainer = ({line}) => {
             textColor={textColor}
             backgroundColor={backgroundColor}
             />
+        </Modal>
+        <Modal
+          transparent={false}
+          animationType="fade"
+          visible={currWebview != ""}
+          >
+          <InAppWebBrowser
+            url={getBookmakerLink(line)}
+            currWebview={currWebview} 
+            setCurrWebview={setCurrWebview}
+            >
+
+          </InAppWebBrowser>
         </Modal>
       </View>
     }
