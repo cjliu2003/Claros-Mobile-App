@@ -33,7 +33,7 @@ const CreateAccountScreen = ({navigation}) => {
     }, [])
 
   useEffect(() => {
-    if (user) navigation.replace("Home")
+    if (user) navigation.replace("Pricing")
   }, [user])
   
   const [keyboardHeight, setKeyboardHeight] = useState(0);

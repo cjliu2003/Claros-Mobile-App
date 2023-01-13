@@ -11,6 +11,7 @@ import { SimpleLineIcons } from '@expo/vector-icons';
 import LinePage from './LinePage';
 import InAppWebBrowser from './WebBrowser'
 import RatingInfoPopUp from './RatingInfoPopup';
+import { handleGradeBackgroundColor, handleGradeTextColor } from '../functions/styling/handleGradeColor';
 
 // Get the current screen width and height
 const screenWidth = Dimensions.get('window').width;
@@ -53,23 +54,8 @@ const SearchResultContainer = ({line}) => {
     });
   }
 
-  let textColor;
-  if (line.max_ev > 1) {
-    textColor = colorMap.A.TXT;
-  } else if (line.max_ev > -1 && line.max_ev < 1) {
-    textColor = colorMap.B.TXT;
-  } else {
-    textColor = colorMap.C.TXT;
-  }
-
-  let backgroundColor;
-  if (line.max_ev > 1) {
-    backgroundColor = colorMap.A.BG;
-  } else if (line.max_ev > -1 && line.max_ev < 1) {
-    backgroundColor = colorMap.B.BG;
-  } else {
-    backgroundColor = colorMap.C.BG;
-  }
+  let textColor = handleGradeTextColor(line.max_ev)
+  let backgroundColor = handleGradeBackgroundColor(line.max_ev)
 
   let team;
   if (line.market == 'h2h' || line.market == 'spreads') {
@@ -157,6 +143,9 @@ const SearchResultContainer = ({line}) => {
             setIsRatingInfoPressed={setIsRatingInfoPressed} 
             position={{ top: cardContainerPosition.y, left: cardContainerPosition.x }}
             aspect={{ width: cardContainerAspect.width, height: cardContainerAspect.height }}
+            line={line}
+            textColor={textColor}
+            backgroundColor={backgroundColor}
             />
         </Modal>
       </View>

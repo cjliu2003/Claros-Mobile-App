@@ -5,7 +5,7 @@ import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { UserContextProvider } from "./contexts/userContext";
 // import Spinner from 'react-native-loading-spinner-overlay';
-import { Welcome, Login, CreateAccount, Home, Chat, Email, Center } from "./screens";
+import { Welcome, Login, CreateAccount, Home, Chat, Email, Center, Pricing } from "./screens";
 
 const Stack = createStackNavigator();
 
@@ -29,12 +29,13 @@ export default function App() {
   return (
     <UserContextProvider>
       <NavigationContainer>
-          <Stack.Navigator initialRouteName="Home" screensOptions={globalScreenOptions}>
+          <Stack.Navigator initialRouteName="Pricing" screensOptions={globalScreenOptions}>
             <Stack.Screen name='Welcome' component={Welcome} options={{ headerShown: false }} />
             <Stack.Screen name='Login' component={Login} options={{ headerShown: true }} />
             <Stack.Screen name='Create Account' component={CreateAccount} options={{ headerShown: true }} />
             <Stack.Screen name='Chat' component={Chat} options={{ headerShown: false }} />
             <Stack.Screen name='Home' component={Home} options={{ headerShown: false } }/>
+            <Stack.Screen name='Pricing' component={Pricing} options={{ headerShown: false } }/>
             <Stack.Screen name='Email' component={Email} options={{ headerShown: true }} />
             <Stack.Screen name='Center' component={Center} options={{ headerShown: true }} />
           </Stack.Navigator>

@@ -1,5 +1,5 @@
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
-import React from 'react'
+import { Dimensions, Share, StyleSheet, Text, TouchableOpacity, View, Image, Linking } from 'react-native'
+import React, { useRef } from 'react'
 import {useUserContext} from '../contexts/userContext'
 import { WebView } from 'react-native-webview';
 import { StatusBar } from 'expo-status-bar';
@@ -17,12 +17,24 @@ const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 const InAppWebBrowser = (props) => {
-    const {subscription} = useUserContext()
     const handleCloseButtonClick = () => {
-        console.log(props.currWebview)
         props.setCurrWebview("");
     }
-
+    const handleSafariButtonClick = () => {
+        Linking.openURL(props.url);
+    }
+    const handleShareButtonClick = () => {
+        Share.share({
+            message: props.url,
+        });
+    }
+    const webViewRef = useRef(null);
+    const handleBackButtonClick = () => {
+        webViewRef.current.goBack();
+    }
+    const handleForwardButtonClick = () => {
+        webViewRef.current.goForward();
+    }
     return (
         <View style={styles.container}>
             <View style={styles.headerContainer}>
@@ -34,7 +46,7 @@ const InAppWebBrowser = (props) => {
                 <View style={styles.headerCenterpiece}>
                     <Ionicons name="ios-lock-closed" color="#000000" size="16"></Ionicons>
                     {/* <Image style={styles.padlockProps} source={Icons.Padlock} /> */}
-                    <Text style={styles.urlText}>decrypt.co</Text>
+                    <Text style={styles.urlText}>Claros AI</Text>
                 </View>
                 {/* <View style={styles.headerReloadContainer}> */}
                 <TouchableOpacity>
@@ -43,19 +55,20 @@ const InAppWebBrowser = (props) => {
                 {/* </View> */}
                 
             </View>
-            <WebView source={{ uri: props.url }} startInLoadingState={true} scalesPageToFit={true}>
+            <WebView ref={webViewRef} source={{ uri: props.url }} startInLoadingState={true} scalesPageToFit={true}>
             </WebView>
             <View style={styles.footerContainer}>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={handleBackButtonClick}>
                     <Entypo name="chevron-thin-left" color="#0060FF" size="22" />
                 </TouchableOpacity>
-                <TouchableOpacity>
+
+                <TouchableOpacity onPress={handleForwardButtonClick}>
                     <Entypo name="chevron-thin-right" color="#0060FF" size="22" />
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={handleShareButtonClick}>
                     <Feather name="share" color="#0060FF" size="22" />
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={handleSafariButtonClick}>
                     <MaterialCommunityIcons name="apple-safari" color="#0060FF" size="24" />
                 </TouchableOpacity>
             </View>

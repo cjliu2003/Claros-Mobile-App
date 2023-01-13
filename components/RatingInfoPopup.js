@@ -13,7 +13,7 @@ const RatingInfoPopUp = (props) => {
     const handleCloseButtonClick = () => {
         props.setIsRatingInfoPressed(false);
     }
-
+    
     // To ensure our info pop up is positioned on top of the cardContainer deployed in SearchResult,
     // we take the cardContainer positions(x, y) which are neccessarily passed in as props when
     // <RatingInfoPopUp is called />
@@ -23,7 +23,7 @@ const RatingInfoPopUp = (props) => {
     return (
         <View style={[styles.cardContainer, { top , left }, { width, height }]}>
             <View style={styles.cardRow1}></View>
-              <Text style={styles.ratingTitle}>CCC Rating</Text>
+              <Text style={[styles.ratingTitle, {backgroundColor: props.backgroundColor, color: props.textColor}]}>{props.line.max_ev > 1 ? "A" : props.line.max_ev > -1 && props.line.max_ev < 1 ? "B" : "C"} Rating</Text>
             <View style={styles.cardRow2}>
               <Text style={styles.ratingExplanation}>
                 We the people of the United States, in order to form a more perfect Union,
@@ -32,13 +32,12 @@ const RatingInfoPopUp = (props) => {
               </Text>
             </View>
             <View style={styles.cardRow5}>
-              <TouchableOpacity style={styles.infoButton}>
-                <SimpleLineIcons name="info" size={20} color="#E05656" />
+              <TouchableOpacity style={[styles.infoButton, {backgroundColor: props.backgroundColor}]}>
+                <SimpleLineIcons name="info" size={20} color={props.textColor} />
               </TouchableOpacity>
               <TouchableOpacity style={styles.closeButton} onPress={handleCloseButtonClick}>
                 <Text style={styles.closeButtonText}>Close</Text>
               </TouchableOpacity>
-
             </View>
             <TouchableOpacity style={[{backgroundColor: "#0060FF12", flex: 1}, styles.cardRow5]}>
               <SimpleLineIcons name="info" size={16} color="#0060FF"></SimpleLineIcons>
@@ -64,8 +63,7 @@ const styles = StyleSheet.create({
       shadowOffset: { width: 0, height: 0 },
       shadowOpacity: 0.50,
       shadowRadius: 3,
-      paddingHorizontal: 15,
-      paddingVertical: 15,
+      padding: 15,
       width: screenWidth * 0.9,
       position: 'absolute',
     },
@@ -95,7 +93,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'space-between',
       padding: 10, 
-      marginTop: screenHeight * 0.02, 
+      marginTop: screenHeight * 0.01, 
       borderRadius: 5
     },    ratingTitle: {
       fontSize: 18,
@@ -110,7 +108,6 @@ const styles = StyleSheet.create({
       textAlign: 'left',
     },
     infoButton: {
-      backgroundColor: "#E0565612",
       borderRadius: 5,
       height: 33,
       width: 33,
