@@ -1,13 +1,14 @@
 import { Alert, Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, Vibration, View, TouchableWithoutFeedback, Keyboard, Animated } from 'react-native'
 import React, { useEffect, useLayoutEffect, useState, useRef } from 'react'
 import Icon from 'react-native-vector-icons/Feather';
-
+import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import { useUserContext } from '../contexts/userContext';
 
-const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
 
 const LoginScreen = ( {navigation} ) => {
+  const screenWidth = useScreenWidth();
+  const screenHeight = useScreenHeight();
+
   const {authEmail, signInUserEmail} = useUserContext()
   const [password, setPassword] = useState("")
 
@@ -21,7 +22,7 @@ const LoginScreen = ( {navigation} ) => {
             backgroundColor: "#0060FF"
         },
         headerLeft: () => (
-          <TouchableOpacity style={styles.headerLeft} onPress={() => navigation.goBack()}>
+          <TouchableOpacity style={styles(screenWidth, screenHeight).headerLeft} onPress={() => navigation.goBack()}>
             <Icon name="chevrons-left" size={28} color={"#FFFFFF"} />
           </TouchableOpacity>
         ),
@@ -74,13 +75,13 @@ const LoginScreen = ( {navigation} ) => {
     
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <View style={styles.container}>
-        <Animated.View style={[styles.container, { transform: [{ translateY }] }]}>
-          <Text style={styles.brandText}>P-word?</Text>
-          <Text style={styles.callToActionText}>Welcome Back! Enter your password.</Text>
-          <View style={styles.searchBarContainer}>
+      <View style={styles(screenWidth, screenHeight).container}>
+        <Animated.View style={[styles(screenWidth, screenHeight).container, { transform: [{ translateY }] }]}>
+          <Text style={styles(screenWidth, screenHeight).brandText}>P-word?</Text>
+          <Text style={styles(screenWidth, screenHeight).callToActionText}>Welcome Back! Enter your password.</Text>
+          <View style={styles(screenWidth, screenHeight).searchBarContainer}>
             <TextInput
-              style={styles.searchInput}
+              style={styles(screenWidth, screenHeight).searchInput}
               placeholder="Password"
               placeholderTextColor="#00000060"
               enablesReturnKeyAutomatically="true"
@@ -91,7 +92,7 @@ const LoginScreen = ( {navigation} ) => {
               onSubmitEditing={() => signIn()}
               returnKeyType="done"
               />
-            <TouchableOpacity style={[styles.searchButton, { marginLeft: 10 }]} onPress={() => signIn()}>
+            <TouchableOpacity style={[styles(screenWidth, screenHeight).searchButton, { marginLeft: 10 }]} onPress={() => signIn()}>
               <Icon
                 name="chevrons-right"
                 size={28}
@@ -108,7 +109,7 @@ const LoginScreen = ( {navigation} ) => {
 
 export default LoginScreen
 
-const styles = StyleSheet.create({
+const styles = (screenWidth, screenHeight) => StyleSheet.create({
     container: {
       flex: 1, 
       alignItems: 'center', 

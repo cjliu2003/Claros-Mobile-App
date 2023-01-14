@@ -1,6 +1,7 @@
 import { Image } from '@rneui/base';
 import React, { useState } from 'react';
 import { Text, StyleSheet, View, Dimensions, TouchableOpacity, Modal } from 'react-native';
+import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import Sportsbooks from '../assets/Sportsbooks';
 import { findSide } from '../functions/parsing/findSide';
 import { parseName } from '../functions/parsing/parseName';
@@ -12,10 +13,6 @@ import LinePage from './LinePage';
 import InAppWebBrowser from './WebBrowser'
 import SpecificRatingInfoCard from './SpecificRatingInfoCard';
 import { handleGradeBackgroundColor, handleGradeTextColor } from '../functions/styling/handleGradeColor';
-
-// Get the current screen width and height
-const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
 
 const colorMap = {
   A: {
@@ -34,6 +31,9 @@ const colorMap = {
 }
 
 const SearchResultContainer = ({line}) => {
+  const screenWidth = useScreenWidth();
+  const screenHeight = useScreenHeight();
+
   const [featuredLine, setFeaturedLine] = useState(null)
   const [isRatingInfoPressed, setIsRatingInfoPressed] = useState(false);
   const [isLineTitlePressed, setIsLineTitlePressed] = useState(false);
@@ -48,8 +48,21 @@ const SearchResultContainer = ({line}) => {
   const [cardContainerPosition, setCardContainerPosition] = useState({ x: 0, y: 0 });
   const [cardContainerAspect, setCardContainerAspect] = useState({ width: 0, height: 0 });
 
+  // Get relative positioning of cardContainer based on screenWidth, screenHeight.
+  // This is neccessary for SpecificRatingInfoContainer to update positioning on orientation change.
+  const onLayout = event => {
+    const { width, height } = event.nativeEvent.layout;
+    const x = (width - cardContainerAspect.width) / 2;
+    const y = (height - cardContainerAspect.height) / 2;
+    setCardContainerPosition({ x, y });
+  }
+
   const handleInfoClick = () => {
     setIsRatingInfoPressed(true);
+    // const { width, height } = event.nativeEvent.layout;
+    const x = (screenWidth - cardContainerAspect.width) / 2;
+    const y = (screenHeight - cardContainerAspect.height) / 2;
+
     cardContainerRef.current.measure((x, y, width, height, pageX, pageY, pageWidth, pageHeight) => {
       setCardContainerPosition({ x: pageX, y: pageY });
       setCardContainerAspect({ width: width, height: height });
@@ -121,36 +134,36 @@ const SearchResultContainer = ({line}) => {
   return (
     <>
     {line &&
-      <View ref={cardContainerRef} style={styles.cardContainer}>
-        <View style={styles.cardRow1}>
+      <View ref={cardContainerRef} style={styles(screenWidth, screenHeight).cardContainer}>
+        <View style={styles(screenWidth, screenHeight).cardRow1}>
           <View style={{justifyContent: 'center', alignItems: 'center'}}>
-              <Image style={styles.cardBookLogo} source={line.bookmaker in Sportsbooks && Sportsbooks[line.bookmaker].logo}/> 
+              <Image style={styles(screenWidth, screenHeight).cardBookLogo} source={line.bookmaker in Sportsbooks && Sportsbooks[line.bookmaker].logo}/> 
           </View>
-          <TouchableOpacity style={styles.lineTitleBackground} onPress={handleLineTitlePress}>
-            <Text style={styles.lineTitle}>{parseOdds(line[findSide(line.home_ev, line.away_ev) + "_odds"])} on {team} {marketTag}</Text>
+          <TouchableOpacity style={styles(screenWidth, screenHeight).lineTitleBackground} onPress={handleLineTitlePress}>
+            <Text style={styles(screenWidth, screenHeight).lineTitle}>{parseOdds(line[findSide(line.home_ev, line.away_ev) + "_odds"])} on {team} {marketTag}</Text>
           </TouchableOpacity>
           
         </View>
-        <View style={styles.cardRow2}>
-          <Text style={[styles.lineTeamName, {flex: 1, textAlign: 'left'}]}>{line.away_team_name}</Text>
+        <View style={styles(screenWidth, screenHeight).cardRow2}>
+          <Text style={[styles(screenWidth, screenHeight).lineTeamName, {flex: 1, textAlign: 'left'}]}>{line.away_team_name}</Text>
           <AntDesign name="Trophy" size={16} color="black" style={{flex: 0}} />
-          <Text style={[styles.lineTeamName, {flex: 1, textAlign: 'right'}]}>{line.home_team_name}</Text>
+          <Text style={[styles(screenWidth, screenHeight).lineTeamName, {flex: 1, textAlign: 'right'}]}>{line.home_team_name}</Text>
         </View>
 
-        <View style={styles.cardRow3}>
-          <Text style={styles.lineLocation}>Away</Text>
-          <Text style={styles.lineLocation}>Home</Text>
+        <View style={styles(screenWidth, screenHeight).cardRow3}>
+          <Text style={styles(screenWidth, screenHeight).lineLocation}>Away</Text>
+          <Text style={styles(screenWidth, screenHeight).lineLocation}>Home</Text>
         </View>
-        <View style={styles.cardRow4}>
-          <Text style={styles.lineDate}>{parseDate(line.commence_time)}</Text>
+        <View style={styles(screenWidth, screenHeight).cardRow4}>
+          <Text style={styles(screenWidth, screenHeight).lineDate}>{parseDate(line.commence_time)}</Text>
         </View>
-        <TouchableOpacity style={[{backgroundColor: backgroundColor, flex: 1}, styles.cardRow5]} onPress={handleInfoClick}>
+        <TouchableOpacity style={[{backgroundColor: backgroundColor, flex: 1}, styles(screenWidth, screenHeight).cardRow5]} onPress={handleInfoClick}>
           <SimpleLineIcons name="info" size={16} color={textColor}></SimpleLineIcons>
-          <View style={styles.ratingsCategoryView}>
-            <Text style={[styles.ratingsCategoryText, {color: textColor}]}>{line.max_ev >= 1 ? "A" : line.max_ev > -1 && line.max_ev < 1 ? "B" : "C"} Rating </Text>
+          <View style={styles(screenWidth, screenHeight).ratingsCategoryView}>
+            <Text style={[styles(screenWidth, screenHeight).ratingsCategoryText, {color: textColor}]}>{line.max_ev >= 1 ? "A" : line.max_ev > -1 && line.max_ev < 1 ? "B" : "C"} Rating </Text>
           </View>
-          <View style={styles.ratingsMetricView}>
-            <Text style={[styles.ratingsMetricText, {color: textColor}]}>{line.max_ev > 0 && "+" }{(line.max_ev).toFixed(2)}% Fair Value</Text>
+          <View style={styles(screenWidth, screenHeight).ratingsMetricView}>
+            <Text style={[styles(screenWidth, screenHeight).ratingsMetricText, {color: textColor}]}>{line.max_ev > 0 && "+" }{(line.max_ev).toFixed(2)}% Fair Value</Text>
           </View>
         </TouchableOpacity>
         <Modal 
@@ -192,7 +205,7 @@ const SearchResultContainer = ({line}) => {
 
 export default SearchResultContainer;
 
-const styles = StyleSheet.create({
+const styles = (screenWidth, screenHeight) => StyleSheet.create({
   cardContainer: {
     backgroundColor: '#FFFFFF',
     borderRadius: 11,

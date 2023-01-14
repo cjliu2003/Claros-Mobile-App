@@ -1,20 +1,18 @@
-import { Dimensions, StyleSheet, View, ScrollView, Text, TouchableOpacity, TextInput, Keyboard, Animated, TouchableWithoutFeedback, Vibration } from 'react-native'
+import { Dimensions, StyleSheet, View, ScrollView, Text, TouchableOpacity, TextInput, Keyboard, Animated, TouchableWithoutFeedback, Vibration, } from 'react-native'
 import React, { useEffect, useState, useRef } from 'react'
 import { useUserContext } from '../contexts/userContext';
+import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import Icon from 'react-native-vector-icons/Feather';
-import { getSearchLambdaResponse } from '../functions/search/fetchVulcan';
 import { searchIndex } from '../functions/search/processQueries';
 import SearchResultContainer from '../components/SearchResult';
 import CTAPopup from '../components/CTAPopup';
 import { Ionicons } from '@expo/vector-icons';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { ClipLoader } from 'react-spinners';
-
-// Get the current screen width and height
-const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
 
 const HomeScreen = ({navigation}) => {
+  const screenWidth = useScreenWidth();
+  const screenHeight = useScreenHeight();
+
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [scaleSize, setScaleSize] = useState( new Animated.Value(1));
   const [recentSignOut, setRecentSignOut] = useState(false);
@@ -25,17 +23,17 @@ const HomeScreen = ({navigation}) => {
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [isAwaitingFetch, setIsAwaitingFetch] = useState(false);
 
-  // useEffect to detect non users and send them to welcome
-  useEffect(() => {
-    if (!user) navigation.navigate("Welcome")
-  }, [user])
+  // // useEffect to detect non users and send them to welcome
+  // useEffect(() => {
+  //   if (!user) navigation.navigate("Welcome")
+  // }, [user])
 
-  // useEffect to show subscription prompt pop up iof the user is not a subscriber
-  useEffect(() => {
-    if (subscription === "none" && !recentSignOut) {
-      setIsPopupVisible(true);
-    }
-  }, [subscription])
+  // // useEffect to show subscription prompt pop up iof the user is not a subscriber
+  // useEffect(() => {
+  //   if (subscription === "none" && !recentSignOut) {
+  //     setIsPopupVisible(true);
+  //   }
+  // }, [subscription])
   
   const signOut = () => {
     setRecentSignOut(true)
@@ -74,16 +72,23 @@ const HomeScreen = ({navigation}) => {
     }).start();
   }
 
+  // options for haptics
+  const options = {
+    enableVibrateFallback: true,
+    ignoreAndroidSystemSettings: false
+  };
+
   const handleSearch = async () => {
     setIsAwaitingFetch(true); // Update the state to loading
     // Vibration.vibrate(0, 500);
+    // ReactNativeHapticFeedback.trigger("impactLight", options);
 
     // Perform search from index
     const data = await searchIndex(searchQuery);
     setData(data);
-    setIsAwaitingFetch(false);
     setKeyboardHeight(0);
     setKeyboardVisible(false);
+    setIsAwaitingFetch(false);
     setShowSearchResults(true);
   }
 
@@ -98,94 +103,96 @@ const HomeScreen = ({navigation}) => {
   return (
     <>
       <CTAPopup setIsPopupVisible={setIsPopupVisible} isPopupVisible={isPopupVisible}/>
-      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <ScrollView contentContainerStyle={[styles.container, {overflow: 'scroll', backgroundColor: 'white'}]}>
-          <Spinner
-            visible={isAwaitingFetch}
-            color="#0060FF"
-            overlayColor="#FFFFFF"
-            animation="none"
-          />
-          {/* <ClipLoader
-            color="#0060FF"
-            loading={isAwaitingFetch}
-            size={150}
-            // aria-label="Loading Spinner"
-            // data-testid="loader"
-          /> */}
+      <View style={styles(screenWidth, screenHeight).backgroundView}>
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+          <ScrollView contentContainerStyle={[styles(screenWidth, screenHeight).container, {overflow: 'scroll', backgroundColor: 'white'}]}>
+            <Spinner
+              visible={isAwaitingFetch}
+              color="#0060FF"
+              overlayColor="#FFFFFF"
+              animation="none"
+            />
+            {/* <ClipLoader
+              color="#0060FF"
+              loading={isAwaitingFetch}
+              size={150}
+              // aria-label="Loading Spinner"
+              // data-testid="loader"
+            /> */}
 
-          <Animated.View style={[styles.container, showSearchResults ? {justifyContent: 'flex-start'} : {justifyContent: 'center'}, { transform: [{ translateY }] }]}>
-            <Animated.Text style={[styles.brandText, showSearchResults ? {fontSize: 48} : {fontSize: 84},{transform: [{translateY: brandTextYTransform}]}]}>Claros</Animated.Text>
-            
-            { showSearchResults ?
-              <>
-                <TouchableOpacity style={styles.centerButton} onPress={handleCenterButtonClick}>
-                  <Ionicons name="person-circle" size={30} color="#0060FF" />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.backButton} onPress={handleBackToBrandedSearch}>
-                  <Icon name="chevrons-left" size={28} color={"#0060FF"} />
-                </TouchableOpacity>
-              </>
-             : null
-            }            
-            {!showSearchResults ? <>
-              <Text style={styles.callToActionText}>Find your next bet with Claros!</Text>
-              <View style={styles.rowContainer}>
-                <TextInput
-                  style={styles.searchInput}
-                  placeholder="Sportsbook, League, Team" 
-                  placeholderTextColor="#00000060"
-                  enablesReturnKeyAutomatically="true"
-                  onChangeText={(text) => setSearchQuery(text)}
-                  onSubmitEditing={() => handleSearch()}
-                  returnKeyType="search"
-                  returnKeyLabel='\u23CE'
-                />
-                <TouchableOpacity style={[styles.searchButton, { marginLeft: 10 }]} onPress={() => handleSearch()}>
-                  <Icon
-                    name="corner-right-up"
-                    size={28}
-                    color="#FFFFFF"
-                  />
-                </TouchableOpacity>
-              </View>
-              </>
-            : <>
-            <View style={[styles.rowContainer, {marginBottom: 20}]}>
-                <View style={styles.newSearchViewContainer}>
-                  <Ionicons name="search" size={16} color="#000000" />
+            <Animated.View style={[styles(screenWidth, screenHeight).container, showSearchResults ? {justifyContent: 'flex-start'} : {justifyContent: 'center'}, { transform: [{ translateY }] }]}>
+              <Animated.Text style={[styles(screenWidth, screenHeight).brandText, showSearchResults ? {fontSize: 48} : {fontSize: 84},{transform: [{translateY: brandTextYTransform}]}]}>Claros</Animated.Text>
+              
+              { showSearchResults ?
+                <>
+                  <TouchableOpacity style={styles(screenWidth, screenHeight).centerButton} onPress={handleCenterButtonClick}>
+                    <Ionicons name="person-circle" size={30} color="#0060FF" />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles(screenWidth, screenHeight).backButton} onPress={handleBackToBrandedSearch}>
+                    <Icon name="chevrons-left" size={28} color={"#0060FF"} />
+                  </TouchableOpacity>
+                </>
+              : null
+              }            
+              {!showSearchResults ? <>
+                <Text style={styles(screenWidth, screenHeight).callToActionText}>Find your next bet with Claros!</Text>
+                <View style={styles(screenWidth, screenHeight).rowContainer}>
                   <TextInput
-                    style={styles.newSearchInput}
-                    placeholder="Search by sportsbook, league, team . . ."
-                    placeholderTextColor="#000000"
+                    style={styles(screenWidth, screenHeight).searchInput}
+                    placeholder="Sportsbook, League, Team" 
+                    placeholderTextColor="#00000060"
                     enablesReturnKeyAutomatically="true"
                     onChangeText={(text) => setSearchQuery(text)}
                     onSubmitEditing={() => handleSearch()}
                     returnKeyType="search"
+                    returnKeyLabel='\u23CE'
                   />
+                  <TouchableOpacity style={[styles(screenWidth, screenHeight).searchButton, { marginLeft: 10 }]} onPress={() => handleSearch()}>
+                    <Icon
+                      name="corner-right-up"
+                      size={28}
+                      color="#FFFFFF"
+                    />
+                  </TouchableOpacity>
                 </View>
-              </View>
-              {/* <View style={keyboardVisible? styles.searchResultsMasterContainerBlurred : styles.searchResultsMasterContainerDefault}> */}
-              {data && data.map(line => {
-                return (
-                  <SearchResultContainer key={line.id} line={line}/>
-                )
-              })}
-              {/* </View> */}
-              
-            </> }
-          </Animated.View>
-          {/* <Text onPress={() => signOut()}>click me to sign out (this helps with testing if the popup will occur on different accounts)</Text> */}
-        </ScrollView>
-      </TouchableWithoutFeedback>
+                </>
+              : <>
+              <View style={[styles(screenWidth, screenHeight).rowContainer, {marginBottom: 20}]}>
+                  <View style={styles(screenWidth, screenHeight).newSearchViewContainer}>
+                    <Ionicons name="search" size={16} color="#000000" />
+                    <TextInput
+                      style={styles(screenWidth, screenHeight).newSearchInput}
+                      placeholder="Search by sportsbook, league, team . . ."
+                      placeholderTextColor="#000000"
+                      enablesReturnKeyAutomatically="true"
+                      onChangeText={(text) => setSearchQuery(text)}
+                      onSubmitEditing={() => handleSearch()}
+                      returnKeyType="search"
+                    />
+                  </View>
+                </View>
+                {/* <View style={keyboardVisible? styles.searchResultsMasterContainerBlurred : styles.searchResultsMasterContainerDefault}> */}
+                {data && data.map(line => {
+                  return (
+                    <SearchResultContainer key={line.id} line={line}/>
+                  )
+                })}
+                {/* </View> */}
+                
+              </> }
+            </Animated.View>
+            {/* <Text onPress={() => signOut()}>click me to sign out (this helps with testing if the popup will occur on different accounts)</Text> */}
+          </ScrollView>
+        </TouchableWithoutFeedback>
+      </View>
     </>
   )
 }
 
 export default HomeScreen
 
-const styles = StyleSheet.create({
-  backLayerView: {
+const styles = (screenWidth, screenHeight) => StyleSheet.create({
+  backgroundView: {
     backgroundColor: "#FFFFFF",
   },
   container: {

@@ -4,7 +4,6 @@ import { StyleSheet } from 'react-native';
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { UserContextProvider } from "./contexts/userContext";
-// import Spinner from 'react-native-loading-spinner-overlay';
 import { Welcome, Login, CreateAccount, Home, Chat, Email, Center, Pricing } from "./screens";
 
 const Stack = createStackNavigator();
@@ -25,11 +24,10 @@ const myTheme = {
 }
 
 export default function App() {
-  
   return (
     <UserContextProvider>
       <NavigationContainer>
-          <Stack.Navigator initialRouteName="Welcome" screensOptions={globalScreenOptions}>
+          <Stack.Navigator initialRouteName="Home" screensOptions={globalScreenOptions}>
             <Stack.Screen name='Welcome' component={Welcome} options={{ headerShown: false }} />
             <Stack.Screen name='Login' component={Login} options={{ headerShown: true }} />
             <Stack.Screen name='Create Account' component={CreateAccount} options={{ headerShown: true }} />

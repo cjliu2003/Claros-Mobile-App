@@ -443,7 +443,7 @@ const Sportsbooks = {
         link: "https://nj.unibet.com",
         NBA: "https://nj.unibet.com/sports/#sports-hub/basketball/nba",
         NFL: "https://nj.unibet.com/sports/#sports-hub/american_football/nfl",
-        NCAAF: "https://www.williamhill.com/us/nj/bet/",
+        NCAAF: "https://nj.unibet.com/sports/#sports-hub/american_football/nfl",
         NHL: "https://nj.unibet.com/sports/#sports-hub/ice_hockey/nhl",
         MLB: "https://nj.unibet.com/sports/#sports-hub/baseball/mlb",
     }, 
@@ -457,7 +457,7 @@ const Sportsbooks = {
         link: "https://nj.unibet.com",
     }, 
     williamhill: {
-        logo: WilliamHill,
+        logo: Caesars,
         name: "Wiliam Hill",
         location: {
             US: false,

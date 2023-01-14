@@ -2,13 +2,12 @@ import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-nati
 import React from 'react'
 import { LinearGradient } from 'expo-linear-gradient';
 import { SimpleLineIcons } from '@expo/vector-icons';
-
-// Get the current screen width and height
-const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
+import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 
 const SpecificRatingInfoCard = (props) => {
-  
+    const screenWidth = useScreenWidth();
+    const screenHeight = useScreenHeight();
+    
     const handleCloseButtonClick = () => {
         props.setIsRatingInfoPressed(false);
     }
@@ -20,14 +19,14 @@ const SpecificRatingInfoCard = (props) => {
     const { width, height } = props.aspect;
 
     return (
-      <View style={[styles.cardContainer, { top , left }, { width, height }]}>
-          <View style={styles.cardRow1}>
-            <Text style={[styles.ratingTitle, {color: props.textColor}]}>{props.line.max_ev > 1 ? "A" : props.line.max_ev > -1 && props.line.max_ev < 1 ? "B" : "C"} Rating</Text>
+      <View style={[styles(screenWidth, screenHeight).cardContainer, { top , left }, { width, height }]}>
+          <View style={styles(screenWidth, screenHeight).cardRow1}>
+            <Text style={[styles(screenWidth, screenHeight).ratingTitle, {color: props.textColor}]}>{props.line.max_ev >= 1 ? "A" : props.line.max_ev > -1 && props.line.max_ev < 1 ? "B" : "C"} Rating</Text>
           </View>
-          <View style={styles.cardRow2}>
+          <View style={styles(screenWidth, screenHeight).cardRow2}>
            {props.line.max_ev > 1 ? 
             <>
-              <Text style={styles.ratingExplanation}>
+              <Text style={styles(screenWidth, screenHeight).ratingExplanation}>
                 Our ratings indicate the long term profitability of betting assets. A-rated assets are the highest rated lines. 
                 {"\n"}
                 {"\n"}
@@ -36,7 +35,7 @@ const SpecificRatingInfoCard = (props) => {
             </> : 
             props.line.max_ev > -1 && props.line.max_ev < 1 ? 
             <>
-              <Text style={styles.ratingExplanation}>
+              <Text style={styles(screenWidth, screenHeight).ratingExplanation}>
                 Our ratings indicate the long term profitability of betting assets. B-rated assets are the mid-tier rated lines. 
                 {"\n"}
                 {"\n"}
@@ -44,7 +43,7 @@ const SpecificRatingInfoCard = (props) => {
               </Text>
             </> : 
             <>
-              <Text style={styles.ratingExplanation}>
+              <Text style={styles(screenWidth, screenHeight).ratingExplanation}>
                 Our ratings indicate the long term profitability of betting assets. C-rated assets are the lowest rated lines. 
                 {"\n"}
                 {"\n"}
@@ -52,15 +51,15 @@ const SpecificRatingInfoCard = (props) => {
               </Text>
             </> }
           </View>
-          <View style={styles.cardRow3}></View>
-          <View style={styles.cardRow4}></View>
-          <View style={styles.cardRow5}>
-              <TouchableOpacity style={[styles.infoButton, {backgroundColor: props.backgroundColor}]}>
+          <View style={styles(screenWidth, screenHeight).cardRow3}></View>
+          <View style={styles(screenWidth, screenHeight).cardRow4}></View>
+          <View style={styles(screenWidth, screenHeight).cardRow5}>
+              <TouchableOpacity style={[styles(screenWidth, screenHeight).infoButton, {backgroundColor: props.backgroundColor}]}>
                 <SimpleLineIcons name="info" size={16} color={props.textColor} />
               </TouchableOpacity>
               
-              <TouchableOpacity style={styles.closeButton} onPress={handleCloseButtonClick}>
-                <Text style={styles.closeButtonText}>Close</Text>
+              <TouchableOpacity style={styles(screenWidth, screenHeight).closeButton} onPress={handleCloseButtonClick}>
+                <Text style={styles(screenWidth, screenHeight).closeButtonText}>Close</Text>
               </TouchableOpacity>
       
             {/* <View style={styles.edgeIndicator}>
@@ -76,8 +75,8 @@ const SpecificRatingInfoCard = (props) => {
 
 export default SpecificRatingInfoCard;
 
-const styles = StyleSheet.create({
-    cardContainer: {
+const styles = (screenWidth, screenHeight) => StyleSheet.create({
+  cardContainer: {
       flex: 1,
       backgroundColor: '#FFFFFF',
       borderRadius: 11,

@@ -1,13 +1,14 @@
 import { Alert, Dimensions, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, Vibration, View, Animated, TouchableWithoutFeedback, Keyboard } from 'react-native'
-import React, { useLayoutEffect, useState, useRef, useEffect } from 'react'
+import React, { useLayoutEffect, useState, useRef, useEffect } from 'react';
+import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import { Button } from '@rneui/base';
 import Icon from 'react-native-vector-icons/Feather';
 import { useUserContext } from '../contexts/userContext';
 
-const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
-
 const EmailEntry = ( {navigation}) => {
+    const screenWidth = useScreenWidth();
+    const screenHeight = useScreenHeight();
+
     const {setAuthEmail, isAuthenticatedEmail} = useUserContext()
     const [email, setEmail] = useState("")
 
@@ -21,7 +22,7 @@ const EmailEntry = ( {navigation}) => {
                 backgroundColor: "#0060FF"
             },
             headerLeft: () => (
-                <TouchableOpacity style={styles.headerLeft} onPress={() => navigation.goBack()}>
+                <TouchableOpacity style={styles(screenWidth, screenHeight).headerLeft} onPress={() => navigation.goBack()}>
                     <Icon name="chevrons-left" size={28} color={"#FFFFFF"} />
                 </TouchableOpacity>
             ),
@@ -29,7 +30,6 @@ const EmailEntry = ( {navigation}) => {
     }, [])
 
     const handleContinueClick = async () => {
-        Vibration.vibrate(0, 500)
         if (!email || email === "" || !email.includes('@')) {
             Alert.alert('Error', 'Please enter in a valid email', [{text: 'Retry'}])
         } else {
@@ -69,13 +69,13 @@ const EmailEntry = ( {navigation}) => {
     
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <View style={styles.container}>
-            <Animated.View style={[styles.container, { transform: [{ translateY }] }]}>
-                <Text style={styles.brandText}>Email?</Text>
-                <Text style={styles.callToActionText}>Enter your email to get started.</Text>
-                <View style={styles.searchBarContainer}>
+        <View style={styles(screenWidth, screenHeight).container}>
+            <Animated.View style={[styles(screenWidth, screenHeight).container, { transform: [{ translateY }] }]}>
+                <Text style={styles(screenWidth, screenHeight).brandText}>Email?</Text>
+                <Text style={styles(screenWidth, screenHeight).callToActionText}>Enter your email to get started.</Text>
+                <View style={styles(screenWidth, screenHeight).searchBarContainer}>
                     <TextInput
-                        style={styles.searchInput}
+                        style={styles(screenWidth, screenHeight).searchInput}
                         placeholder="Email"
                         type="Email"
                         placeholderTextColor="#00000060"
@@ -88,7 +88,7 @@ const EmailEntry = ( {navigation}) => {
                         autoCapitalize="none"
                         >
                     </TextInput>
-                    <TouchableOpacity style={[styles.searchButton, { marginLeft: 10 }]} onPress={() => handleContinueClick()}>
+                    <TouchableOpacity style={[styles(screenWidth, screenHeight).searchButton, { marginLeft: 10 }]} onPress={() => handleContinueClick()}>
                         <Icon
                             name="chevrons-right"
                             size={28}
@@ -104,7 +104,7 @@ const EmailEntry = ( {navigation}) => {
 
 export default EmailEntry
 
-const styles = StyleSheet.create({
+const styles = (screenWidth, screenHeight) => StyleSheet.create({
     container: {
         flex: 1, 
         alignItems: 'center', 

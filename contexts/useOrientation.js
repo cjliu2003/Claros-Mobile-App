@@ -7,14 +7,10 @@ export function useScreenWidth(){
 
   useEffect(() => {
     Dimensions.addEventListener('change', ({window:{width,height}})=>{
-      if (width < height) {
-        
-      } else {
-        setScreenWidth(Dimensions.get('window').height)
-      }
+      setScreenWidth(Dimensions.get('window').width)
     })
   }, []);
-  console.log(screenWidth);
+  
   return screenWidth;
 }
 
@@ -25,13 +21,9 @@ export function useScreenHeight(){
   useEffect(() => {
     Dimensions.addEventListener('change', ({window:{width,height}})=>{
       // Only if the currently defined height is greater than the width do we redefine.
-      if (width < height) {
-        
-      } else {
-        setScreenHeight(Dimensions.get('window').width)
-      }
+      setScreenHeight(Dimensions.get('window').height)
     })
   }, []);
-  console.log(screenHeight);
+
   return screenHeight;
 }

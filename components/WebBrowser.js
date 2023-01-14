@@ -1,6 +1,7 @@
 import { Dimensions, Share, StyleSheet, Text, TouchableOpacity, View, Image, Linking } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { useUserContext } from '../contexts/userContext'
+import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import { WebView } from 'react-native-webview';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
@@ -13,11 +14,10 @@ import Icons from '../assets/Icons';
 import { clickProps } from 'react-native-web/dist/cjs/modules/forwardedProps';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-// Get the current screen width and height
-const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
-
 const InAppWebBrowser = (props) => {
+    const screenWidth = useScreenWidth();
+    const screenHeight = useScreenHeight();
+
     const [pageIsLoading, setPageIsLoading] = useState("false");
 
     const handleCloseButtonClick = () => {
@@ -52,16 +52,16 @@ const InAppWebBrowser = (props) => {
     }
 
     return (
-        <View style={styles.container}>
-            <View style={styles.headerContainer}>
+        <View style={styles(screenWidth, screenHeight).container}>
+            <View style={styles(screenWidth, screenHeight).headerContainer}>
                 {/* <View style={styles.headerCloseContainer}> */}
                 <TouchableOpacity onPress={handleCloseButtonClick}>
-                    <Text style={styles.headerCloseText}>Close</Text>
+                    <Text style={styles(screenWidth, screenHeight).headerCloseText}>Close</Text>
                 </TouchableOpacity>
                 {/* </View> */}
-                <View style={styles.headerCenterpiece}>
+                <View style={styles(screenWidth, screenHeight).headerCenterpiece}>
                     <Ionicons name="ios-lock-closed" color="#000000" size="16"></Ionicons>
-                    <Text style={styles.urlText}>claros.ai</Text>
+                    <Text style={styles(screenWidth, screenHeight).urlText}>claros.ai</Text>
                 </View>
                 <TouchableOpacity onPress={handleReloadClick}>
                     <AntDesign name="reload1" color="#0060FF" size="18" />
@@ -77,7 +77,7 @@ const InAppWebBrowser = (props) => {
                 onLoadEnd={handleOnLoadEnd}
                 >
             </WebView>
-            <View style={styles.footerContainer}>
+            <View style={styles(screenWidth, screenHeight).footerContainer}>
                 <TouchableOpacity onPress={handleBackButtonClick}>
                     <Entypo name="chevron-thin-left" color="#0060FF" size="22" />
                 </TouchableOpacity>
@@ -92,13 +92,13 @@ const InAppWebBrowser = (props) => {
                 </TouchableOpacity>
             </View>
             {/* <StatusBar style='light' /> */}
-        </View>
+        </View>        
     )
 }
 
 export default InAppWebBrowser
 
-const styles = StyleSheet.create({
+const styles = (screenWidth, screenHeight) => StyleSheet.create({
     container: {
       height: screenHeight,
       backgroundColor: 'white',

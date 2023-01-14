@@ -2,13 +2,13 @@ import { Dimensions, StyleSheet, Text, TouchableOpacity, Vibration, View, Linkin
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import Icon from 'react-native-vector-icons/Feather';
 import { useUserContext } from '../contexts/userContext';
+import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import InAppWebBrowser from '../components/WebBrowser'
 
-
-const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
-
 const CenterScreen = ( {navigation} ) => {
+  const screenWidth = useScreenWidth();
+  const screenHeight = useScreenHeight();
+
   const {user, logoutUser} = useUserContext()
   const [currWebview, setCurrWebview] = useState("")
   useLayoutEffect(() => {
@@ -21,7 +21,7 @@ const CenterScreen = ( {navigation} ) => {
             backgroundColor: "#0060FF"
         },
         headerLeft: () => (
-          <TouchableOpacity style={styles.headerLeft} onPress={() => navigation.goBack()}>
+          <TouchableOpacity style={styles(screenWidth, screenHeight).headerLeft} onPress={() => navigation.goBack()}>
             <Icon name="chevrons-left" size={28} color={"#FFFFFF"} />
           </TouchableOpacity>
         ),
@@ -34,32 +34,32 @@ const CenterScreen = ( {navigation} ) => {
   
 
   const signOut = () => {
-    Vibration.vibrate(0, 250)
+    // Vibration.vibrate(0, 250)
     logoutUser()
   }
 
   const handleManageSubscription = () => {
-    Vibration.vibrate(0, 250)
+    // Vibration.vibrate(0, 250)
     setCurrWebview("stripe");
   }
 
   const handleTermsClick = () => {
-    Vibration.vibrate(0, 250)
+    // Vibration.vibrate(0, 250)
     setCurrWebview("terms")
   }
 
   const handlePrivClick = () => {
-    Vibration.vibrate(0, 250)
+    // Vibration.vibrate(0, 250)
     setCurrWebview("terms")
   }
 
   return (
-      <View style={styles.container}>
-        <TouchableOpacity onPress={handleManageSubscription} style={styles.manageSubscriptionButton}><Text style={styles.manageSubscriptionButtonText}>Manage Subscription</Text></TouchableOpacity>
-        <TouchableOpacity onPress={signOut} style={styles.signOutButton}><Text style={styles.signOutButtonText}>Sign Out: {user && user.email}</Text></TouchableOpacity>
-        <View style={styles.legalRow}>
-            <Text onPress={handleTermsClick} style={styles.legalLinkText}>Terms and Conditions</Text>
-            <Text onPress={handlePrivClick} style={styles.legalLinkText}>Privacy Policy</Text>
+      <View style={styles(screenWidth, screenHeight).container}>
+        <TouchableOpacity onPress={handleManageSubscription} style={styles(screenWidth, screenHeight).manageSubscriptionButton}><Text style={styles(screenWidth, screenHeight).manageSubscriptionButtonText}>Manage Subscription</Text></TouchableOpacity>
+        <TouchableOpacity onPress={signOut} style={styles(screenWidth, screenHeight).signOutButton}><Text style={styles(screenWidth, screenHeight).signOutButtonText}>Sign Out: {user && user.email}</Text></TouchableOpacity>
+        <View style={styles(screenWidth, screenHeight).legalRow}>
+            <Text onPress={handleTermsClick} style={styles(screenWidth, screenHeight).legalLinkText}>Terms and Conditions</Text>
+            <Text onPress={handlePrivClick} style={styles(screenWidth, screenHeight).legalLinkText}>Privacy Policy</Text>
         </View>
         <Modal transparent={true} animationType="fade" visible={currWebview === "stripe"}>
           <InAppWebBrowser url={'https://billing.stripe.com/p/login/00gbLJ0Zgd7U7IYcMM'} currWebview={currWebview} setCurrWebview={setCurrWebview}></InAppWebBrowser>
@@ -74,10 +74,9 @@ const CenterScreen = ( {navigation} ) => {
   )
 }
 
-
 export default CenterScreen
 
-const styles = StyleSheet.create({
+const styles = (screenWidth, screenHeight) => StyleSheet.create({
     container: {
       flex: 1, 
       alignItems: 'center',

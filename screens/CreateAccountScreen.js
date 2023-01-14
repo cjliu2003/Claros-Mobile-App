@@ -2,13 +2,14 @@ import { Alert, Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, Vibra
 import React, { useEffect, useLayoutEffect, useState, useRef } from 'react'
 import Icon from 'react-native-vector-icons/Feather';
 import { useUserContext } from '../contexts/userContext';
+import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import { validateCredentials } from '../functions/signup/validateCredentials';
 import InAppWebBrowser from '../components/WebBrowser';
 
-const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
-
 const CreateAccountScreen = ({navigation}) => {
+  const screenWidth = useScreenWidth();
+  const screenHeight = useScreenHeight();
+
   const {user, authEmail, registerUser} = useUserContext()
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -25,16 +26,16 @@ const CreateAccountScreen = ({navigation}) => {
             backgroundColor: "#0060FF"
         },
         headerLeft: () => (
-          <TouchableOpacity style={styles.headerLeft} onPress={() => navigation.goBack()}>
+          <TouchableOpacity style={styles(screenWidth, screenHeight).headerLeft} onPress={() => navigation.goBack()}>
               <Icon name="chevrons-left" size={28} color={"#FFFFFF"} />
           </TouchableOpacity>
       ),
       });
     }, [])
 
-  useEffect(() => {
-    if (user) navigation.replace("Pricing")
-  }, [user])
+  // useEffect(() => {
+  //   if (user) navigation.replace("Pricing")
+  // }, [user])
   
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const translateY = useRef(new Animated.Value(0)).current;
@@ -74,20 +75,20 @@ const CreateAccountScreen = ({navigation}) => {
   }
 
   const handleTermsClick = () => {
-    Vibration.vibrate(0,250)
+    // Vibration.vibrate(0,250)
     setCurrWebview("terms")
   }
 
   return (
     <>
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <View style={styles.container}>
-        <Animated.View style={[styles.container, { transform: [{ translateY }] }]}>
-        <Text style={styles.brandText}>P-word?</Text>
-          <Text style={styles.callToActionText}>Create account password to finish!</Text>
-          <View style={styles.searchBarContainer}>
+      <View style={styles(screenWidth, screenHeight).container}>
+        <Animated.View style={[styles(screenWidth, screenHeight).container, { transform: [{ translateY }] }]}>
+        <Text style={styles(screenWidth, screenHeight).brandText}>P-word?</Text>
+          <Text style={styles(screenWidth, screenHeight).callToActionText}>Create account password to finish.</Text>
+          <View style={styles(screenWidth, screenHeight).searchBarContainer}>
             <TextInput
-              style={styles.searchInput}
+              style={styles(screenWidth, screenHeight).searchInput}
               placeholder="Password"
               placeholderTextColor="#00000060"
               enablesReturnKeyAutomatically="true"
@@ -98,7 +99,7 @@ const CreateAccountScreen = ({navigation}) => {
               returnKeyType="next"
             />
             <TextInput
-              style={styles.searchInput}
+              style={styles(screenWidth, screenHeight).searchInput}
               placeholder="Confirm Password"
               placeholderTextColor="#00000060"
               enablesReturnKeyAutomatically="true"
@@ -109,7 +110,7 @@ const CreateAccountScreen = ({navigation}) => {
               onSubmitEditing={() => signUpUser()}
               returnKeyType="done"
             />
-            <TouchableOpacity style={[styles.searchButton, { marginLeft: 10 }]} onPress={() => signUpUser()}>
+            <TouchableOpacity style={[styles(screenWidth, screenHeight).searchButton, { marginLeft: 10 }]} onPress={() => signUpUser()}>
               <Icon
                 name="chevrons-right"
                 size={28}
@@ -117,11 +118,11 @@ const CreateAccountScreen = ({navigation}) => {
               />
             </TouchableOpacity>
           </View>
-          <View style={styles.termsContainer}>
-            <TouchableOpacity style={styles.checkbox} onPress={() => setAcceptTerms(!acceptTerms)}>
-                <Icon name={acceptTerms ? "check-square" : "square"} size={28} color={"#ffffff"} />
+          <View style={styles(screenWidth, screenHeight).termsContainer}>
+            <TouchableOpacity style={styles(screenWidth, screenHeight).checkbox} onPress={() => setAcceptTerms(!acceptTerms)}>
+                <Icon name={acceptTerms ? "check-square" : "square"} size={24} color={"#ffffff85"} />
             </TouchableOpacity>
-            <Text onPress={handleTermsClick} style={styles.legalText}>I accept the terms and conditions</Text>
+            <Text onPress={handleTermsClick} style={styles(screenWidth, screenHeight).legalText}>I accept the terms and conditions</Text>
           </View>
 
         </Animated.View>
@@ -136,7 +137,7 @@ const CreateAccountScreen = ({navigation}) => {
 
 export default CreateAccountScreen
 
-const styles = StyleSheet.create({
+const styles = (screenWidth, screenHeight) => StyleSheet.create({
   container: {
     flex: 1, 
     alignItems: 'center', 
