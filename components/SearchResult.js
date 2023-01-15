@@ -13,6 +13,7 @@ import LinePage from './LinePage';
 import InAppWebBrowser from './WebBrowser'
 import SpecificRatingInfoCard from './SpecificRatingInfoCard';
 import { handleGradeBackgroundColor, handleGradeTextColor } from '../functions/styling/handleGradeColor';
+import Icon from 'react-native-vector-icons/Feather';
 
 const colorMap = {
   A: {
@@ -36,7 +37,7 @@ const SearchResultContainer = ({line}) => {
 
   const [featuredLine, setFeaturedLine] = useState(null)
   const [isRatingInfoPressed, setIsRatingInfoPressed] = useState(false);
-  const [isLineTitlePressed, setIsLineTitlePressed] = useState(false);
+  const [isBetNowPressed, setIsBetNowPressed] = useState(false);
   const [currWebview, setCurrWebview] = useState("");
 
   const handleCardClick = () => {
@@ -71,8 +72,8 @@ const SearchResultContainer = ({line}) => {
 
   // Function handleLineTitlePress is deplyed when end-user presses lineTitle
   // Function opens App-native WebBrowser to allow for in app bet placement.
-  const handleLineTitlePress = () => {
-    setIsLineTitlePressed(true);
+  const handleBetNowPress = () => {
+    setIsBetNowPressed(true);
     setCurrWebview("sportsbook");
   }
 
@@ -139,9 +140,9 @@ const SearchResultContainer = ({line}) => {
           <View style={{justifyContent: 'center', alignItems: 'center'}}>
               <Image style={styles(screenWidth, screenHeight).cardBookLogo} source={line.bookmaker in Sportsbooks && Sportsbooks[line.bookmaker].logo}/> 
           </View>
-          <TouchableOpacity style={styles(screenWidth, screenHeight).lineTitleBackground} onPress={handleLineTitlePress}>
+          <View style={styles(screenWidth, screenHeight).lineTitleBackground}>
             <Text style={styles(screenWidth, screenHeight).lineTitle}>{parseOdds(line[findSide(line.home_ev, line.away_ev) + "_odds"])} on {team} {marketTag}</Text>
-          </TouchableOpacity>
+          </View>
           
         </View>
         <View style={styles(screenWidth, screenHeight).cardRow2}>
@@ -157,15 +158,18 @@ const SearchResultContainer = ({line}) => {
         <View style={styles(screenWidth, screenHeight).cardRow4}>
           <Text style={styles(screenWidth, screenHeight).lineDate}>{parseDate(line.commence_time)}</Text>
         </View>
-        <TouchableOpacity style={[{backgroundColor: backgroundColor, flex: 1}, styles(screenWidth, screenHeight).cardRow5]} onPress={handleInfoClick}>
-          <SimpleLineIcons name="info" size={16} color={textColor}></SimpleLineIcons>
-          <View style={styles(screenWidth, screenHeight).ratingsCategoryView}>
+        <View style={styles(screenWidth, screenHeight).cardRow5}>
+          <TouchableOpacity style={[{backgroundColor: backgroundColor}, styles(screenWidth, screenHeight).ratingsCategoryView]} onPress={handleInfoClick}>
+            <SimpleLineIcons name="info" size={16} color={textColor}></SimpleLineIcons>
             <Text style={[styles(screenWidth, screenHeight).ratingsCategoryText, {color: textColor}]}>{line.max_ev >= 1 ? "A" : line.max_ev > -1 && line.max_ev < 1 ? "B" : "C"} Rating </Text>
-          </View>
-          <View style={styles(screenWidth, screenHeight).ratingsMetricView}>
-            <Text style={[styles(screenWidth, screenHeight).ratingsMetricText, {color: textColor}]}>{line.max_ev > 0 && "+" }{(line.max_ev).toFixed(2)}% Fair Value</Text>
-          </View>
-        </TouchableOpacity>
+            <Text style={[styles(screenWidth, screenHeight).ratingsMetricText, {color: textColor}]}>{line.max_ev > 0 && "+" }{(line.max_ev).toFixed(2)}% Edge</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={styles(screenWidth, screenHeight).betNowButton} onPress={handleBetNowPress}>
+            <Text style={styles(screenWidth, screenHeight).betNowButtonText}>Bet Now</Text>
+            <Icon name="chevrons-right" size={18} color={"#0060FF"} />
+          </TouchableOpacity>
+        </View>
         <Modal 
           transparent={true} 
           animationType="fade" 
@@ -252,9 +256,11 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 10, 
+    padding: 0, 
     marginTop: screenHeight * 0.02, 
-    borderRadius: 5
+    borderRadius: 5,
+    // borderColor: '#0060FF',
+    // borderWidth: 1,
   },
   bookmakerTitle: {
     fontSize: 14,
@@ -271,7 +277,7 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
   },
   lineTitleBackground: {
     flex: 0,
-    backgroundColor: "#00E0FF12",
+    // backgroundColor: "#00E0FF12",
     padding: 5,
     borderRadius: 5,
     maxWidth: '60%'
@@ -299,21 +305,45 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
   ratingsCategoryText: {
     fontSize: 14,
     fontWeight: '400',
-    alignSelf: 'flex-start'
+    alignSelf: 'flex-start',
+    marginLeft: 10,
   },
   ratingsMetricText: {
     fontSize: 14,
     fontWeight: '400',
-    alignSelf: 'flex-end'
-  },
-  infoIconView: {
-    flex: 0,
+    alignSelf: 'flex-end',
+    marginLeft: 10,
   },
   ratingsCategoryView: {
-    flex: 1,
-    marginLeft: 10
+    flex: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: "center",
+    padding: 10,
+    borderRadius: 5,
   },
-  ratingsMetricView: {
-    flex: 1,
+  betNowButton: {
+    flex: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: "center",
+    borderRadius: 5,
+    borderColor: "#0060FF",
+    borderWidth: 0.125,
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingRight: 15,
+    paddingLeft:15,
+    shadowColor: '#0060FF',
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 5,
+    shadowOpacity: 0.33,
+    backgroundColor: '#FFFFFF',
+  },
+  betNowButtonText: {
+    color: "#0060FF",
+    fontSize: 14,
+    fontWeight: '300',
+    marginRight: 10,
   },
 });
