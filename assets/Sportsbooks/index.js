@@ -21,6 +21,7 @@ import LowVig from '../Sportsbooks/Sportsbook-Logos-HorizontalLowvig.png'
 import Marathon from '../Sportsbooks/Sportsbook-Logos-HorizontalMarathon.png'
 import Matchbook from '../Sportsbooks/Sportsbook-Logos-HorizontalMatchbook.png'
 import MyBookie from '../Sportsbooks/Sportsbook-Logos-HorizontalMyBookie.png'
+import Pinnacle from '../Sportsbooks/Sportsbook-Logos-HorizontalPinnacle.png'
 import PointsBet from '../Sportsbooks/Sportsbook-Logos-HorizontalPointsBET.png'
 import SugarHouse from '../Sportsbooks/Sportsbook-Logos-HorizontalSugarHouse.png'
 import Superbook from '../Sportsbooks/Sportsbook-Logos-HorizontalSuperbook.png'
@@ -369,13 +370,18 @@ const Sportsbooks = {
         MLB: "https://www.nordicbet.com/no/odds/baseball/mlb/mlb",
     },
     pinnacle: {
-        logo: null,
+        logo: Pinnacle,
         name: "Pinnacle",
         location: {
             US: false,
             EU: true
         },
         link: "https://pinnacle.com",
+        NBA: "https://www.pinnacle.com/en/basketball/matchups",
+        NFL: "https://www.pinnacle.com/en/football/nfl/matchups",
+        NCAAF: "https://www.pinnacle.com/en/football/ncaa/matchups",
+        NHL: "https://www.pinnacle.com/en/hockey/nhl/matchups",
+        MLB: "https://www.pinnacle.com/en/baseball/mlb/matchups",
     }, 
     pointsbetus: {
         logo: PointsBet,

@@ -8,6 +8,8 @@ import SearchResultContainer from '../components/SearchResult';
 import CTAPopup from '../components/CTAPopup';
 import { Ionicons } from '@expo/vector-icons';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { StatusBar } from 'expo-status-bar';
+import { invokeAddUserSearchQuery } from '../functions/search/searchQueryStorage';
 
 const HomeScreen = ({navigation}) => {
   const screenWidth = useScreenWidth();
@@ -22,18 +24,23 @@ const HomeScreen = ({navigation}) => {
   const [data, setData] = useState(null);
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [isAwaitingFetch, setIsAwaitingFetch] = useState(false);
+  const [uid, setUid] = useState("");
 
-  // // useEffect to detect non users and send them to welcome
-  // useEffect(() => {
-  //   if (!user) navigation.navigate("Welcome")
-  // }, [user])
+  // useEffect to detect non users and send them to welcome
+  useEffect(() => {
+    if (!user) {
+      navigation.navigate("Welcome");
+    } else {
+      setUid(user.uid);
+    }
+  }, [user])
 
-  // // useEffect to show subscription prompt pop up iof the user is not a subscriber
-  // useEffect(() => {
-  //   if (subscription === "none" && !recentSignOut) {
-  //     setIsPopupVisible(true);
-  //   }
-  // }, [subscription])
+  // useEffect to show subscription prompt pop up iof the user is not a subscriber
+  useEffect(() => {
+    if (subscription === "none" && !recentSignOut) {
+      setIsPopupVisible(true);
+    }
+  }, [subscription])
   
   const signOut = () => {
     setRecentSignOut(true)
@@ -80,14 +87,16 @@ const HomeScreen = ({navigation}) => {
 
   const handleSearch = async () => {
     setIsAwaitingFetch(true); // Update the state to loading
-    // Vibration.vibrate(0, 500);
-    // ReactNativeHapticFeedback.trigger("impactLight", options);
 
     // Perform search from index
-    const data = await searchIndex(searchQuery);
-    setData(data);
+    const responseData = await searchIndex(searchQuery);
+    setData(responseData);
     setKeyboardHeight(0);
     setKeyboardVisible(false);
+
+    // Write the userSearchQuery, and the responseData to Vulcan
+    const response = await invokeAddUserSearchQuery(uid, searchQuery, responseData);
+
     setIsAwaitingFetch(false);
     setShowSearchResults(true);
   }
@@ -184,6 +193,7 @@ const HomeScreen = ({navigation}) => {
             {/* <Text onPress={() => signOut()}>click me to sign out (this helps with testing if the popup will occur on different accounts)</Text> */}
           </ScrollView>
         </TouchableWithoutFeedback>
+        <StatusBar style='light' />
       </View>
     </>
   )

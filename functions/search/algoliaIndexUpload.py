@@ -5,17 +5,16 @@ from algoliasearch.search_client import SearchClient
 
 def fetch_reporter(): # <-- Fetches entire contents of `reporter`
     # Create a connection pool with 5 connections
-    pool = psycopg2.pool.SimpleConnectionPool(5,
-            10,
+    pool = psycopg2.pool.SimpleConnectionPool(5, 10,
             host='database-5.c78tyhcr0yxb.us-east-1.rds.amazonaws.com',
             user='jax',
             password='getrichordietrying',
             dbname='vulcan3')
-
+    
     conn = pool.getconn()
     cursor = conn.cursor()
 
-    query = "SELECT row_to_json(a) FROM ( SELECT * FROM reporter ORDER BY max_ev DESC) as a;"
+    query = f"SELECT row_to_json(a) FROM ( SELECT * FROM reporter WHERE league_name IN ('MLB', 'NFL', 'NCAAF', 'NBA', 'NCAAB', 'NHL') ORDER BY max_ev DESC) as a;"
     try:
         cursor.execute(query)
     except Exception as e:
@@ -24,7 +23,7 @@ def fetch_reporter(): # <-- Fetches entire contents of `reporter`
 
     query_output = cursor.fetchall()
     json_output = [item[0] for item in query_output]
-    
+
     # Close the cursor and connection
     cursor.close()
     conn.close()
@@ -33,42 +32,27 @@ def fetch_reporter(): # <-- Fetches entire contents of `reporter`
     pool.putconn(conn)
     return json_output # <-- Fetches most receent snapshot from all 'lines' tables for events occuring today
 
-def prepare_for_algolia(json_data): # <-- Prepares data by adding objectId, and splitting into three distinct betting objects (i.e. lines)
+def clean_for_algolia(json_data): # <-- Prepares data by adding objectId
 
     count = 0
-    prepared_data = [] # <-- We push json_data to a list of objects where each object is one side of a bettable line
     for item in json_data:
-        home_json = {}
-        away_json = {}
-        draw_json = {}
-        
-        for key in item:
-            home_json[key] = item[key]
-            away_json[key] = item[key]
-            draw_json[key] = item[key]
-            
-        home_json['objectID'] = count
-        away_json['objectID'] = count
-        draw_json['objectID'] = count
-
-        prepared_data.append(home_json)
-        prepared_data.append(away_json)
-        prepared_data.append(draw_json)
-
+        item['objectID'] = count
         count += 1
 
-    return prepared_data
-
-
+    print(count)
+    return json_data
+     
+ 
 def upload_to_algolia(json_data): # <-- Takes in a list of json objects from PGSQL
     client = SearchClient.create("N6218C146E", "4af2629cfd5d781f7d21f06f8254179a") # <-- Init Algolia client
     index = client.init_index("test_index") # <-- The index to which we are uploading
     records = json_data
-    res = index.save_objects(records)
-
-
-
+    
+    index.replace_all_objects(records)
+    # res = index.save_objects(records)
+ 
+ 
+ 
 reporterContents = fetch_reporter()
-prepared_data = prepare_for_algolia(reporterContents)
-print(len(prepared_data))
-# upload_to_algolia(prepared_data)
+clean_data = clean_for_algolia(reporterContents)
+upload_to_algolia(clean_data)
