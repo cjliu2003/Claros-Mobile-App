@@ -8,7 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
-import { Feather } from '@expo/vector-icons';
+import Icon from 'react-native-vector-icons/Feather';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Icons from '../assets/Icons';
 import { clickProps } from 'react-native-web/dist/cjs/modules/forwardedProps';
@@ -54,10 +54,11 @@ const InAppWebBrowser = (props) => {
     return (
         <View style={styles(screenWidth, screenHeight).container}>
             <View style={styles(screenWidth, screenHeight).headerContainer}>
-                {/* <View style={styles.headerCloseContainer}> */}
-                <TouchableOpacity onPress={handleCloseButtonClick}>
-                    <Text style={styles(screenWidth, screenHeight).headerCloseText}>Close</Text>
-                </TouchableOpacity>
+                {/* <View style={styles(screenWidth, screenHeight).headerCloseContainer}> */}
+                    <TouchableOpacity style={styles(screenWidth, screenHeight).headerCloseContainer} onPress={handleCloseButtonClick}>
+                        {/* <Icon name="chevrons-left" size={26} color={"#0060FF"} /> */}
+                        <Text style={styles(screenWidth, screenHeight).headerCloseText}>Close</Text>
+                    </TouchableOpacity>
                 {/* </View> */}
                 <View style={styles(screenWidth, screenHeight).headerCenterpiece}>
                     <Ionicons name="ios-lock-closed" color="#000000" size="16"></Ionicons>
@@ -85,7 +86,7 @@ const InAppWebBrowser = (props) => {
                     <Entypo name="chevron-thin-right" color="#0060FF" size="22" />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={handleShareButtonClick}>
-                    <Feather name="share" color="#0060FF" size="22" />
+                    <Icon name="share" color="#0060FF" size="22" />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={handleSafariButtonClick}>
                     <MaterialCommunityIcons name="apple-safari" color="#0060FF" size="24" />
@@ -120,11 +121,12 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
         fontSize: 18,
         fontWeight: '400',
         alignItems: 'flex-start',
+        marginLeft: 10,
     },
     headerCloseContainer: {
-        flex: 1,
-        borderColor: "#000000",
-        borderWidth: 1
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
     },
     headerCenterpiece: {
         display: 'flex',

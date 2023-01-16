@@ -1,17 +1,42 @@
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import { Dimensions, StyleSheet, Text, TouchableOpacity, View, Modal } from 'react-native'
+import React, { useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient';
 import { SimpleLineIcons } from '@expo/vector-icons';
+import Icon from 'react-native-vector-icons/Feather';
 import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
+import InAppWebBrowser from './WebBrowser';
+import Sportsbooks from '../assets/Sportsbooks';
+
 
 const SpecificRatingInfoCard = (props) => {
     const screenWidth = useScreenWidth();
     const screenHeight = useScreenHeight();
+
+    const [isBetNowPressed, setIsBetNowPressed] = useState(false);
+    const [currWebview, setCurrWebview] = useState("");
     
+    // Function handleLineTitlePress is deplyed when end-user presses lineTitle
+    // Function opens App-native WebBrowser to allow for in app bet placement.
+    const handleBetNowPress = () => {
+      setIsBetNowPressed(true);
+      setCurrWebview("sportsbook");
+    }
+
+    // Get the semi-deep bookmaker link
+    const getBookmakerLink = (line) => {
+      let link;
+      if (Sportsbooks[line.bookmaker].hasOwnProperty(line.league_name)) {
+        link = Sportsbooks[line.bookmaker][line.league_name];
+      } else {
+        link = Sportsbooks[line.bookmaker].link;
+      }
+      return link;
+    }
+
     const handleCloseButtonClick = () => {
         props.setIsRatingInfoPressed(false);
     }
-    
+
     // To ensure our info pop up is positioned on top of the cardContainer deployed in SearchResult,
     // we take the cardContainer positions(x, y) which are neccessarily passed in as props when
     // <RatingInfoPopUp is called />
@@ -22,14 +47,17 @@ const SpecificRatingInfoCard = (props) => {
       <View style={[styles(screenWidth, screenHeight).cardContainer, { top , left }, { width, height }]}>
           <View style={styles(screenWidth, screenHeight).cardRow1}>
             <Text style={[styles(screenWidth, screenHeight).ratingTitle, {color: props.textColor}]}>{props.line.max_ev >= 1 ? "A" : props.line.max_ev > -1 && props.line.max_ev < 1 ? "B" : "C"} Rating</Text>
+            {/* <Text style={[styles(screenHeight, screenHeight).betNowText, {color: props.textColor}]}>Place bet</Text> */}
+            <TouchableOpacity style={styles(screenWidth, screenHeight).betNowButton} onPress={handleBetNowPress}>
+              <Text style={styles(screenWidth, screenHeight).betNowText}>Place Bet</Text>
+              <Icon name="chevrons-right" size={18} color={"#0060FF"} />
+            </TouchableOpacity>
           </View>
           <View style={styles(screenWidth, screenHeight).cardRow2}>
            {props.line.max_ev > 1 ? 
             <>
               <Text style={styles(screenWidth, screenHeight).ratingExplanation}>
                 Our ratings indicate the long term profitability of betting assets. A-rated assets are the highest rated lines. 
-                {"\n"}
-                {"\n"}
                 Learn more about ratings below.
               </Text>
             </> : 
@@ -37,16 +65,12 @@ const SpecificRatingInfoCard = (props) => {
             <>
               <Text style={styles(screenWidth, screenHeight).ratingExplanation}>
                 Our ratings indicate the long term profitability of betting assets. B-rated assets are the mid-tier rated lines. 
-                {"\n"}
-                {"\n"}
                 Learn more about ratings below.
               </Text>
             </> : 
             <>
               <Text style={styles(screenWidth, screenHeight).ratingExplanation}>
                 Our ratings indicate the long term profitability of betting assets. C-rated assets are the lowest rated lines. 
-                {"\n"}
-                {"\n"}
                 Learn more about ratings below.
               </Text>
             </> }
@@ -69,6 +93,19 @@ const SpecificRatingInfoCard = (props) => {
                 <LinearGradient colors={['#0060ff', '#39AAF3']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[styles.edgeBar, { width: '50%' }]}></LinearGradient>
             </View> */}
           </View>
+
+          <Modal
+          transparent={false}
+          animationType="fade"
+          visible={currWebview != ""}
+          >
+            <InAppWebBrowser
+              url={getBookmakerLink(props.line)}
+              currWebview={currWebview} 
+              setCurrWebview={setCurrWebview}
+              >
+          </InAppWebBrowser>
+        </Modal>
       </View>
     )
 }
@@ -92,6 +129,7 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'space-between',
       marginBottom: 10,
+
     },
     cardRow2: {
       flexDirection: 'row',
@@ -123,6 +161,35 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
       fontWeight: '400',
       color: "#E05656",
       textAlign: 'left',
+    },
+    betNowButton: {
+      flex: 0,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: "center",
+      borderRadius: 41,
+      borderColor: "#0060FF",
+      borderWidth: 0.125,
+      paddingTop: 0,
+      paddingBottom: 0,
+      paddingRight: 15,
+      paddingLeft:15,
+      shadowColor: '#0060FF',
+      shadowOffset: { width: 0, height: 0 },
+      shadowRadius: 5,
+      shadowOpacity: 0,
+      backgroundColor: '#FFFFFF',
+    },
+    betNowText: { 
+      color: "#0060FF",
+      fontSize: 14,
+      fontWeight: '300',
+      marginRight: 5,
+      textAlign: 'right',
+      shadowColor: '#FFFFFF',
+      shadowOffset: { width: 0, height: 0 },
+      shadowRadius: 1,
+      shadowOpacity: 1,
     },
     ratingExplanation: {
       fontSize: 14,

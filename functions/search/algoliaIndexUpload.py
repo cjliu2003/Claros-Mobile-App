@@ -14,7 +14,7 @@ def fetch_reporter(): # <-- Fetches entire contents of `reporter`
     conn = pool.getconn()
     cursor = conn.cursor()
 
-    query = f"SELECT row_to_json(a) FROM ( SELECT * FROM reporter WHERE league_name IN ('MLB', 'NFL', 'NCAAF', 'NBA', 'NCAAB', 'NHL') ORDER BY max_ev DESC) as a;"
+    query = f"SELECT row_to_json(a) FROM ( SELECT * FROM reporter ORDER BY max_ev DESC) as a;"
     try:
         cursor.execute(query)
     except Exception as e:

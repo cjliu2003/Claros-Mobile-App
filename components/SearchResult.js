@@ -1,6 +1,6 @@
 import { Image } from '@rneui/base';
 import React, { useState } from 'react';
-import { Text, StyleSheet, View, Dimensions, TouchableOpacity, Modal } from 'react-native';
+import { Text, StyleSheet, View, Dimensions, TouchableOpacity, Modal, Animated } from 'react-native';
 import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import Sportsbooks from '../assets/Sportsbooks';
 import { findSide } from '../functions/parsing/findSide';
@@ -12,6 +12,7 @@ import { SimpleLineIcons } from '@expo/vector-icons';
 import LinePage from './LinePage';
 import InAppWebBrowser from './WebBrowser'
 import SpecificRatingInfoCard from './SpecificRatingInfoCard';
+import RatingTag from './RatingTag';
 import { handleGradeBackgroundColor, handleGradeTextColor } from '../functions/styling/handleGradeColor';
 import Icon from 'react-native-vector-icons/Feather';
 
@@ -69,6 +70,21 @@ const SearchResultContainer = ({line}) => {
       setCardContainerAspect({ width: width, height: height });
     });
   }
+
+  const handleRatingTagClick = () => {
+    const initialOpacity = opacity;
+    
+    Animated.timing(opacity, {
+        fromValue: initialOpacity,
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true
+    }).start()
+    setIsRatingInfoPressed(false);
+  }
+
+
+  
 
   // Function handleLineTitlePress is deplyed when end-user presses lineTitle
   // Function opens App-native WebBrowser to allow for in app bet placement.
@@ -159,12 +175,33 @@ const SearchResultContainer = ({line}) => {
           <Text style={styles(screenWidth, screenHeight).lineDate}>{parseDate(line.commence_time)}</Text>
         </View>
         <View style={styles(screenWidth, screenHeight).cardRow5}>
-          <TouchableOpacity style={[{backgroundColor: backgroundColor}, styles(screenWidth, screenHeight).ratingsCategoryView]} onPress={handleInfoClick}>
+          {/* <TouchableOpacity style={[{backgroundColor: backgroundColor}, styles(screenWidth, screenHeight).ratingsCategoryView]} onPress={handleInfoClick}>
             <SimpleLineIcons name="info" size={16} color={textColor}></SimpleLineIcons>
             <Text style={[styles(screenWidth, screenHeight).ratingsCategoryText, {color: textColor}]}>{line.max_ev >= 1 ? "A" : line.max_ev > -1 && line.max_ev < 1 ? "B" : "C"} Rating </Text>
             <Text style={[styles(screenWidth, screenHeight).ratingsMetricText, {color: textColor}]}>{line.max_ev > 0 && "+" }{(line.max_ev).toFixed(2)}% Edge</Text>
+          </TouchableOpacity> */}
+
+          <TouchableOpacity style={[{backgroundColor: "#FFFFFF"}, styles(screenWidth, screenHeight).infoButton]} onPress={handleInfoClick}>
+            <SimpleLineIcons name="info" size={16} color={textColor}></SimpleLineIcons>
           </TouchableOpacity>
           
+          
+        
+          {/* {!isRatingInfoPressed ? 
+          <>
+            <Animated.View style={{ opacity: opacity }}>
+              <TouchableOpacity style={[{backgroundColor: "#FFFFFF"}, styles(screenWidth, screenHeight).ratingsCategoryView]} onPress={handleInfoClick}>
+                <SimpleLineIcons name="info" size={16} color={textColor}></SimpleLineIcons>
+              </TouchableOpacity>
+            </Animated.View>
+          </> :
+          <>
+            <Animated.View style={{ opacity: opacity }}>
+              <RatingTag line={line} textColor={textColor} backgroundColor={backgroundColor} handleRatingTagClick={handleRatingTagClick}/>
+            </Animated.View> 
+          </>
+          } */}
+             
           <TouchableOpacity style={styles(screenWidth, screenHeight).betNowButton} onPress={handleBetNowPress}>
             <Text style={styles(screenWidth, screenHeight).betNowButtonText}>Bet Now</Text>
             <Icon name="chevrons-right" size={18} color={"#0060FF"} />
@@ -259,8 +296,6 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
     padding: 0, 
     marginTop: screenHeight * 0.02, 
     borderRadius: 5,
-    // borderColor: '#0060FF',
-    // borderWidth: 1,
   },
   bookmakerTitle: {
     fontSize: 14,
@@ -321,6 +356,13 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
     justifyContent: "center",
     padding: 10,
     borderRadius: 41,
+  },
+  infoButton: {
+    borderRadius: 5,
+    height: 33,
+    width: 33,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   betNowButton: {
     flex: 0,
