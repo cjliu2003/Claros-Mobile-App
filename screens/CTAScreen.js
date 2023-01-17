@@ -1,4 +1,4 @@
-import { Dimensions, Linking, Modal, StyleSheet, Text, TouchableOpacity, Vibration, View } from 'react-native'
+import { Dimensions, Modal, StyleSheet, Text, TouchableOpacity, Vibration, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Image } from '@rneui/base';
 import {AntDesign} from '@expo/vector-icons'
@@ -13,14 +13,16 @@ const screenHeight = Dimensions.get('window').height;
 const CTAScreen = ({navigation}) => {
   const {subscription} = useUserContext()
   const [currWebview, setCurrWebview] = useState("")
-  const benefits = ["Unlimited search queries", "35+ Onshore and Offshore Sportsbooks", "Access to future developments"]
+  const benefits = [
+    "Unlimited Search Queries", "Constantly Updating Odds", "Access to Future Developments"
+]
   const getAccess = () => {
     Vibration.vibrate(0, 250)
     setCurrWebview("pricing")
   };
 
   useEffect(() => {
-    if (subscription != "none") navgiation.replace("home")
+    if (subscription != "none") navigation.replace("home")
   }, [subscription])
   
   const handleCenterButtonClick = () => {

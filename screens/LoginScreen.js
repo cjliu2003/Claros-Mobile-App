@@ -14,10 +14,10 @@ const LoginScreen = ({navigation}) => {
   const [signInTrigger, setSignInTrigger] = useState(false)
 
   useEffect(() => {
-    if (user) {
+    if (user && signInTrigger) {
       navigation.replace("Home")
     }
-  }, [user])
+  }, [user, signInTrigger])
   
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -45,7 +45,7 @@ const LoginScreen = ({navigation}) => {
 
       // Now to ensure user is in Vulcan, we make a call to function which makes post request to addUserToVulcan AWS lambda function
       await invokeAddUserToVulcanLambda(uid);
-      // setSignInTrigger(!signInTrigger)
+      setSignInTrigger(true)
 
     } else {
       Alert.alert("Please make sure both fields are filled.")
