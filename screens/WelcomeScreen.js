@@ -1,28 +1,26 @@
-// Welcome screen provides user with option to login in or create an account. It's the top of the navigation stack.
+// Welcome screen provides user with option to login in or create an account. It is the top of the navigation stack.
 
 import { StyleSheet, Text, View, Dimensions, Vibration, Animated, TouchableOpacity } from 'react-native'
 import React, { useState, useEffect } from 'react';
 import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import { StatusBar } from 'expo-status-bar';
 
-const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
-
 const WelcomeScreen = ({ navigation }) => {
+  const screenWidth = useScreenWidth();
+  const screenHeight = useScreenHeight();
 
   const handleEmailButtonClick = () => {
-    Vibration.vibrate([0, 250])
     navigation.navigate('Email')
   }
 
   return (
-    <View style={styles.container}>
-      <Animated.View style={styles.container}>
-        <Text style={[styles.brandText, {marginTop: screenHeight * 0.1}]}>Claros</Text>
-        <Text style={styles.callToActionText}>Your personal sports betting assistant.</Text>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={() => handleEmailButtonClick()}>
-            <Text style={styles.buttonText}>Get Started</Text>
+    <View style={styles(screenWidth, screenHeight).container}>
+      <Animated.View style={styles(screenWidth, screenHeight).container}>
+        <Text style={[styles(screenWidth, screenHeight).brandText, {marginTop: screenHeight * 0.1}]}>Claros</Text>
+        <Text style={styles(screenWidth, screenHeight).callToActionText}>Your personal sports betting assistant.</Text>
+        <View style={styles(screenWidth, screenHeight).buttonContainer}>
+          <TouchableOpacity style={styles(screenWidth, screenHeight).button} onPress={() => handleEmailButtonClick()}>
+            <Text style={styles(screenWidth, screenHeight).buttonText}>Get Started</Text>
           </TouchableOpacity>
         </View>
         <StatusBar style='light' />
@@ -34,7 +32,7 @@ const WelcomeScreen = ({ navigation }) => {
 
 export default WelcomeScreen
 
-const styles = StyleSheet.create({
+const styles = (screenWidth, screenHeight) => StyleSheet.create({
   container: {
     flex: 1, 
     alignItems: 'center', 
@@ -80,15 +78,15 @@ const styles = StyleSheet.create({
     color: "#0060FF"
   },
   image: {
-    width: screenWidth * 0.9,
-    height: screenHeight * 0.25,
-    marginVertical: screenHeight * 0.01,
+    // width: screenWidth * 0.9,
+    // height: screenHeight * 0.25,
+    // marginVertical: screenHeight * 0.01,
   },
   genericText: {
-    width: screenWidth * 0.75,
+    // width: screenWidth * 0.75,
     fontSize: 30,
     fontWeight: "600",
-    marginVertical: screenHeight * 0.05,
+    // marginVertical: screenHeight * 0.05,
     textAlign: "center",
     color: "black"
   },

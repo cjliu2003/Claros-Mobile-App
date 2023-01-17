@@ -1,41 +1,26 @@
 import { Image } from '@rneui/base';
 import React, { useState } from 'react';
-import { Text, StyleSheet, View, Dimensions, TouchableOpacity, Modal } from 'react-native';
+import { Text, StyleSheet, View, TouchableOpacity, Modal, Animated } from 'react-native';
+import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import Sportsbooks from '../assets/Sportsbooks';
 import { findSide } from '../functions/parsing/findSide';
-import { parseName } from '../functions/parsing/parseName';
 import {parseOdds} from '../functions/parsing/parseOdds'
 import {parseDate} from '../functions/parsing/parseDate';
 import { AntDesign } from '@expo/vector-icons';
 import { SimpleLineIcons } from '@expo/vector-icons';
-import LinePage from './LinePage';
 import InAppWebBrowser from './WebBrowser'
-import RatingInfoPopUp from './RatingInfoPopup';
+import SpecificRatingInfoCard from './SpecificRatingInfoCard';
 import { handleGradeBackgroundColor, handleGradeTextColor } from '../functions/styling/handleGradeColor';
-
-// Get the current screen width and height
-const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
-
-const colorMap = {
-  A: {
-    BG: "#4BC15712",
-    TXT: "#4BC157",
-  },
-  B: {
-    BG: "#E1C52E12",
-    TXT: "#E1C52E"
-    
-  },
-  C: {
-    BG: "#E0565612",
-    TXT: "#E05656",
-  }
-}
+import Icon from 'react-native-vector-icons/Feather';
 
 const SearchResultContainer = ({line}) => {
+  const screenWidth = useScreenWidth();
+  const screenHeight = useScreenHeight();
+
   const [featuredLine, setFeaturedLine] = useState(null)
   const [isRatingInfoPressed, setIsRatingInfoPressed] = useState(false);
+  const [isBetNowPressed, setIsBetNowPressed] = useState(false);
+  const [currWebview, setCurrWebview] = useState("");
 
   const handleCardClick = () => {
     setFeaturedLine(line.id);
@@ -46,12 +31,54 @@ const SearchResultContainer = ({line}) => {
   const [cardContainerPosition, setCardContainerPosition] = useState({ x: 0, y: 0 });
   const [cardContainerAspect, setCardContainerAspect] = useState({ width: 0, height: 0 });
 
+  // Get relative positioning of cardContainer based on screenWidth, screenHeight.
+  // This is neccessary for SpecificRatingInfoContainer to update positioning on orientation change.
+  const onLayout = event => {
+    const { width, height } = event.nativeEvent.layout;
+    const x = (width - cardContainerAspect.width) / 2;
+    const y = (height - cardContainerAspect.height) / 2;
+    setCardContainerPosition({ x, y });
+  }
+
   const handleInfoClick = () => {
     setIsRatingInfoPressed(true);
+    // const { width, height } = event.nativeEvent.layout;
+    const x = (screenWidth - cardContainerAspect.width) / 2;
+    const y = (screenHeight - cardContainerAspect.height) / 2;
+
     cardContainerRef.current.measure((x, y, width, height, pageX, pageY, pageWidth, pageHeight) => {
       setCardContainerPosition({ x: pageX, y: pageY });
       setCardContainerAspect({ width: width, height: height });
     });
+  }
+
+  const handleRatingTagClick = () => {
+    const initialOpacity = opacity;
+    Animated.timing(opacity, {
+        fromValue: initialOpacity,
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true
+    }).start()
+    setIsRatingInfoPressed(false);
+  }
+
+  // Function handleLineTitlePress is deplyed when end-user presses lineTitle
+  // Function opens App-native WebBrowser to allow for in app bet placement.
+  const handleBetNowPress = () => {
+    setIsBetNowPressed(true);
+    setCurrWebview("sportsbook");
+  }
+
+  // Get the semi-deep bookmaker link
+  const getBookmakerLink = (line) => {
+    let link;
+    if (Sportsbooks[line.bookmaker].hasOwnProperty(line.league_name)) {
+      link = Sportsbooks[line.bookmaker][line.league_name];
+    } else {
+      link = Sportsbooks[line.bookmaker].link;
+    }
+    return link;
   }
 
   let textColor = handleGradeTextColor(line.max_ev)
@@ -101,52 +128,89 @@ const SearchResultContainer = ({line}) => {
   return (
     <>
     {line &&
-      <View ref={cardContainerRef} style={styles.cardContainer}>
-        <View style={styles.cardRow1}>
+      <View ref={cardContainerRef} style={styles(screenWidth, screenHeight).cardContainer}>
+        <View style={styles(screenWidth, screenHeight).cardRow1}>
           <View style={{justifyContent: 'center', alignItems: 'center'}}>
-            {/* <Text style={styles.bookmakerTitle}>{line.bookmaker in Sportsbooks && Sportsbooks[line.bookmaker].name}</Text> */}
-              <Image style={styles.cardBookLogo} source={line.bookmaker in Sportsbooks && Sportsbooks[line.bookmaker].logo}/> 
+              <Image style={styles(screenWidth, screenHeight).cardBookLogo} source={line.bookmaker in Sportsbooks && Sportsbooks[line.bookmaker].logo}/> 
           </View>
-          <View style={styles.lineTitleBackground}>
-            <Text style={styles.lineTitle}>{parseOdds(line[findSide(line.home_ev, line.away_ev) + "_odds"])} on {team} {marketTag}</Text>
+          <View style={styles(screenWidth, screenHeight).lineTitleBackground}>
+            <Text style={styles(screenWidth, screenHeight).lineTitle}>{parseOdds(line[findSide(line.home_ev, line.away_ev) + "_odds"])} on {team} {marketTag}</Text>
           </View>
           
         </View>
-        <View style={styles.cardRow2}>
-          <Text style={[styles.lineTeamName, {flex: 1, textAlign: 'left'}]}>{line.away_team_name}</Text>
+        <View style={styles(screenWidth, screenHeight).cardRow2}>
+          <Text style={[styles(screenWidth, screenHeight).lineTeamName, {flex: 1, textAlign: 'left'}]}>{line.away_team_name}</Text>
           <AntDesign name="Trophy" size={16} color="black" style={{flex: 0}} />
-          <Text style={[styles.lineTeamName, {flex: 1, textAlign: 'right'}]}>{line.home_team_name}</Text>
+          <Text style={[styles(screenWidth, screenHeight).lineTeamName, {flex: 1, textAlign: 'right'}]}>{line.home_team_name}</Text>
         </View>
 
-        <View style={styles.cardRow3}>
-          <Text style={styles.lineLocation}>Away</Text>
-          <Text style={styles.lineLocation}>Home</Text>
+        <View style={styles(screenWidth, screenHeight).cardRow3}>
+          <Text style={styles(screenWidth, screenHeight).lineLocation}>Away</Text>
+          <Text style={styles(screenWidth, screenHeight).lineLocation}>Home</Text>
         </View>
-        <View style={styles.cardRow4}>
-          <Text style={styles.lineDate}>{parseDate(line.commence_time)}</Text>
+        <View style={styles(screenWidth, screenHeight).cardRow4}>
+          <Text style={styles(screenWidth, screenHeight).lineDate}>{parseDate(line.commence_time)}</Text>
         </View>
-        <TouchableOpacity style={[{backgroundColor: backgroundColor, flex: 1}, styles.cardRow5]} onPress={handleInfoClick}>
-          <SimpleLineIcons name="info" size={16} color={textColor}></SimpleLineIcons>
-          <View style={styles.ratingsCategoryView}>
-            <Text style={[styles.ratingsCategoryText, {color: textColor}]}>{line.max_ev >= 1 ? "A" : line.max_ev > -1 && line.max_ev < 1 ? "B" : "C"} Rating </Text>
-          </View>
-          <View style={styles.ratingsMetricView}>
-            <Text style={[styles.ratingsMetricText, {color: textColor}]}>{line.max_ev > 0 && "+" }{(line.max_ev).toFixed(2)}% Fair Value</Text>
-          </View>
-        </TouchableOpacity>
+        <View style={styles(screenWidth, screenHeight).cardRow5}>
+          {/* <TouchableOpacity style={[{backgroundColor: backgroundColor}, styles(screenWidth, screenHeight).ratingsCategoryView]} onPress={handleInfoClick}>
+            <SimpleLineIcons name="info" size={16} color={textColor}></SimpleLineIcons>
+            <Text style={[styles(screenWidth, screenHeight).ratingsCategoryText, {color: textColor}]}>{line.max_ev >= 1 ? "A" : line.max_ev > -1 && line.max_ev < 1 ? "B" : "C"} Rating </Text>
+            <Text style={[styles(screenWidth, screenHeight).ratingsMetricText, {color: textColor}]}>{line.max_ev > 0 && "+" }{(line.max_ev).toFixed(2)}% Edge</Text>
+          </TouchableOpacity> */}
+
+          <TouchableOpacity style={[{backgroundColor: "#FFFFFF"}, styles(screenWidth, screenHeight).ratingsCategoryView]} onPress={handleInfoClick}>
+            <Text style={{color: textColor, marginRight: 4}}>{line.max_ev >= 1 ? "A" : line.max_ev > -1 && line.max_ev < 1 ? "B" : "C"} Rating </Text>
+            <SimpleLineIcons name="info" size={16} color={textColor}></SimpleLineIcons>
+          </TouchableOpacity>
+          
+          
+        
+          {/* {!isRatingInfoPressed ? 
+          <>
+            <Animated.View style={{ opacity: opacity }}>
+              <TouchableOpacity style={[{backgroundColor: "#FFFFFF"}, styles(screenWidth, screenHeight).ratingsCategoryView]} onPress={handleInfoClick}>
+                <SimpleLineIcons name="info" size={16} color={textColor}></SimpleLineIcons>
+              </TouchableOpacity>
+            </Animated.View>
+          </> :
+          <>
+            <Animated.View style={{ opacity: opacity }}>
+              <RatingTag line={line} textColor={textColor} backgroundColor={backgroundColor} handleRatingTagClick={handleRatingTagClick}/>
+            </Animated.View> 
+          </>
+          } */}
+             
+          <TouchableOpacity style={styles(screenWidth, screenHeight).betNowButton} onPress={handleBetNowPress}>
+            <Text style={styles(screenWidth, screenHeight).betNowButtonText}>Bet Now</Text>
+            <Icon name="chevrons-right" size={18} color={"#0060FF"} />
+          </TouchableOpacity>
+        </View>
         <Modal 
           transparent={true} 
           animationType="fade" 
           visible={isRatingInfoPressed}
           >
-          <RatingInfoPopUp 
+          <SpecificRatingInfoCard
+            line={line}
+            backgroundColor={backgroundColor}
+            textColor={textColor}
             setIsRatingInfoPressed={setIsRatingInfoPressed} 
             position={{ top: cardContainerPosition.y, left: cardContainerPosition.x }}
             aspect={{ width: cardContainerAspect.width, height: cardContainerAspect.height }}
-            line={line}
-            textColor={textColor}
-            backgroundColor={backgroundColor}
             />
+        </Modal>
+        <Modal
+          transparent={false}
+          animationType="fade"
+          visible={currWebview != ""}
+          >
+          <InAppWebBrowser
+            url={getBookmakerLink(line)}
+            currWebview={currWebview} 
+            setCurrWebview={setCurrWebview}
+            >
+
+          </InAppWebBrowser>
         </Modal>
       </View>
     }
@@ -160,7 +224,7 @@ const SearchResultContainer = ({line}) => {
 
 export default SearchResultContainer;
 
-const styles = StyleSheet.create({
+const styles = (screenWidth, screenHeight) => StyleSheet.create({
   cardContainer: {
     backgroundColor: '#FFFFFF',
     borderRadius: 11,
@@ -207,9 +271,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 10, 
+    padding: 0, 
     marginTop: screenHeight * 0.02, 
-    borderRadius: 5
+    borderRadius: 5,
   },
   bookmakerTitle: {
     fontSize: 14,
@@ -226,7 +290,7 @@ const styles = StyleSheet.create({
   },
   lineTitleBackground: {
     flex: 0,
-    backgroundColor: "#00E0FF12",
+    // backgroundColor: "#00E0FF12",
     padding: 5,
     borderRadius: 5,
     maxWidth: '60%'
@@ -253,22 +317,55 @@ const styles = StyleSheet.create({
   },
   ratingsCategoryText: {
     fontSize: 14,
-    fontWeight: '400',
-    alignSelf: 'flex-start'
+    fontWeight: '300',
+    alignSelf: 'flex-start',
+    marginLeft: 10,
   },
   ratingsMetricText: {
     fontSize: 14,
-    fontWeight: '400',
-    alignSelf: 'flex-end'
-  },
-  infoIconView: {
-    flex: 0,
+    fontWeight: '300',
+    alignSelf: 'flex-end',
+    marginLeft: 10,
   },
   ratingsCategoryView: {
-    flex: 1,
-    marginLeft: 10
+    flex: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: "center",
+    padding: 10,
+    borderRadius: 41,
   },
-  ratingsMetricView: {
-    flex: 1,
+  infoButton: {
+    borderRadius: 5,
+    height: 33,
+    width: 33,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderColor: "#000000",
+    borderWidth: 1,
+  },
+  betNowButton: {
+    flex: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: "center",
+    borderRadius: 41,
+    borderColor: "#0060FF",
+    borderWidth: 0.125,
+    paddingTop: 7.5,
+    paddingBottom: 7.5,
+    paddingRight: 15,
+    paddingLeft:15,
+    shadowColor: '#0060FF',
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 5,
+    shadowOpacity: 0.33,
+    backgroundColor: '#FFFFFF',
+  },
+  betNowButtonText: {
+    color: "#0060FF",
+    fontSize: 14,
+    fontWeight: '300',
+    marginRight: 10,
   },
 });

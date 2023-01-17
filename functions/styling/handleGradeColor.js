@@ -20,6 +20,6 @@ export const handleGradeTextColor = (ev) => {
 }
 
 export const handleGradeBackgroundColor = (ev) => {
-    let backgroundColor = ev > 1 ? colorMap.A.BG : (ev > -1 && ev < 1 ? colorMap.B.BG : colorMap.C.BG);
+    let backgroundColor = ev >= 1 ? colorMap.A.BG : (ev > -1 && ev < 1 ? colorMap.B.BG : colorMap.C.BG);
     return backgroundColor
 }

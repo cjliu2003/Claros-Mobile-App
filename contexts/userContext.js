@@ -14,6 +14,9 @@ import { Alert } from "react-native";
 import { parseFirebaseSignInError } from "../functions/parsing/parseFirebaseSignInError";
 import { parseFirebaseSignUpError } from "../functions/parsing/parseFirebaseSignUpError";
 
+// Imports for Vulcan relations stemming from Firebase
+// import { addUserToVulcan } from '../functions/search/searchQueryStorage';
+
 const UserContext = createContext({});
 
 export const useUserContext = () => useContext(UserContext);
@@ -72,9 +75,7 @@ export const UserContextProvider = ({ children }) => {
             throw error;
         }
     };
-      
-      
-      
+
     // Sets customer data whenever a user state changes
     useEffect(() => {
         if (user) {
@@ -95,12 +96,10 @@ export const UserContextProvider = ({ children }) => {
         }
         setLoading(false)
     }
-    
-    
+     
     useEffect(() => {
         if (user) findSubscription()
     }, [user])
-    
     
     // Helper function. Inputs the priceId and returns the associated subscription name
     const parsePriceId = (priceId) => {
@@ -279,18 +278,20 @@ export const UserContextProvider = ({ children }) => {
         .finally(() => setLoading(false));
     }
     
-    const signInUserEmail = (email, password) => {
-        setLoading(true)
-        signInWithEmailAndPassword(auth, email, password)
-        .then((res) => {
-            console.log(email)
-        })
-        .catch(err => {
-            Alert.alert("Sign In Error", parseFirebaseSignInError(err))
-        })
-        .finally(() => setLoading(false));
+    const signInUserEmail = async (email, password) => {
+        setLoading(true);
+        try {
+            const res = await signInWithEmailAndPassword(auth, email, password);
+            const uid = auth.currentUser.uid;
+            console.log(`User ${email}, with uid = ${uid}, just signed in!`);
+            return uid;
+        } catch (err) {
+            Alert.alert("Sign In Error", parseFirebaseSignInError(err));
+        } finally {
+            setLoading(false);
+        }
     }
-
+    
     const logoutUser = () => {
         signOut(auth);
         setSubscription("none");
