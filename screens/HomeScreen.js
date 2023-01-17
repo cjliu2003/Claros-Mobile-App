@@ -1,5 +1,5 @@
-import { Dimensions, StyleSheet, View, ScrollView, Text, TouchableOpacity, TextInput, Keyboard, Animated, TouchableWithoutFeedback, Vibration, } from 'react-native'
-import React, { useEffect, useState, useRef } from 'react'
+import { Dimensions, StyleSheet, View, ScrollView, Text, TouchableOpacity, TextInput, Keyboard, Animated, TouchableWithoutFeedback, Vibration, Image } from 'react-native'
+import React, { useEffect, useState, useRef, createRef } from 'react'
 import { useUserContext } from '../contexts/userContext';
 import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import Icon from 'react-native-vector-icons/Feather';
@@ -10,6 +10,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { StatusBar } from 'expo-status-bar';
 import { invokeAddUserSearchQuery } from '../functions/search/searchQueryStorage';
+import nullSearchImage from '../assets/null__search.png';
 
 const HomeScreen = ({navigation}) => {
   const screenWidth = useScreenWidth();
@@ -85,12 +86,14 @@ const HomeScreen = ({navigation}) => {
     ignoreAndroidSystemSettings: false
   };
 
+  const [responseDataLength, setResonseDataLength] = useState(0);
   const handleSearch = async () => {
     setIsAwaitingFetch(true); // Update the state to loading
 
     // Perform search from index
     const responseData = await searchIndex(searchQuery);
     setData(responseData);
+    setResonseDataLength(responseData.length);
     setKeyboardHeight(0);
     setKeyboardVisible(false);
 
@@ -108,7 +111,12 @@ const HomeScreen = ({navigation}) => {
   const handleBackToBrandedSearch = () => {
     setShowSearchResults(false);
   }
-  
+
+  const searchBarRef = createRef();
+  const handleNullSearchCallToAction = () => {
+    searchBarRef.current.focus()
+  }
+
   return (
     <>
       <CTAPopup setIsPopupVisible={setIsPopupVisible} isPopupVisible={isPopupVisible}/>
@@ -121,13 +129,6 @@ const HomeScreen = ({navigation}) => {
               overlayColor="#FFFFFF"
               animation="none"
             />
-            {/* <ClipLoader
-              color="#0060FF"
-              loading={isAwaitingFetch}
-              size={150}
-              // aria-label="Loading Spinner"
-              // data-testid="loader"
-            /> */}
 
             <Animated.View style={[styles(screenWidth, screenHeight).container, showSearchResults ? {justifyContent: 'flex-start'} : {justifyContent: 'center'}, { transform: [{ translateY }] }]}>
               <Animated.Text style={[styles(screenWidth, screenHeight).brandText, showSearchResults ? {fontSize: 48} : {fontSize: 84},{transform: [{translateY: brandTextYTransform}]}]}>Claros</Animated.Text>
@@ -147,6 +148,7 @@ const HomeScreen = ({navigation}) => {
                 <Text style={styles(screenWidth, screenHeight).callToActionText}>Find your next bet with Claros!</Text>
                 <View style={styles(screenWidth, screenHeight).rowContainer}>
                   <TextInput
+                    
                     style={styles(screenWidth, screenHeight).searchInput}
                     placeholder="Sportsbook, League, Team" 
                     placeholderTextColor="#00000060"
@@ -170,6 +172,7 @@ const HomeScreen = ({navigation}) => {
                   <View style={styles(screenWidth, screenHeight).newSearchViewContainer}>
                     <Ionicons name="search" size={16} color="#000000" />
                     <TextInput
+                      ref={searchBarRef}
                       style={styles(screenWidth, screenHeight).newSearchInput}
                       placeholder="Search by sportsbook, league, team . . ."
                       placeholderTextColor="#000000"
@@ -180,14 +183,29 @@ const HomeScreen = ({navigation}) => {
                     />
                   </View>
                 </View>
-                {/* <View style={keyboardVisible? styles.searchResultsMasterContainerBlurred : styles.searchResultsMasterContainerDefault}> */}
-                {data && data.map(line => {
-                  return (
-                    <SearchResultContainer key={line.id} line={line}/>
+                {
+                  responseDataLength === 0 ? (
+                    <View style={styles(screenWidth, screenHeight).nullSearchResultContainer}>
+                      <Image source={nullSearchImage} style={styles(screenWidth, screenHeight).nullSearchImage}></Image>
+                      {/* <View style={{ height: screenHeight * 0.05 }}></View> */}
+                      {/* <Text style={styles(screenWidth, screenHeight).nullSearchText}>No results found.</Text> */}
+                      {/* <View style={{ height: screenHeight * 0.05 }}></View> */}
+                      <Text style={styles(screenWidth, screenHeight).nullSearchText}>We couldn't find the line you're looking for.</Text>
+                      <View style={styles(screenWidth, screenHeight).sentenceContainer}>
+                        <Text style={styles(screenWidth, screenHeight).nullSearchText}>Please try another </Text>
+                        <TouchableOpacity onPress={handleNullSearchCallToAction}>
+                            <Text style={styles(screenWidth, screenHeight).nullSearchTextCallToActionText}>search.</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  ) : (
+                    data && data.map(line => {
+                      return (
+                        <SearchResultContainer key={line.id} line={line}/>
+                      )
+                    })
                   )
-                })}
-                {/* </View> */}
-                
+                }
               </> }
             </Animated.View>
             {/* <Text onPress={() => signOut()}>click me to sign out (this helps with testing if the popup will occur on different accounts)</Text> */}
@@ -199,7 +217,7 @@ const HomeScreen = ({navigation}) => {
   )
 }
 
-export default HomeScreen
+export default HomeScreen;
 
 const styles = (screenWidth, screenHeight) => StyleSheet.create({
   backgroundView: {
@@ -312,10 +330,33 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
     color: "#000000",
     marginLeft: 10,
   },
-  searchResultsMasterContainerDefault: {
-    
+  nullSearchResultContainer: {
+    flexDirection: 'column',
+    paddingVertical: screenHeight * 0.10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: "#FFFFFF",
+    width: screenWidth
   },
-  searchResultsMasterContainerBlurred: {
-    filter: 10
-  }
+  nullSearchText: {
+    fontSize: 14,
+    fontWeight: '200',
+    textAlign: 'center',
+    maxWidth: screenWidth * 0.65,
+  },
+  sentenceContainer: {
+    flexDirection: 'row',
+  },
+  nullSearchTextCallToActionText: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: '#0060FF',
+    backgroundColor:'transparent',
+    padding:0,
+    margin:0
+  },
+  nullSearchImage: {
+    width: 400,
+    height: 400,
+  },
 });
