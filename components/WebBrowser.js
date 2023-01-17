@@ -92,7 +92,7 @@ const InAppWebBrowser = (props) => {
                     <MaterialCommunityIcons name="apple-safari" color="#0060FF" size="24" />
                 </TouchableOpacity>
             </View>
-            {/* <StatusBar style='light' /> */}
+            <StatusBar style='dark' />
         </View>        
     )
 }

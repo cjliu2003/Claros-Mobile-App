@@ -181,7 +181,7 @@ const SearchResultContainer = ({line}) => {
             <Text style={[styles(screenWidth, screenHeight).ratingsMetricText, {color: textColor}]}>{line.max_ev > 0 && "+" }{(line.max_ev).toFixed(2)}% Edge</Text>
           </TouchableOpacity> */}
 
-          <TouchableOpacity style={[{backgroundColor: "#FFFFFF"}, styles(screenWidth, screenHeight).infoButton]} onPress={handleInfoClick}>
+          <TouchableOpacity style={[{backgroundColor: "#FFFFFF"}, styles(screenWidth, screenHeight).ratingsCategoryView]} onPress={handleInfoClick}>
             <SimpleLineIcons name="info" size={16} color={textColor}></SimpleLineIcons>
           </TouchableOpacity>
           
@@ -212,7 +212,10 @@ const SearchResultContainer = ({line}) => {
           animationType="fade" 
           visible={isRatingInfoPressed}
           >
-          <SpecificRatingInfoCard 
+          <SpecificRatingInfoCard
+            line={line}
+            backgroundColor={backgroundColor}
+            textColor={textColor}
             setIsRatingInfoPressed={setIsRatingInfoPressed} 
             position={{ top: cardContainerPosition.y, left: cardContainerPosition.x }}
             aspect={{ width: cardContainerAspect.width, height: cardContainerAspect.height }}
@@ -363,6 +366,8 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
     width: 33,
     alignItems: 'center',
     justifyContent: 'center',
+    borderColor: "#000000",
+    borderWidth: 1,
   },
   betNowButton: {
     flex: 0,

@@ -42,16 +42,18 @@ const SpecificRatingInfoCard = (props) => {
     // <RatingInfoPopUp is called />
     const { top, left } = props.position;
     const { width, height } = props.aspect;
+    const line = props.line;
+    const backgroundColor = props.backgroundColor;
+    const textColor = props.textColor;
 
     return (
       <View style={[styles(screenWidth, screenHeight).cardContainer, { top , left }, { width, height }]}>
           <View style={styles(screenWidth, screenHeight).cardRow1}>
             <Text style={[styles(screenWidth, screenHeight).ratingTitle, {color: props.textColor}]}>{props.line.max_ev >= 1 ? "A" : props.line.max_ev > -1 && props.line.max_ev < 1 ? "B" : "C"} Rating</Text>
-            {/* <Text style={[styles(screenHeight, screenHeight).betNowText, {color: props.textColor}]}>Place bet</Text> */}
-            <TouchableOpacity style={styles(screenWidth, screenHeight).betNowButton} onPress={handleBetNowPress}>
+            {/* <TouchableOpacity style={styles(screenWidth, screenHeight).betNowButton} onPress={handleBetNowPress}>
               <Text style={styles(screenWidth, screenHeight).betNowText}>Place Bet</Text>
               <Icon name="chevrons-right" size={18} color={"#0060FF"} />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
           <View style={styles(screenWidth, screenHeight).cardRow2}>
            {props.line.max_ev > 1 ? 
@@ -78,9 +80,11 @@ const SpecificRatingInfoCard = (props) => {
           <View style={styles(screenWidth, screenHeight).cardRow3}></View>
           <View style={styles(screenWidth, screenHeight).cardRow4}></View>
           <View style={styles(screenWidth, screenHeight).cardRow5}>
-              <TouchableOpacity style={[styles(screenWidth, screenHeight).infoButton, {backgroundColor: props.backgroundColor}]}>
-                <SimpleLineIcons name="info" size={16} color={props.textColor} />
-              </TouchableOpacity>
+              <View style={[{backgroundColor: backgroundColor}, styles(screenWidth, screenHeight).ratingsCategoryView]}>
+                <SimpleLineIcons name="info" size={16} color={textColor}></SimpleLineIcons>
+                <Text style={[styles(screenWidth, screenHeight).ratingsCategoryText, {color: textColor}]}>{line.max_ev >= 1 ? "A" : line.max_ev > -1 && line.max_ev < 1 ? "B" : "C"} Rating </Text>
+                <Text style={[styles(screenWidth, screenHeight).ratingsMetricText, {color: textColor}]}>{line.max_ev > 0 && "+" }{(line.max_ev).toFixed(2)}% Edge</Text>
+              </View>
               
               <TouchableOpacity style={styles(screenWidth, screenHeight).closeButton} onPress={handleCloseButtonClick}>
                 <Text style={styles(screenWidth, screenHeight).closeButtonText}>Close</Text>
@@ -152,7 +156,7 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
       flex: 0,
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'flex-start',
+      justifyContent: 'space-between',
       padding: 0, 
       borderRadius: 5,
     },
@@ -191,9 +195,29 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
       shadowRadius: 1,
       shadowOpacity: 1,
     },
+    ratingsCategoryText: {
+      fontSize: 14,
+      fontWeight: '300',
+      alignSelf: 'flex-start',
+      marginLeft: 10,
+    },
+    ratingsMetricText: {
+      fontSize: 14,
+      fontWeight: '300',
+      alignSelf: 'flex-end',
+      marginLeft: 10,
+    },
+    ratingsCategoryView: {
+      flex: 0,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: "center",
+      padding: 10,
+      borderRadius: 41,
+    },
     ratingExplanation: {
       fontSize: 14,
-      fontWeight: '200',
+      fontWeight: '300',
       color: "#7B7D86",
       textAlign: 'left',
     },
@@ -205,19 +229,27 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
       justifyContent: 'center',
     },
     closeButton: {
-      backgroundColor: "#F3F3F3",
-      borderRadius: 5,
-      height: 33,
+      flex: 0,
+      flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'center',
-      padding: 5,
-      marginLeft: 7.5,
+      justifyContent: "center",
+      borderRadius: 41,
+      borderColor: "#0060FF",
+      borderWidth: 0.125,
+      paddingTop: 7.5,
+      paddingBottom: 7.5,
+      paddingRight: 37.5,
+      paddingLeft: 37.5,
+      shadowColor: '#0060FF',
+      shadowOffset: { width: 0, height: 0 },
+      shadowRadius: 5,
+      shadowOpacity: 0.33,
+      backgroundColor: '#FFFFFF',
     },
     closeButtonText: {
-      color: "#7B7D86",
+      color: "#0060FF",
       fontSize: 14,
-      fontWeight: '400',
-      textAlign: 'center',
+      fontWeight: '300',
     },
     edgeIndicator: {
       height: 9,
