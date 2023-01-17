@@ -1,18 +1,24 @@
-import { Alert, Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, Vibration, View, TouchableWithoutFeedback, Keyboard, Animated } from 'react-native'
+import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard, Animated } from 'react-native'
 import React, { useEffect, useLayoutEffect, useState, useRef } from 'react'
 import Icon from 'react-native-vector-icons/Feather';
 import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import { useUserContext } from '../contexts/userContext';
-import { addPushTokenListener } from 'expo-notifications';
 import { invokeAddUserToVulcanLambda } from '../functions/search/searchQueryStorage';
 
-const LoginScreen = ( {navigation} ) => {
+const LoginScreen = ({navigation}) => {
   const screenWidth = useScreenWidth();
   const screenHeight = useScreenHeight();
 
-  const {authEmail, signInUserEmail} = useUserContext()
+  const {user, authEmail, signInUserEmail} = useUserContext()
   const [password, setPassword] = useState("")
+  const [signInTrigger, setSignInTrigger] = useState(false)
 
+  useEffect(() => {
+    if (user) {
+      navigation.replace("Home")
+    }
+  }, [user])
+  
   useLayoutEffect(() => {
     navigation.setOptions({
         title: "",
@@ -29,31 +35,20 @@ const LoginScreen = ( {navigation} ) => {
         ),
     });
   }, [])
-
-  // useEffect(() => {
-  //   if (user) navigation.navigate("Home")
-  // }, [user])
   
   // From Jax: Adding in fucntionality to check user relation in Vulcan, priming PGSQL for relations
   // needed to store user queries.
   const signIn = async () => {
-    // Vibration.vibrate(0, 500)
-    try {
-      if (authEmail && password !== "") {
-        // signInUserEmail and navigate to Home
-        const uid = await signInUserEmail(authEmail, password); // signInUserEmail returns the UID string as the response object
+    if (authEmail && password !== "") {
+      // signInUserEmail and navigate to Home
+      const uid = await signInUserEmail(authEmail, password); // signInUserEmail returns the UID string as the response object
 
-        // Now to ensure user is in Vulcan, we make a call to function which makes post request to addUserToVulcan AWS lambda function
-        await invokeAddUserToVulcanLambda(uid);
-        
-        navigation.navigate("Home"); // From Jax: This is erroneously dumping all cases - including error cases - to home page. I don't know how to check for error.
+      // Now to ensure user is in Vulcan, we make a call to function which makes post request to addUserToVulcan AWS lambda function
+      await invokeAddUserToVulcanLambda(uid);
+      // setSignInTrigger(!signInTrigger)
 
-      } else {
-        Alert.alert("Sign In Error", "There was an error recognizing your email and password. Please double check that both are entered correctly.", [{Text: 'Ok'}])
-      }
-    } catch (error) {
-      console.error(error)
-      Alert.alert("Sign In Error", "There was an error signing in. Please try again.", [{Text: 'Ok'}])
+    } else {
+      Alert.alert("Please make sure both fields are filled.")
     }
   }
 
