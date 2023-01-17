@@ -5,7 +5,6 @@ import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import Icon from 'react-native-vector-icons/Feather';
 import { searchIndex } from '../functions/search/processQueries';
 import SearchResultContainer from '../components/SearchResult';
-import CTAPopup from '../components/CTAPopup';
 import { Ionicons } from '@expo/vector-icons';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { StatusBar } from 'expo-status-bar';
@@ -110,8 +109,6 @@ const HomeScreen = ({navigation}) => {
   }
   
   return (
-    <>
-      <CTAPopup setIsPopupVisible={setIsPopupVisible} isPopupVisible={isPopupVisible}/>
       <View style={styles(screenWidth, screenHeight).backgroundView}>
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <ScrollView contentContainerStyle={[styles(screenWidth, screenHeight).container, {overflow: 'scroll', backgroundColor: 'white'}]}>
@@ -135,7 +132,7 @@ const HomeScreen = ({navigation}) => {
               { showSearchResults ?
                 <>
                   <TouchableOpacity style={styles(screenWidth, screenHeight).centerButton} onPress={handleCenterButtonClick}>
-                    <Ionicons name="person-circle" size={30} color="#0060FF" />
+                    <Ionicons name="person-circle" size={35} color="#0060FF" />
                   </TouchableOpacity>
                   <TouchableOpacity style={styles(screenWidth, screenHeight).backButton} onPress={handleBackToBrandedSearch}>
                     <Icon name="chevrons-left" size={28} color={"#0060FF"} />
@@ -195,7 +192,6 @@ const HomeScreen = ({navigation}) => {
         </TouchableWithoutFeedback>
         <StatusBar style='light' />
       </View>
-    </>
   )
 }
 

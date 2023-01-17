@@ -1,36 +1,17 @@
 import { Image } from '@rneui/base';
 import React, { useState } from 'react';
-import { Text, StyleSheet, View, Dimensions, TouchableOpacity, Modal, Animated } from 'react-native';
+import { Text, StyleSheet, View, TouchableOpacity, Modal, Animated } from 'react-native';
 import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import Sportsbooks from '../assets/Sportsbooks';
 import { findSide } from '../functions/parsing/findSide';
-import { parseName } from '../functions/parsing/parseName';
 import {parseOdds} from '../functions/parsing/parseOdds'
 import {parseDate} from '../functions/parsing/parseDate';
 import { AntDesign } from '@expo/vector-icons';
 import { SimpleLineIcons } from '@expo/vector-icons';
-import LinePage from './LinePage';
 import InAppWebBrowser from './WebBrowser'
 import SpecificRatingInfoCard from './SpecificRatingInfoCard';
-import RatingTag from './RatingTag';
 import { handleGradeBackgroundColor, handleGradeTextColor } from '../functions/styling/handleGradeColor';
 import Icon from 'react-native-vector-icons/Feather';
-
-const colorMap = {
-  A: {
-    BG: "#4BC15712",
-    TXT: "#4BC157",
-  },
-  B: {
-    BG: "#E1C52E12",
-    TXT: "#E1C52E"
-    
-  },
-  C: {
-    BG: "#E0565612",
-    TXT: "#E05656",
-  }
-}
 
 const SearchResultContainer = ({line}) => {
   const screenWidth = useScreenWidth();
@@ -73,7 +54,6 @@ const SearchResultContainer = ({line}) => {
 
   const handleRatingTagClick = () => {
     const initialOpacity = opacity;
-    
     Animated.timing(opacity, {
         fromValue: initialOpacity,
         toValue: 0,
@@ -82,9 +62,6 @@ const SearchResultContainer = ({line}) => {
     }).start()
     setIsRatingInfoPressed(false);
   }
-
-
-  
 
   // Function handleLineTitlePress is deplyed when end-user presses lineTitle
   // Function opens App-native WebBrowser to allow for in app bet placement.
@@ -182,6 +159,7 @@ const SearchResultContainer = ({line}) => {
           </TouchableOpacity> */}
 
           <TouchableOpacity style={[{backgroundColor: "#FFFFFF"}, styles(screenWidth, screenHeight).ratingsCategoryView]} onPress={handleInfoClick}>
+            <Text style={{color: textColor, marginRight: 4}}>{line.max_ev >= 1 ? "A" : line.max_ev > -1 && line.max_ev < 1 ? "B" : "C"} Rating </Text>
             <SimpleLineIcons name="info" size={16} color={textColor}></SimpleLineIcons>
           </TouchableOpacity>
           
@@ -219,9 +197,6 @@ const SearchResultContainer = ({line}) => {
             setIsRatingInfoPressed={setIsRatingInfoPressed} 
             position={{ top: cardContainerPosition.y, left: cardContainerPosition.x }}
             aspect={{ width: cardContainerAspect.width, height: cardContainerAspect.height }}
-            line={line}
-            textColor={textColor}
-            backgroundColor={backgroundColor}
             />
         </Modal>
         <Modal

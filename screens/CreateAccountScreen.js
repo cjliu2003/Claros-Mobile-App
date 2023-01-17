@@ -32,10 +32,6 @@ const CreateAccountScreen = ({navigation}) => {
       ),
       });
     }, [])
-
-  // useEffect(() => {
-  //   if (user) navigation.replace("Pricing")
-  // }, [user])
   
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const translateY = useRef(new Animated.Value(0)).current;
@@ -60,6 +56,11 @@ const CreateAccountScreen = ({navigation}) => {
     bounciness: 10,
     useNativeDriver: true,
   }).start();
+
+  useEffect(() => {
+    if (user) navigation.replace("CTA")
+  }, [user])
+  
 
   const signUpUser = () => {
     if (!acceptTerms) {
