@@ -300,6 +300,14 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  noResultsFoundContainer: {
+    marginTop: screenHeight * 0.2
+  },
+  noResultsFoundText: {
+    fontSize: 16,
+    color: '#000000',
+    fontWeight: '400'
+  },
   newSearchInput: {
     height: 40,
     width: screenWidth * 0.8,
