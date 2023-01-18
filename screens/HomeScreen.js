@@ -19,7 +19,7 @@ const HomeScreen = ({navigation}) => {
   const [scaleSize, setScaleSize] = useState( new Animated.Value(1));
   const [recentSignOut, setRecentSignOut] = useState(false);
   const [brandTextYTransform, setBrandTextYTransform] = useState( new Animated.Value(0));
-  const {user, logoutUser, subscription} = useUserContext();
+  const {trackSearchQuery, user, logoutUser, subscription} = useUserContext();
   const [searchQuery, setSearchQuery] = useState("");
   const [data, setData] = useState(null);
   const [showSearchResults, setShowSearchResults] = useState(false);
@@ -92,12 +92,13 @@ const HomeScreen = ({navigation}) => {
     // Perform search from index
     const responseData = await searchIndex(searchQuery);
     setData(responseData);
+    trackSearchQuery(searchQuery, responseData)
     setResonseDataLength(responseData.length);
     setKeyboardHeight(0);
     setKeyboardVisible(false);
 
     // Write the userSearchQuery, and the responseData to Vulcan
-    const response = await invokeAddUserSearchQuery(uid, searchQuery, responseData);
+    // const response = await invokeAddUserSearchQuery(uid, searchQuery, responseData);
 
     setIsAwaitingFetch(false);
     setShowSearchResults(true);

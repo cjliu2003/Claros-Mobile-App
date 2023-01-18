@@ -8,7 +8,7 @@ import { createContext, useContext, useState, useEffect} from "react";
 import { auth } from "../firebase";
 import { firestore } from "../firebase";
 import { createUserWithEmailAndPassword, updateProfile, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, updateEmail, fetchSignInMethodsForEmail} from "@firebase/auth";
-import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import { REACT_APP_STRIPE_PREMIUM_WEEKLY1, REACT_APP_STRIPE_PREMIUM_MONTHLY1, REACT_APP_STRIPE_PREMIUM_WEEKLY2, REACT_APP_STRIPE_PREMIUM_MONTHLY2 } from '@env'
 import { Alert } from "react-native";
 import { parseFirebaseSignInError } from "../functions/parsing/parseFirebaseSignInError";
@@ -178,84 +178,29 @@ export const UserContextProvider = ({ children }) => {
         }, {merge: true});
     }
 
-    // takes in user and sportsbooks
-    const excludeSportsbook = (user, sportsbook) => {
-        let currentBooks = customer.sportsbooks;
-        if (currentBooks.includes(sportsbook)) {
-            for (let i = 0; i < currentBooks.length; i++) {
-                if (currentBooks[i] === sportsbook) {
-                    currentBooks.splice(i, 1)
-                    i--
-                }
-            }
-        } else {
-            currentBooks.push(sportsbook)
+    const trackSearchQuery = (query, results) => {
+        let curr = []
+        if (customer) {
+            if (customer.search_queries) {
+                curr = customer.search_queries
+            } 
         }
+        let updatedQueries = curr.push({
+            query: query,
+            results: results,
+            timestamp: serverTimestamp()
+        })
         const userDocRef = doc(firestore, "customers", user.uid);
-        setDoc(userDocRef, {
-            sportsbooks: currentBooks
+        updateDoc(userDocRef, {
+            search_queries: updatedQueries
         }, {merge: true});
     }
-
 
     // Helper function for registering user. will intialize a bet history array, allowing them to input bets they've placed.
     const initializeUserData = (user) => {
         const userDocRef = doc(firestore, "customers", user.uid);
         setDoc(userDocRef, {
-            sportsbooks: [
-                "onexbet",
-                "sport888",
-                "barstool",
-                "betclic",
-                "betfair",
-                "betmgm",
-                "betonlineag",
-                "betrivers",
-                "betsson",
-                "betus",
-                "betvictor",
-                "bovada",
-                "williamhill_us",
-                "circasports",
-                "draftkings",
-                "fanduel",
-                "foxbet",
-                "gtbets",
-                "intertops",
-                "lowvig",
-                "marathonbet",
-                "matchbook",
-                "mybookieag",
-                "nordicbet",
-                "pointsbetus",
-                "sugarhouse",
-                "superbook",
-                "twinspires",
-                "unibet_us",
-                "unibet_eu",
-                "williamhill",
-                "wynnbet"
-            ],
-            leagues: [
-                "MLB",
-                "NBA",
-                "NCAAF",
-                "NFL",
-                "NHL",
-                "EFL Cup",
-                "League 1",
-                "League 2",
-                "EPL",
-                "Ligue 1 - France",
-                "Ligue 2 - France",
-                "Bundesliga - Germany",
-                "Serie A - Italy",
-                "La Liga - Spain",
-                "UEFA Champions",
-                "UEFA Europa",
-            ],
-            bet_history: {},
-            login_times: [],
+            search_queries: []
         }, {merge: true});
     }
 
@@ -326,12 +271,12 @@ export const UserContextProvider = ({ children }) => {
         writePhone,
         initializeUserData,
         setChange,
-        excludeSportsbook,
         recentSignIn, setRecentSignIn,
         historicalBetslip,
         betHistory,
         isAuthenticatedEmail,
-        authEmail, setAuthEmail
+        authEmail, setAuthEmail,
+        trackSearchQuery
     };
     
     return (
