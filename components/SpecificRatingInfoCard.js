@@ -60,20 +60,20 @@ const SpecificRatingInfoCard = (props) => {
             <>
               <Text style={styles(screenWidth, screenHeight).ratingExplanation}>
                 Our ratings indicate the long term profitability of betting assets. A-rated assets are the highest rated lines. 
-                Learn more about ratings below.
+                See specifics about this line below.
               </Text>
             </> : 
             props.line.max_ev > -1 && props.line.max_ev < 1 ? 
             <>
               <Text style={styles(screenWidth, screenHeight).ratingExplanation}>
                 Our ratings indicate the long term profitability of betting assets. B-rated assets are the mid-tier rated lines. 
-                Learn more about ratings below.
+                See specifics about this line below.
               </Text>
             </> : 
             <>
               <Text style={styles(screenWidth, screenHeight).ratingExplanation}>
                 Our ratings indicate the long term profitability of betting assets. C-rated assets are the lowest rated lines. 
-                Learn more about ratings below.
+                See specifics about this line below.
               </Text>
             </> }
           </View>

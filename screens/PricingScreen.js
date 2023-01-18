@@ -37,7 +37,7 @@ const PricingScreen = ({navigation}) => {
                 })}
             </View>
             <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonText} onPress={handleGetAccessClick}>Get Access</Text>
+                <Text style={styles.buttonText} onPress={handleGetAccessClick}>Get Access </Text>
             </TouchableOpacity>
             <Modal transparent={true} animationType="fade" visible={currWebview === "pricing"}>
                 <InAppWebBrowser url={'https://www.claros.ai/#pricing'} currWebview={currWebview} setCurrWebview={setCurrWebview}></InAppWebBrowser>

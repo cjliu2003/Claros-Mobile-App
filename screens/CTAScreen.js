@@ -17,7 +17,7 @@ const CTAScreen = ({navigation}) => {
     "Unlimited Search Queries", "Constantly Updating Odds", "Access to Future Developments"
 ]
   const getAccess = () => {
-    Vibration.vibrate(0, 250)
+    // Vibration.vibrate(0, 250)
     setCurrWebview("pricing")
   };
 
@@ -37,16 +37,18 @@ const CTAScreen = ({navigation}) => {
       <View style={{height: screenHeight * 0.9, justifyContent: 'space-between'}}>
         <View style={styles.popupContainer}>
         <TouchableOpacity style={styles.icon} onPress={handleCenterButtonClick}>
-          <Ionicons name="person-circle" size={35} color="#0060FF" />
+          <Ionicons name="person-circle" size={28} color="#0060FF" />
         </TouchableOpacity>
-          <Image source={require('../assets/claros__letters-logo.png')} style={styles.image}/>
-          <Text style={styles.popupHeader}>Activiate Claros AI</Text>
-          <Text style={styles.popupSubheader}>Upgrade your betting game with Claros! Upon purchase of a subscription, you will gain access to all Claros features.</Text>
+          <TouchableOpacity onPress={getAccess}>
+            <Image source={require('../assets/claros__letters-logo.png')} style={styles.image}/>
+          </TouchableOpacity>
+          <Text style={styles.popupHeader}>Activate Claros AI</Text>
+          <Text style={styles.popupSubheader}>Upgrade your betting game with Claros! Once you purchase a subscription, you will gain access to all Claros features.</Text>
           <Image source={require('../assets/hero__feature-graphic.png')} style={styles.heroImage}/>
           {benefits.map((benefit, i) => {
             return (
               <View key={benefit + i} style={styles.listItem}>
-                <AntDesign style={{paddingRight: 8}} name="checkcircle" size={25} />
+                <AntDesign style={{paddingRight: 8}} name="checkcircle" size={25} color="#000000" />
                 <Text style={styles.listItemText}>{benefit}</Text>
               </View>
             )
@@ -55,8 +57,8 @@ const CTAScreen = ({navigation}) => {
         <View>
         </View>
         <View>
-          <TouchableOpacity style={styles.filledButton} onPress={getAccess}>
-            <Text style={styles.filledButtonText}>Get Access</Text>
+          <TouchableOpacity style={styles.button} onPress={getAccess}>
+            <Text style={styles.buttonText}>Get Access</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -67,6 +69,9 @@ const CTAScreen = ({navigation}) => {
 export default CTAScreen
 const styles = StyleSheet.create({
   container: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     height: screenHeight,
     backgroundColor: 'white',
   },
@@ -110,6 +115,29 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 18,
   },
+  button: {
+    height: 60,
+    width: screenWidth * 0.75,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 41,
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingBottom: 0,
+    shadowColor: '#0060FF',
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 5,
+    shadowOpacity: 0.75,
+    backgroundColor: '#FFFFFF',
+    borderColor: "#0060FF",
+    borderWidth: 0,
+    alignSelf: 'center'
+  },
+  buttonText: {
+    fontSize: 20,
+    fontWeight: "600",
+    color: "#0060FF"
+  },
   popupHeader: {
     fontSize: 40,
     fontWeight: '800',
@@ -138,6 +166,6 @@ const styles = StyleSheet.create({
   listItemText: {
     fontWeight: '500',
     fontSize: 16,
-    color: 'black',
+    color: '#000000',
   }
 })
