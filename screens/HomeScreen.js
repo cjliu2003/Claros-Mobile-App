@@ -134,7 +134,7 @@ const HomeScreen = ({navigation}) => {
               { showSearchResults ?
                 <>
                   <TouchableOpacity style={styles(screenWidth, screenHeight).centerButton} onPress={handleCenterButtonClick}>
-                    <Ionicons name="person-circle" size={35} color="#0060FF" />
+                    <Ionicons name="person-circle" size={28} color="#0060FF" />
                   </TouchableOpacity>
                   <TouchableOpacity style={styles(screenWidth, screenHeight).backButton} onPress={handleBackToBrandedSearch}>
                     <Icon name="chevrons-left" size={28} color={"#0060FF"} />
@@ -230,12 +230,12 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
   centerButton: {
     position: 'absolute',
     top: 35,
-    right: 25,
+    right: screenWidth * 0.05,
   },
   backButton: {
     position: 'absolute',
     top: 35,
-    left: 25,
+    left: screenWidth * 0.05,
   },
   filterButtonContainer: {
     paddingHorizontal: 16,

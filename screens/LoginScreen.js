@@ -44,7 +44,7 @@ const LoginScreen = ({navigation}) => {
       const uid = await signInUserEmail(authEmail, password); // signInUserEmail returns the UID string as the response object
 
       // Now to ensure user is in Vulcan, we make a call to function which makes post request to addUserToVulcan AWS lambda function
-      await invokeAddUserToVulcanLambda(uid);
+      // await invokeAddUserToVulcanLambda(uid);
       setSignInTrigger(true)
 
     } else {

@@ -159,8 +159,9 @@ const SearchResultContainer = ({line}) => {
           </TouchableOpacity> */}
 
           <TouchableOpacity style={[{backgroundColor: "#FFFFFF"}, styles(screenWidth, screenHeight).ratingsCategoryView]} onPress={handleInfoClick}>
-            <Text style={{color: textColor, marginRight: 4}}>{line.max_ev >= 1 ? "A" : line.max_ev > -1 && line.max_ev < 1 ? "B" : "C"} Rating </Text>
             <SimpleLineIcons name="info" size={16} color={textColor}></SimpleLineIcons>
+            <Text style={{color: textColor, marginLeft: 10, fontWeight: '300'}}>{line.max_ev >= 1 ? "A" : line.max_ev > -1 && line.max_ev < 1 ? "B" : "C"} Rating </Text>
+            
           </TouchableOpacity>
           
           
