@@ -185,14 +185,15 @@ export const UserContextProvider = ({ children }) => {
                 curr = customer.search_queries
             } 
         }
-        let updatedQueries = curr.push({
+        let newQuery = {
             query: query,
             results: results,
-            timestamp: serverTimestamp()
-        })
+            timestamp: Date.now()
+        }
+        curr.push(newQuery)
         const userDocRef = doc(firestore, "customers", user.uid);
         updateDoc(userDocRef, {
-            search_queries: updatedQueries
+            search_queries: curr
         }, {merge: true});
     }
 
