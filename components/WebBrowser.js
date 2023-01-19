@@ -11,8 +11,6 @@ import { Entypo } from '@expo/vector-icons';
 import Icon from 'react-native-vector-icons/Feather';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Icons from '../assets/Icons';
-import { clickProps } from 'react-native-web/dist/cjs/modules/forwardedProps';
-import Spinner from 'react-native-loading-spinner-overlay';
 
 const InAppWebBrowser = (props) => {
     const screenWidth = useScreenWidth();
