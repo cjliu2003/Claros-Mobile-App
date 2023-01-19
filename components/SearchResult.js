@@ -1,6 +1,6 @@
 import { Image } from '@rneui/base';
 import React, { useState } from 'react';
-import { Text, StyleSheet, View, TouchableOpacity, Modal, Animated } from 'react-native';
+import { Text, StyleSheet, View, TouchableOpacity, Modal } from 'react-native';
 import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import Sportsbooks from '../assets/Sportsbooks';
 import { findSide } from '../functions/parsing/findSide';
@@ -16,29 +16,15 @@ import Icon from 'react-native-vector-icons/Feather';
 const SearchResultContainer = ({line}) => {
   const screenWidth = useScreenWidth();
   const screenHeight = useScreenHeight();
-
-  const [featuredLine, setFeaturedLine] = useState(null)
   const [isRatingInfoPressed, setIsRatingInfoPressed] = useState(false);
   const [isBetNowPressed, setIsBetNowPressed] = useState(false);
   const [currWebview, setCurrWebview] = useState("");
 
-  const handleCardClick = () => {
-    setFeaturedLine(line.id);
-  }
 
   // Store a ref to the cardContainer to get its position. Initialize card's position as well
   const cardContainerRef = React.createRef();
   const [cardContainerPosition, setCardContainerPosition] = useState({ x: 0, y: 0 });
   const [cardContainerAspect, setCardContainerAspect] = useState({ width: 0, height: 0 });
-
-  // Get relative positioning of cardContainer based on screenWidth, screenHeight.
-  // This is neccessary for SpecificRatingInfoContainer to update positioning on orientation change.
-  const onLayout = event => {
-    const { width, height } = event.nativeEvent.layout;
-    const x = (width - cardContainerAspect.width) / 2;
-    const y = (height - cardContainerAspect.height) / 2;
-    setCardContainerPosition({ x, y });
-  }
 
   const handleInfoClick = () => {
     setIsRatingInfoPressed(true);
@@ -50,17 +36,6 @@ const SearchResultContainer = ({line}) => {
       setCardContainerPosition({ x: pageX, y: pageY });
       setCardContainerAspect({ width: width, height: height });
     });
-  }
-
-  const handleRatingTagClick = () => {
-    const initialOpacity = opacity;
-    Animated.timing(opacity, {
-        fromValue: initialOpacity,
-        toValue: 0,
-        duration: 500,
-        useNativeDriver: true
-    }).start()
-    setIsRatingInfoPressed(false);
   }
 
   // Function handleLineTitlePress is deplyed when end-user presses lineTitle
@@ -134,7 +109,7 @@ const SearchResultContainer = ({line}) => {
               <Image style={styles(screenWidth, screenHeight).cardBookLogo} source={line.bookmaker in Sportsbooks && Sportsbooks[line.bookmaker].logo}/> 
           </View>
           <View style={styles(screenWidth, screenHeight).lineTitleBackground}>
-            <Text style={styles(screenWidth, screenHeight).lineTitle}>{parseOdds(line[findSide(line.home_ev, line.away_ev) + "_odds"])} on {team} {marketTag}</Text>
+            <Text style={styles(screenWidth, screenHeight).lineTitle}>{parseOdds(line[findSide(line.home_ev, line.away_ev, line.draw_ev) + "_odds"])} on {team} {marketTag}</Text>
           </View>
           
         </View>

@@ -3,7 +3,6 @@ import React, { useEffect, useLayoutEffect, useState, useRef } from 'react'
 import Icon from 'react-native-vector-icons/Feather';
 import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import { useUserContext } from '../contexts/userContext';
-import { invokeAddUserToVulcanLambda } from '../functions/search/searchQueryStorage';
 
 const LoginScreen = ({navigation}) => {
   const screenWidth = useScreenWidth();

@@ -8,7 +8,7 @@ import { createContext, useContext, useState, useEffect} from "react";
 import { auth } from "../firebase";
 import { firestore } from "../firebase";
 import { createUserWithEmailAndPassword, updateProfile, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, updateEmail, fetchSignInMethodsForEmail} from "@firebase/auth";
-import { collection, doc, getDoc, getDocs, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, setDoc, updateDoc } from "firebase/firestore";
 import { REACT_APP_STRIPE_PREMIUM_WEEKLY1, REACT_APP_STRIPE_PREMIUM_MONTHLY1, REACT_APP_STRIPE_PREMIUM_WEEKLY2, REACT_APP_STRIPE_PREMIUM_MONTHLY2 } from '@env'
 import { Alert } from "react-native";
 import { parseFirebaseSignInError } from "../functions/parsing/parseFirebaseSignInError";

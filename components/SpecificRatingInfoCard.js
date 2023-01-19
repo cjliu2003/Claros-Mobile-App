@@ -1,8 +1,6 @@
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View, Modal } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Modal } from 'react-native'
 import React, { useState } from 'react'
-import { LinearGradient } from 'expo-linear-gradient';
 import { SimpleLineIcons } from '@expo/vector-icons';
-import Icon from 'react-native-vector-icons/Feather';
 import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import InAppWebBrowser from './WebBrowser';
 import Sportsbooks from '../assets/Sportsbooks';

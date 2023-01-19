@@ -1,10 +1,8 @@
-import axios from 'axios';
 import { containsProfanity } from "./contentModeration";
-import { performSemanticClassification, getClassification } from "./semanticClassification";
+import { performSemanticClassification } from "./semanticClassification";
 import { interpretExtraction } from "./class2Extraction";
-import { getClass2LambdaResponse, getClass1LambdaResponse, parseClass1ReponseObject } from "./fetchVulcan";
+import { getClass2LambdaResponse, getClass1LambdaResponse } from "./fetchVulcan";
 import { getClass2Completion, getClass1Completion, getClass0Completion } from "./responseCompletion";
-const { Configuration, OpenAIApi } = require("openai");
 
 // Driver function to return appropriate, user input dependent responses
 export async function generateResponse(prompt) {
