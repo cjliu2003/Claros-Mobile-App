@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { UserContextProvider } from "./contexts/userContext";
-import { Welcome, Login, CreateAccount, Home, Chat, Email, Center, CTA } from "./screens";
+import { Welcome, Login, CreateAccount, Home, Email, Center, CTA } from "./screens";
 
 const Stack = createStackNavigator();
 
@@ -21,7 +21,6 @@ export default function App() {
             <Stack.Screen name='Welcome' component={Welcome} options={{ headerShown: false }} />
             <Stack.Screen name='Login' component={Login} options={{ headerShown: true }} />
             <Stack.Screen name='Create Account' component={CreateAccount} options={{ headerShown: true }} />
-            <Stack.Screen name='Chat' component={Chat} options={{ headerShown: false }} />
             <Stack.Screen name='Home' component={Home} options={{ headerShown: false } }/>
             <Stack.Screen name='Email' component={Email} options={{ headerShown: true }} />
             <Stack.Screen name='Center' component={Center} options={{ headerShown: true }} />
