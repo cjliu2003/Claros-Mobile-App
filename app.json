@@ -34,6 +34,9 @@
       "eas": {
         "projectId": "f478ad9a-c4a3-409c-9f88-ce0b54e4882e"
       }
+    },
+    "expo": {
+    "jsEngine": "hermes"
     }
   }
 }
