@@ -2,14 +2,14 @@
   "expo": {
     "name": "Claros",
     "slug": "Claros",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
-    "icon": "./assets/claros__bot__logo.png",
+    "icon": "./assets/claros__iOS__card.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/Splash.png",
+      "image": "./assets/claros__branded__splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#0060FF"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -18,16 +18,22 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.jaxfloyd.Claros"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/claros__bot__logo.png",
+        "foregroundImage": "./assets/claros__iOS__card.png",
         "backgroundColor": "#FFFFFF"
       }
     },
     "web": {
-      "favicon": "./assets/claros__bot__logo.png"
+      "favicon": "./assets/claros__iOS__card.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "f478ad9a-c4a3-409c-9f88-ce0b54e4882e"
+      }
     }
   }
 }
