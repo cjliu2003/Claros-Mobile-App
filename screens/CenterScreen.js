@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet, Text, TouchableOpacity, Vibration, View, Linking, Modal } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Modal } from 'react-native'
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import Icon from 'react-native-vector-icons/Feather';
 import { useUserContext } from '../contexts/userContext';

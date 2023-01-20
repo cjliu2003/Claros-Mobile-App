@@ -1,5 +1,5 @@
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View, Animated } from 'react-native'
-import React, { useState } from 'react'
+import { StyleSheet, Text, TouchableOpacity } from 'react-native'
+import React from 'react'
 import { SimpleLineIcons } from '@expo/vector-icons';
 import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 

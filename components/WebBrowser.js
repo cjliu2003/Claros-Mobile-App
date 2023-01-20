@@ -1,16 +1,13 @@
-import { Dimensions, Share, StyleSheet, Text, TouchableOpacity, View, Image, Linking } from 'react-native'
+import { Share, StyleSheet, Text, TouchableOpacity, View, Linking } from 'react-native'
 import React, { useRef, useState } from 'react'
-import { useUserContext } from '../contexts/userContext'
 import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import { WebView } from 'react-native-webview';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
-import { FontAwesome } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import Icon from 'react-native-vector-icons/Feather';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import Icons from '../assets/Icons';
 
 const InAppWebBrowser = (props) => {
     const screenWidth = useScreenWidth();

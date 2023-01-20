@@ -5,7 +5,6 @@ import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import InAppWebBrowser from './WebBrowser';
 import Sportsbooks from '../assets/Sportsbooks';
 
-
 const SpecificRatingInfoCard = (props) => {
     const screenWidth = useScreenWidth();
     const screenHeight = useScreenHeight();

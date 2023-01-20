@@ -1,7 +1,6 @@
-import { Dimensions, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, KeyboardAvoidingView } from 'react-native'
-import React, { useLayoutEffect, useState } from 'react'
+import { Dimensions, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, KeyboardAvoidingView } from 'react-native';
+import React, { useState } from 'react';
 import { generateResponse } from '../functions/NLP/generateResponse';
-import { Button } from '@rneui/base';
 import { useUserContext } from '../contexts/userContext';
 
 const screenWidth = Dimensions.get('window').width;

@@ -1,7 +1,6 @@
-import { Alert, Dimensions, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, Vibration, View, Animated, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View, Animated, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import React, { useLayoutEffect, useState, useRef, useEffect } from 'react';
 import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
-import { Button } from '@rneui/base';
 import Icon from 'react-native-vector-icons/Feather';
 import { useUserContext } from '../contexts/userContext';
 

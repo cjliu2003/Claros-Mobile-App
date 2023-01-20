@@ -1,5 +1,5 @@
-import { Dimensions, StyleSheet, View, ScrollView, Text, TouchableOpacity, TextInput, Keyboard, Animated, TouchableWithoutFeedback, Vibration, Image } from 'react-native'
-import React, { useEffect, useState, useRef, createRef } from 'react'
+import { StyleSheet, View, ScrollView, Text, TouchableOpacity, TextInput, Keyboard, Animated, TouchableWithoutFeedback, Image } from 'react-native';
+import React, { useEffect, useState, useRef, createRef } from 'react';
 import { useUserContext } from '../contexts/userContext';
 import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import Icon from 'react-native-vector-icons/Feather';
@@ -8,7 +8,6 @@ import SearchResultContainer from '../components/SearchResult';
 import { Ionicons } from '@expo/vector-icons';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { StatusBar } from 'expo-status-bar';
-import { invokeAddUserSearchQuery } from '../functions/search/searchQueryStorage';
 import nullSearchImage from '../assets/null__search.png';
 
 const HomeScreen = ({navigation}) => {

@@ -1,7 +1,7 @@
 // Welcome screen provides user with option to login in or create an account. It is the top of the navigation stack.
 
-import { StyleSheet, Text, View, Dimensions, Vibration, Animated, TouchableOpacity } from 'react-native'
-import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, Animated, TouchableOpacity } from 'react-native'
+import React from 'react';
 import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import { StatusBar } from 'expo-status-bar';
 
