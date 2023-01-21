@@ -26,14 +26,24 @@ const HomeScreen = ({navigation}) => {
   const [uid, setUid] = useState("");
 
   // useEffect to detect non users and send them to welcome
-  useEffect(() => {
-    if (!user) {
-      navigation.navigate("Welcome");
-    } else {
-      setUid(user.uid);
+  const login = async (username, password) => {
+    try {
+      await AsyncStorage.setItem('@token', token);
+      navigation.navigate("Home");
+    } catch (error) {
+        console.log(error);
     }
-  }, [user])
 
+    useEffect(() => {
+      if (!user) {
+        navigation.navigate("Welcome");
+      } else {
+        setUid(user.uid);
+      }
+    }, [user])
+  
+  }
+  
   // useEffect to show subscription prompt pop up iof the user is not a subscriber
   useEffect(() => {
     if (subscription === "none" && !recentSignOut) {
