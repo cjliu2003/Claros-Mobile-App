@@ -1,6 +1,5 @@
-import { Image } from '@rneui/base';
 import React, { useState } from 'react';
-import { Text, StyleSheet, View, TouchableOpacity, Modal } from 'react-native';
+import { Text, StyleSheet, View, TouchableOpacity, Modal, Image } from 'react-native';
 import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import Sportsbooks from '../assets/Sportsbooks';
 import { findSide } from '../functions/parsing/findSide';

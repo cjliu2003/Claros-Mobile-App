@@ -1,6 +1,5 @@
-import { Dimensions, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Dimensions, Modal, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { Image } from '@rneui/base';
 import {AntDesign} from '@expo/vector-icons'
 import InAppWebBrowser from '../components/WebBrowser';
 import { useUserContext } from '../contexts/userContext';
