@@ -31,7 +31,7 @@ const CTAScreen = ({navigation}) => {
   return (
     <View style={styles.container}>
       <Modal transparent={true} animationType="fade" visible={currWebview === "pricing"}>
-        <InAppWebBrowser url={'https://www.claros.ai/#pricing'} currWebview={currWebview} setCurrWebview={setCurrWebview}></InAppWebBrowser>
+        <InAppWebBrowser url={'https://www.claros.ai/pricing'} currWebview={currWebview} setCurrWebview={setCurrWebview}></InAppWebBrowser>
       </Modal>
       <View style={{height: screenHeight * 0.9, justifyContent: 'space-between'}}>
         <View style={styles.popupContainer}>
