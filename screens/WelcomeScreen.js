@@ -14,16 +14,17 @@ const WelcomeScreen = ({ navigation }) => {
     navigation.navigate('Email')
   }
 
+  // useEffect(() => {
+  //   const checkIfLoggedIn = async () => {
+  //       const userToken = await AsyncStorage.getItem('userToken');
+  //       if (userToken && userToken != "") {
+  //         navigation.replace("Home")
+  //       }
+  //   };
+  //   checkIfLoggedIn();
+  // }, []);
+  
   const [animation, setAnimation] = useState(new Animated.Value(0));
-  useEffect(() => {
-    const checkIfLoggedIn = async () => {
-        const userToken = await AsyncStorage.getItem('userToken');
-        if (userToken && userToken != "") {
-          navigation.replace("Home")
-        }
-    };
-    checkIfLoggedIn();
-  }, []);
   useEffect(() => {
     Animated.timing(animation, {
       toValue: 1,

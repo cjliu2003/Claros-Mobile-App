@@ -35,15 +35,11 @@ const LoginScreen = ({navigation}) => {
     });
   }, [])
   
-  // From Jax: Adding in fucntionality to check user relation in Vulcan, priming PGSQL for relations
-  // needed to store user queries.
   const signIn = async () => {
     if (authEmail && password !== "") {
       // signInUserEmail and navigate to Home
       const uid = await signInUserEmail(authEmail, password); // signInUserEmail returns the UID string as the response object
 
-      // Now to ensure user is in Vulcan, we make a call to function which makes post request to addUserToVulcan AWS lambda function
-      // await invokeAddUserToVulcanLambda(uid);
       setSignInTrigger(true)
 
     } else {

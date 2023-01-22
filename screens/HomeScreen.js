@@ -1,4 +1,4 @@
-import { StyleSheet, View, ScrollView, Text, TouchableOpacity, TextInput, Keyboard, Animated, TouchableWithoutFeedback, Image } from 'react-native';
+import { StyleSheet, View, ScrollView, Text, TouchableOpacity, TextInput, Keyboard, Animated, Easing, TouchableWithoutFeedback, Image } from 'react-native';
 import React, { useEffect, useState, useRef, createRef } from 'react';
 import { useUserContext } from '../contexts/userContext';
 import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
@@ -94,8 +94,24 @@ const HomeScreen = ({navigation}) => {
     searchBarRef.current.focus()
   }
 
+  // useEffect for animation to fade in home screen
+  const [animation, setAnimation] = useState(new Animated.Value(0));
+  useEffect(() => {
+    Animated.timing(animation, {
+      toValue: 1,
+      duration: 100,
+      easing: Easing.linear,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
+  const opacity = animation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 1],
+  });
+
   return (
-      <View style={styles(screenWidth, screenHeight).backgroundView}>
+      <Animated.View style={[styles(screenWidth, screenHeight).backgroundView, {opacity}]}>
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <ScrollView contentContainerStyle={[styles(screenWidth, screenHeight).container, {overflow: 'scroll', backgroundColor: 'white'}]}>
             <Spinner
@@ -187,7 +203,7 @@ const HomeScreen = ({navigation}) => {
           </ScrollView>
         </TouchableWithoutFeedback>
         <StatusBar style='light' />
-      </View>
+      </Animated.View>
   )
 }
 

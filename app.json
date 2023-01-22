@@ -2,9 +2,9 @@
   "expo": {
     "name": "Claros",
     "slug": "Claros",
-    "version": "1.0.13",
+    "version": "1.0.14",
     "orientation": "portrait",
-    "icon": "./assets/claros__iOS__card.png",
+    "icon": "./assets/claros__iOS__card__dark.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/claros__branded__splash.png",
@@ -23,12 +23,12 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/claros__iOS__card.png",
+        "foregroundImage": "./assets/claros__iOS__card__dark.png",
         "backgroundColor": "#FFFFFF"
       }
     },
     "web": {
-      "favicon": "./assets/claros__iOS__card.png"
+      "favicon": "./assets/claros__iOS__card__dark.png"
     },
     "extra": {
       "eas": {
