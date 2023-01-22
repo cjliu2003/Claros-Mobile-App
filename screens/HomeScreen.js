@@ -15,34 +15,13 @@ const HomeScreen = ({navigation}) => {
   const screenHeight = useScreenHeight();
 
   const [isPopupVisible, setIsPopupVisible] = useState(false);
-  const [scaleSize, setScaleSize] = useState( new Animated.Value(1));
   const [recentSignOut, setRecentSignOut] = useState(false);
   const [brandTextYTransform, setBrandTextYTransform] = useState( new Animated.Value(0));
-  const {trackSearchQuery, user, logoutUser, subscription} = useUserContext();
+  const {trackSearchQuery, subscription} = useUserContext();
   const [searchQuery, setSearchQuery] = useState("");
   const [data, setData] = useState(null);
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [isAwaitingFetch, setIsAwaitingFetch] = useState(false);
-  const [uid, setUid] = useState("");
-
-  // useEffect to detect non users and send them to welcome
-  const login = async (username, password) => {
-    try {
-      await AsyncStorage.setItem('@token', token);
-      navigation.navigate("Home");
-    } catch (error) {
-        console.log(error);
-    }
-
-    useEffect(() => {
-      if (!user) {
-        navigation.navigate("Welcome");
-      } else {
-        setUid(user.uid);
-      }
-    }, [user])
-  
-  }
   
   // useEffect to show subscription prompt pop up iof the user is not a subscriber
   useEffect(() => {
@@ -50,13 +29,7 @@ const HomeScreen = ({navigation}) => {
       setIsPopupVisible(true);
     }
   }, [subscription])
-  
-  const signOut = () => {
-    setRecentSignOut(true)
-    setIsPopupVisible(false)
-    logoutUser()
-    navigation.navigate("Welcome")
-  }
+
 
   // useEffect to detect future keyboard presence. Used for TouchableWithoutFeedback Animation. Distinct from past keyboard presence.
   useEffect(() => {
@@ -88,11 +61,6 @@ const HomeScreen = ({navigation}) => {
     }).start();
   }
 
-  // options for haptics
-  const options = {
-    enableVibrateFallback: true,
-    ignoreAndroidSystemSettings: false
-  };
 
   const [responseDataLength, setResonseDataLength] = useState(0);
   const handleSearch = async () => {

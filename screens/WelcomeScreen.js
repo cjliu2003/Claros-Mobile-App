@@ -4,6 +4,7 @@ import { StyleSheet, Text, View, Animated, Easing, TouchableOpacity } from 'reac
 import React, { useState, useEffect } from 'react';
 import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import { StatusBar } from 'expo-status-bar';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const WelcomeScreen = ({ navigation }) => {
   const screenWidth = useScreenWidth();
@@ -14,7 +15,15 @@ const WelcomeScreen = ({ navigation }) => {
   }
 
   const [animation, setAnimation] = useState(new Animated.Value(0));
-
+  useEffect(() => {
+    const checkIfLoggedIn = async () => {
+        const userToken = await AsyncStorage.getItem('userToken');
+        if (userToken && userToken != "") {
+          navigation.replace("Home")
+        }
+    };
+    checkIfLoggedIn();
+  }, []);
   useEffect(() => {
     Animated.timing(animation, {
       toValue: 1,
