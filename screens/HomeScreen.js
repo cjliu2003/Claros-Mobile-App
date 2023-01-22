@@ -13,8 +13,6 @@ import nullSearchImage from '../assets/null__search.png';
 const HomeScreen = ({navigation}) => {
   const screenWidth = useScreenWidth();
   const screenHeight = useScreenHeight();
-
-  const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [recentSignOut, setRecentSignOut] = useState(false);
   const [brandTextYTransform, setBrandTextYTransform] = useState( new Animated.Value(0));
   const {trackSearchQuery, subscription} = useUserContext();
@@ -26,7 +24,7 @@ const HomeScreen = ({navigation}) => {
   // useEffect to show subscription prompt pop up iof the user is not a subscriber
   useEffect(() => {
     if (subscription === "none" && !recentSignOut) {
-      setIsPopupVisible(true);
+      navigation.replace("CTA")
     }
   }, [subscription])
 

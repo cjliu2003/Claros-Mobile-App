@@ -21,7 +21,7 @@ const CTAScreen = ({navigation}) => {
   };
 
   useEffect(() => {
-    if (subscription != "none") navigation.replace("home")
+    if (subscription != "none") navigation.replace("Home")
   }, [subscription])
   
   const handleCenterButtonClick = () => {
