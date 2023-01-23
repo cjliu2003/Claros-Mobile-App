@@ -2,7 +2,7 @@
   "expo": {
     "name": "Claros",
     "slug": "Claros",
-    "version": "1.0.15",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/claros__iOS__card__dark.png",
     "userInterfaceStyle": "light",
@@ -19,7 +19,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.jaxfloyd.Claros"
+      "bundleIdentifier": "ai.claros.clarosai"
     },
     "android": {
       "adaptiveIcon": {
