@@ -18,7 +18,7 @@ const WelcomeScreen = ({ navigation }) => {
   useEffect(() => {
     Animated.timing(animation, {
       toValue: 1,
-      duration: 100,
+      duration: 200,
       easing: Easing.linear,
       useNativeDriver: true,
     }).start();

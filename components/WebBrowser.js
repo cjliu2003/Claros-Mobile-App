@@ -1,5 +1,5 @@
-import { Share, StyleSheet, Text, TouchableOpacity, View, Linking } from 'react-native'
-import React, { useRef, useState } from 'react'
+import { Share, StyleSheet, Text, TouchableOpacity, View, Linking, Animated, Easing } from 'react-native'
+import React, { useRef, useState, useEffect } from 'react'
 import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import { WebView } from 'react-native-webview';
 import { StatusBar } from 'expo-status-bar';
@@ -8,15 +8,17 @@ import { AntDesign } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import Icon from 'react-native-vector-icons/Feather';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { CardStyleInterpolators } from '@react-navigation/stack';
 
 const InAppWebBrowser = (props) => {
     const screenWidth = useScreenWidth();
     const screenHeight = useScreenHeight();
 
-    const [pageIsLoading, setPageIsLoading] = useState("false");
+    const [isPageLoading, setIsPageLoading] = useState("false");
+    const [currentUrl, setCurrentUrl] = useState('https://www.claros.ai');
 
     const handleCloseButtonClick = () => {
-        setPageIsLoading(false);
+        setIsPageLoading(false);
         props.setCurrWebview("");
     }
     const handleSafariButtonClick = () => {
@@ -38,17 +40,40 @@ const InAppWebBrowser = (props) => {
         webViewRef.current.reload();
     }
 
+    // const [widthAnimation, setWidthAnimation] = useState(new Animated.Value(0));
     const handleOnLoadStart = () => {
-        setPageIsLoading(true);
-    }
-    
-    const handleOnLoadEnd = () => {
-        setPageIsLoading(false);
+        setIsPageLoading(true);
+
+        // Animated.timing(widthAnimation, {
+        //     toValue: 1,
+        //     duration: 8000,
+        //     useNativeDriver: true,
+        // }).start();  
     }
 
+    const handleOnLoadEnd = () => {
+
+        setIsPageLoading(false);
+    }
+
+    // const widthAcrossScreen = widthAnimation.interpolate({
+    //     inputRange: [0, 1],
+    //     outputRange: [0, screenWidth],
+    // });
+
+    const parseUrl = (url) => {
+        const hostname = url.split("/")[2];
+        if (hostname.includes("www.")) {
+            const newHostname = hostname.replace("www.", "");
+            return newHostname;
+        }
+        return hostname;
+    }
+    
     return (
         <View style={styles(screenWidth, screenHeight).container}>
-            <View style={styles(screenWidth, screenHeight).headerContainer}>
+            <View 
+                style={[styles(screenWidth, screenHeight).headerContainer]}>
                 {/* <View style={styles(screenWidth, screenHeight).headerCloseContainer}> */}
                     <TouchableOpacity style={styles(screenWidth, screenHeight).headerCloseContainer} onPress={handleCloseButtonClick}>
                         {/* <Icon name="chevrons-left" size={26} color={"#0060FF"} /> */}
@@ -57,12 +82,19 @@ const InAppWebBrowser = (props) => {
                 {/* </View> */}
                 <View style={styles(screenWidth, screenHeight).headerCenterpiece}>
                     <Ionicons name="ios-lock-closed" color="#000000" size="16"></Ionicons>
-                    <Text style={styles(screenWidth, screenHeight).urlText}>claros.ai</Text>
+                    <Text style={styles(screenWidth, screenHeight).urlText}>{parseUrl(currentUrl)}</Text>
                 </View>
                 <TouchableOpacity onPress={handleReloadClick}>
                     <AntDesign name="reload1" color="#0060FF" size="18" />
                 </TouchableOpacity>
-                
+            </View>
+            <View 
+                style={[styles(screenWidth, screenHeight).loadingBar,
+                // {widthAcrossScreen},
+                // {width: isPageLoading ? screenWidth * 0.25 : screenWidth},
+                {backgroundColor: isPageLoading ? "#FFFFFF" : "#FFFFFF"},
+                {borderBottomColor: isPageLoading ? "#BDBDBD" : "#BDBDBD"},
+                {borderBottomWidth: isPageLoading ? '0.5' : '0.5'}]}>
             </View>
             <WebView 
                 ref={webViewRef} 
@@ -71,6 +103,7 @@ const InAppWebBrowser = (props) => {
                 scalesPageToFit={true}
                 onLoadStart={handleOnLoadStart}
                 onLoadEnd={handleOnLoadEnd}
+                onNavigationStateChange={(navState) => setCurrentUrl(navState.url)}
                 >
             </WebView>
             <View style={styles(screenWidth, screenHeight).footerContainer}>
@@ -105,8 +138,6 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'flex-end',
         justifyContent: 'space-between',
-        borderBottomColor: "#BDBDBD",
-        borderBottomWidth: 0.5,
         paddingBottom: 12,
         paddingRight: 17,
         paddingLeft: 17,
@@ -128,7 +159,6 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'row',
-
     },
     headerReloadContainer: {
         flex: 1,
@@ -145,6 +175,9 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
         fontSize: 17,
         fontWeight: '700',
         marginLeft: 5,
+    },
+    loadingBar: {
+        height: 3,
     },
     footerContainer: {
         backgroundColor: "#F3F3F3",

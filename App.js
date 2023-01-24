@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { UserContextProvider } from "./contexts/userContext";
-import { Welcome, Login, CreateAccount, Home, Email, Center, CTA } from "./screens";
+import { Splash, Welcome, Login, CreateAccount, Home, Email, Center, CTA } from "./screens";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createStackNavigator();
@@ -22,12 +22,14 @@ export default function App() {
     async function checkIfLoggedIn() {
         const userToken = await AsyncStorage.getItem('userToken');
         setInitialRoute(userToken && userToken !== "" ? "Home" : "Welcome");
-        setIsLoaded(true);
+        setTimeout(() => {
+          setIsLoaded(true);
+        }, 3000);
     };
     checkIfLoggedIn();
   }, []);
     
-  if(!isLoaded) return null;
+  if(!isLoaded) return <Splash />;
 
   return (
     <UserContextProvider>

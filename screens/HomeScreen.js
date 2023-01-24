@@ -72,9 +72,6 @@ const HomeScreen = ({navigation}) => {
     setKeyboardHeight(0);
     setKeyboardVisible(false);
 
-    // Write the userSearchQuery, and the responseData to Vulcan
-    // const response = await invokeAddUserSearchQuery(uid, searchQuery, responseData);
-
     setIsAwaitingFetch(false);
     setShowSearchResults(true);
   }
@@ -97,7 +94,7 @@ const HomeScreen = ({navigation}) => {
   useEffect(() => {
     Animated.timing(animation, {
       toValue: 1,
-      duration: 100,
+      duration: 200,
       easing: Easing.linear,
       useNativeDriver: true,
     }).start();
@@ -111,7 +108,10 @@ const HomeScreen = ({navigation}) => {
   return (
       <Animated.View style={[styles(screenWidth, screenHeight).backgroundView, {opacity}]}>
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-          <ScrollView contentContainerStyle={[styles(screenWidth, screenHeight).container, {overflow: 'scroll', backgroundColor: 'white'}]}>
+          <ScrollView 
+            contentContainerStyle={[styles(screenWidth, screenHeight).container, {overflow: 'scroll', backgroundColor: 'white'}]}
+            showsVerticalScrollIndicator={false}
+            >
             <Spinner
               visible={isAwaitingFetch}
               color="#0060FF"
