@@ -42,7 +42,7 @@ const CTAScreen = ({navigation}) => {
             <Image source={require('../assets/claros__iOS__card__light.png')} style={styles(screenWidth, screenHeight).image}/>
           </TouchableOpacity>
           <Text style={styles(screenWidth, screenHeight).popupHeader}>Activate Claros AI</Text>
-          <Text style={styles(screenWidth, screenHeight).popupSubheader}>Upgrade your betting game with Claros! Once you purchase a subscription, you will gain access to all Claros features.</Text>
+          <Text style={styles(screenWidth, screenHeight).popupSubheader}>You can't purchase a plan in the app. We know. It's not ideal.</Text>
           <Image source={require('../assets/hero__feature-graphic.png')} style={styles(screenWidth, screenHeight).heroImage}/>
           {benefits.map((benefit, i) => {
             return (
