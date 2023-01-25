@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import { searchIndex } from '../functions/search/processQueries';
 import SearchResultContainer from '../components/SearchResult';
 import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from 'react-native-vector-icons';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { StatusBar } from 'expo-status-bar';
 import nullSearchImage from '../assets/null__search.png';
@@ -125,7 +126,7 @@ const HomeScreen = ({navigation}) => {
               { showSearchResults ?
                 <>
                   <TouchableOpacity style={styles(screenWidth, screenHeight).centerButton} onPress={handleCenterButtonClick}>
-                    <Ionicons name="person-circle" size={28} color="#0060FF" />
+                    <Ionicons name="ios-person-circle-outline" size={28} color="#0060FF" />
                   </TouchableOpacity>
                   <TouchableOpacity style={styles(screenWidth, screenHeight).backButton} onPress={handleBackToBrandedSearch}>
                     <Icon name="chevrons-left" size={28} color={"#0060FF"} />

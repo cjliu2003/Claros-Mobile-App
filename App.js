@@ -16,7 +16,7 @@ const globalScreenOptions = {
 
 export default function App() {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [initialRoute, setInitialRoute] = useState("Welcome");
+  const [initialRoute, setInitialRoute] = useState("Splash");
 
   useEffect(() => {
     async function checkIfLoggedIn() {
@@ -35,6 +35,7 @@ export default function App() {
     <UserContextProvider>
       <NavigationContainer>
           <Stack.Navigator initialRouteName={initialRoute} screensOptions={globalScreenOptions}>
+            <Stack.Screen name='Splash' component={Splash} options={{ headerShown: false }} />
             <Stack.Screen name='Welcome' component={Welcome} options={{ headerShown: false }} />
             <Stack.Screen name='Login' component={Login} options={{ headerShown: true }} />
             <Stack.Screen name='Create Account' component={CreateAccount} options={{ headerShown: true }} />

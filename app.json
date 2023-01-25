@@ -6,6 +6,11 @@
     "orientation": "portrait",
     "icon": "./assets/claros__iOS__card__dark.png",
     "userInterfaceStyle": "light",
+    // "splash": {
+    //   "image": "./assets/claros__logo__splash__light.png",
+    //   "resizeMode": "contain",
+    //   "backgroundColor": "#FFFFFF"
+    // },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
