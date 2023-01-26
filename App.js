@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { UserContextProvider } from "./contexts/userContext";
 import { Splash, Welcome, Login, CreateAccount, Home, Email, Center, CTA } from "./screens";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 const Stack = createStackNavigator();
 
@@ -17,6 +18,22 @@ const globalScreenOptions = {
 export default function App() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [initialRoute, setInitialRoute] = useState("Splash");
+
+  // Connection to the backend server established in './backend/server.js'
+  const [responseData, setResponseData] = useState();
+
+  useEffect(() => {
+      async function getData() {
+          try {
+              const response = await axios.get('https://053d-128-12-123-61.ngrok.io');
+              setResponseData(response.data);
+              console.log(responseData); // Log the response data here
+          } catch (error) {
+              console.error(error);
+          }
+      }
+      getData();
+  }, []);
 
   useEffect(() => {
     async function checkIfLoggedIn() {

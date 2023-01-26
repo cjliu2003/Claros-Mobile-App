@@ -1,10 +1,11 @@
-import { Dimensions, Modal, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
+import { Modal, StyleSheet, Text, TouchableOpacity, View, Image, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import {AntDesign} from '@expo/vector-icons'
 import InAppWebBrowser from '../components/WebBrowser';
 import { useUserContext } from '../contexts/userContext';
 import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import { Ionicons } from '@expo/vector-icons';
+import { StripeProvider, usePaymentSheet } from '@stripe/stripe-react-native';
 
 const CTAScreen = ({navigation}) => {
   const screenWidth = useScreenWidth();
@@ -15,17 +16,68 @@ const CTAScreen = ({navigation}) => {
   const benefits = [
     "Unlimited Ratings & Analytics", "Constant Realtime Market Data", "Access to Future Developments"
 ]
-  const getAccess = () => {
-    // Vibration.vibrate(0, 250)
-    setCurrWebview("pricing")
-  };
-
   useEffect(() => {
     if (subscription != "none") navigation.replace("Home")
   }, [subscription])
   
   const handleCenterButtonClick = () => {
     navigation.navigate("Center")
+  }
+
+  // Stripe stuff!
+  const [ready, setReady] = useState(false);
+  const {initPaymentSheet, presentPaymentSheet, loading} = usePaymentSheet();
+
+  useEffect(() => {
+    initializePaymentSheet();
+  }, []);
+
+  const initializePaymentSheet = async () => {
+     
+    // const {paymentIntent, ephemeralKey, customer} = await fetchPaymentSheetParams();
+
+    const {error} = await initPaymentSheet({
+      // customerId: customer,
+      // customerEphemeralKeySecret: ephemeralKey, // ephemeralKey is fetched from backend
+      paymentIntentClientSecret: 'pi_3MUNesLm94FZCBUM0zgPWUGN_secret_OhzgfxqK9akK3dBgN8vRupH5f', // paymentIntent is created on and fetched from backend
+      merchantDisplayName: 'Claros AI, LLC',
+      allowsDelayedPaymentMethods: true,
+      returnURL: 'stripe-example://stripe-redirect',
+    });
+    if (error) {
+      Alert.alert(`Error code: ${error.code}`, error.message);
+    } else {
+      setReady(true);
+    }
+  };
+
+  // // Now we set up API fetch call from backend server defined in './backend/server.js'
+  // const fetchPaymentSheetParams = async () => {
+  //   const response = await fetch('https://053d-128-12-123-61.ngrok.io', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //   });
+  //   const {paymentIntent, ephemeralKey, customer} = await response.json;
+
+  //   return {
+  //     paymentIntent,
+  //     ephemeralKey,
+  //     customer,
+  //   };
+  // };
+
+  // Async function subscribe makes hook call to payment sheet initializer hook, supra
+  async function subscribe() {
+    const {error} = await presentPaymentSheet();
+
+    if (error) {
+      Alert.Alert(`Error code: ${error.code}`, error.message);
+    } else {
+      Alert.Alert('Success! The payment was confirmed successfully!');
+      setReady(false);
+    }
   }
   
   return (
@@ -38,9 +90,7 @@ const CTAScreen = ({navigation}) => {
         <TouchableOpacity style={styles(screenWidth, screenHeight).icon} onPress={handleCenterButtonClick}>
           <Ionicons name="person-circle" size={28} color="#0060FF" />
         </TouchableOpacity>
-          <TouchableOpacity onPress={getAccess}>
-            <Image source={require('../assets/claros__iOS__card__light.png')} style={styles(screenWidth, screenHeight).image}/>
-          </TouchableOpacity>
+          <Image source={require('../assets/claros__iOS__card__light.png')} style={styles(screenWidth, screenHeight).image}/>
           <Text style={styles(screenWidth, screenHeight).popupHeader}>Activate Claros AI</Text>
           <Text style={styles(screenWidth, screenHeight).popupSubheader}>Upgrade your betting game with Claros! Once you purchase a subscription, you will gain access to all Claros features.</Text>
           <Image source={require('../assets/hero__feature-graphic.png')} style={styles(screenWidth, screenHeight).heroImage}/>
@@ -54,11 +104,15 @@ const CTAScreen = ({navigation}) => {
           })}
         </View>
         <View>
-        </View>
-        <View>
-          <TouchableOpacity style={styles(screenWidth, screenHeight).button} onPress={getAccess}>
-            <Text style={styles(screenWidth, screenHeight).buttonText}>Get Access</Text>
-          </TouchableOpacity>
+          <StripeProvider
+            publishableKey="pk_test_51L9D0DLm94FZCBUMlzrr3KMkkus8cwe0aovIfCGCrW9H4XlS6eD9YF1nBSK5IBS9bXXlgAXQlyY0LDzw1uGMumjH00U1dlZ7mf"
+            // merchantIdentifier={MERCHANT_ID}
+            >
+              <TouchableOpacity style={styles(screenWidth, screenHeight).button} onPress={subscribe}>
+                <Text style={styles(screenWidth, screenHeight).buttonText}>Get Access</Text>
+              </TouchableOpacity>
+            
+          </StripeProvider>
         </View>
       </View>
     </View>
