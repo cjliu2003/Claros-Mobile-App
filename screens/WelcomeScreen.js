@@ -1,9 +1,10 @@
 // Welcome screen provides user with option to login in or create an account. It is the top of the navigation stack.
 
-import { StyleSheet, Text, View, Dimensions, Vibration, Animated, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Animated, Easing, TouchableOpacity } from 'react-native'
 import React, { useState, useEffect } from 'react';
 import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import { StatusBar } from 'expo-status-bar';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const WelcomeScreen = ({ navigation }) => {
   const screenWidth = useScreenWidth();
@@ -12,9 +13,24 @@ const WelcomeScreen = ({ navigation }) => {
   const handleEmailButtonClick = () => {
     navigation.navigate('Email')
   }
+  
+  const [animation, setAnimation] = useState(new Animated.Value(0));
+  useEffect(() => {
+    Animated.timing(animation, {
+      toValue: 1,
+      duration: 200,
+      easing: Easing.linear,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
+  const opacity = animation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 1],
+  });
 
   return (
-    <View style={styles(screenWidth, screenHeight).container}>
+    <Animated.View style={[styles(screenWidth, screenHeight).container, {opacity}]}>
       <Animated.View style={styles(screenWidth, screenHeight).container}>
         <Text style={[styles(screenWidth, screenHeight).brandText, {marginTop: screenHeight * 0.1}]}>Claros</Text>
         <Text style={styles(screenWidth, screenHeight).callToActionText}>Your personal sports betting assistant.</Text>
@@ -25,7 +41,7 @@ const WelcomeScreen = ({ navigation }) => {
         </View>
         <StatusBar style='light' />
       </Animated.View>
-    </View>
+    </Animated.View>
     
   );
 };

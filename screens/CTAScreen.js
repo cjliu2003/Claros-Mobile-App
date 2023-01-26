@@ -1,20 +1,19 @@
-import { Dimensions, Modal, StyleSheet, Text, TouchableOpacity, Vibration, View } from 'react-native'
+import { Dimensions, Modal, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { Image } from '@rneui/base';
 import {AntDesign} from '@expo/vector-icons'
 import InAppWebBrowser from '../components/WebBrowser';
 import { useUserContext } from '../contexts/userContext';
+import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import { Ionicons } from '@expo/vector-icons';
 
-// Get the current screen width and height
-const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
-
 const CTAScreen = ({navigation}) => {
+  const screenWidth = useScreenWidth();
+  const screenHeight = useScreenHeight();
+
   const {subscription} = useUserContext()
   const [currWebview, setCurrWebview] = useState("")
   const benefits = [
-    "Unlimited Search Queries", "Constantly Updating Odds", "Access to Future Developments"
+    "Unlimited Ratings & Analytics", "Constant Realtime Market Data", "Access to Future Developments"
 ]
   const getAccess = () => {
     // Vibration.vibrate(0, 250)
@@ -22,7 +21,7 @@ const CTAScreen = ({navigation}) => {
   };
 
   useEffect(() => {
-    if (subscription != "none") navigation.replace("home")
+    if (subscription != "none") navigation.replace("Home")
   }, [subscription])
   
   const handleCenterButtonClick = () => {
@@ -30,26 +29,26 @@ const CTAScreen = ({navigation}) => {
   }
   
   return (
-    <View style={styles.container}>
+    <View style={styles(screenWidth, screenHeight).container}>
       <Modal transparent={true} animationType="fade" visible={currWebview === "pricing"}>
-        <InAppWebBrowser url={'https://www.claros.ai/#pricing'} currWebview={currWebview} setCurrWebview={setCurrWebview}></InAppWebBrowser>
+        <InAppWebBrowser url={'https://www.claros.ai/pricing'} currWebview={currWebview} setCurrWebview={setCurrWebview}></InAppWebBrowser>
       </Modal>
       <View style={{height: screenHeight * 0.9, justifyContent: 'space-between'}}>
-        <View style={styles.popupContainer}>
-        <TouchableOpacity style={styles.icon} onPress={handleCenterButtonClick}>
+        <View style={styles(screenWidth, screenHeight).popupContainer}>
+        <TouchableOpacity style={styles(screenWidth, screenHeight).icon} onPress={handleCenterButtonClick}>
           <Ionicons name="person-circle" size={28} color="#0060FF" />
         </TouchableOpacity>
           <TouchableOpacity onPress={getAccess}>
-            <Image source={require('../assets/claros__letters-logo.png')} style={styles.image}/>
+            <Image source={require('../assets/claros__iOS__card__light.png')} style={styles(screenWidth, screenHeight).image}/>
           </TouchableOpacity>
-          <Text style={styles.popupHeader}>Activate Claros AI</Text>
-          <Text style={styles.popupSubheader}>Upgrade your betting game with Claros! Once you purchase a subscription, you will gain access to all Claros features.</Text>
-          <Image source={require('../assets/hero__feature-graphic.png')} style={styles.heroImage}/>
+          <Text style={styles(screenWidth, screenHeight).popupHeader}>Activate Claros AI</Text>
+          <Text style={styles(screenWidth, screenHeight).popupSubheader}>You can't purchase a plan in the app. We know. It's not ideal.</Text>
+          <Image source={require('../assets/hero__feature-graphic.png')} style={styles(screenWidth, screenHeight).heroImage}/>
           {benefits.map((benefit, i) => {
             return (
-              <View key={benefit + i} style={styles.listItem}>
+              <View key={benefit + i} style={styles(screenWidth, screenHeight).listItem}>
                 <AntDesign style={{paddingRight: 8}} name="checkcircle" size={25} color="#000000" />
-                <Text style={styles.listItemText}>{benefit}</Text>
+                <Text style={styles(screenWidth, screenHeight).listItemText}>{benefit}</Text>
               </View>
             )
           })}
@@ -57,8 +56,8 @@ const CTAScreen = ({navigation}) => {
         <View>
         </View>
         <View>
-          <TouchableOpacity style={styles.button} onPress={getAccess}>
-            <Text style={styles.buttonText}>Get Access</Text>
+          <TouchableOpacity style={styles(screenWidth, screenHeight).button} onPress={getAccess}>
+            <Text style={styles(screenWidth, screenHeight).buttonText}>Get Access</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -67,7 +66,8 @@ const CTAScreen = ({navigation}) => {
 }
 
 export default CTAScreen
-const styles = StyleSheet.create({
+
+const styles = (screenWidth, screenHeight) => StyleSheet.create({
   container: {
     flexDirection: 'column',
     alignItems: 'center',

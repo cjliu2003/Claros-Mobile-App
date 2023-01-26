@@ -1,6 +1,5 @@
-import { StyleSheet, Text, Dimensions } from 'react-native'
+import { StyleSheet, Text, Dimensions, ListItem, Image} from 'react-native'
 import { React, useState, useEffect  } from 'react'
-import { ListItem, Image} from '@rneui/base'
 import Sportsbooks from '../assets/Sportsbooks'
 import { parseMarket } from '../functions/parsing/parseMarket'
 import { parseOdds } from '../functions/parsing/parseOdds'

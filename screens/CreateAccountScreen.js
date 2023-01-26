@@ -1,8 +1,8 @@
-import { Alert, Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, Vibration, View, Animated, TouchableWithoutFeedback, Keyboard, Modal } from 'react-native'
-import React, { useEffect, useLayoutEffect, useState, useRef } from 'react'
+import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View, Animated, TouchableWithoutFeedback, Keyboard, Modal } from 'react-native';
+import React, { useEffect, useLayoutEffect, useState, useRef } from 'react';
 import Icon from 'react-native-vector-icons/Feather';
 import { useUserContext } from '../contexts/userContext';
-import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
+import { useScreenWidth, useScreenHeight } from '../contexts/useOrientation';
 import { validateCredentials } from '../functions/signup/validateCredentials';
 import InAppWebBrowser from '../components/WebBrowser';
 

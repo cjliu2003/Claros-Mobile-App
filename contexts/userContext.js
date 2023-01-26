@@ -13,6 +13,7 @@ import { REACT_APP_STRIPE_PREMIUM_WEEKLY1, REACT_APP_STRIPE_PREMIUM_MONTHLY1, RE
 import { Alert } from "react-native";
 import { parseFirebaseSignInError } from "../functions/parsing/parseFirebaseSignInError";
 import { parseFirebaseSignUpError } from "../functions/parsing/parseFirebaseSignUpError";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Imports for Vulcan relations stemming from Firebase
 // import { addUserToVulcan } from '../functions/search/searchQueryStorage';
@@ -229,7 +230,8 @@ export const UserContextProvider = ({ children }) => {
         try {
             const res = await signInWithEmailAndPassword(auth, email, password);
             const uid = auth.currentUser.uid;
-            console.log(`User ${email}, with uid = ${uid}, just signed in!`);
+            await AsyncStorage.setItem('userToken', uid); //store the user's uid in AsyncStorage
+            // console.log(`User ${email}, with uid = ${uid}, just signed in!`);
             return uid;
         } catch (err) {
             Alert.alert("Sign In Error", parseFirebaseSignInError(err));
@@ -238,7 +240,8 @@ export const UserContextProvider = ({ children }) => {
         }
     }
     
-    const logoutUser = () => {
+    const logoutUser = async() => {
+        await AsyncStorage.setItem('userToken', "");
         signOut(auth);
         setSubscription("none");
     }

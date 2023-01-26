@@ -1,53 +1,34 @@
-import { Dimensions, StyleSheet, View, ScrollView, Text, TouchableOpacity, TextInput, Keyboard, Animated, TouchableWithoutFeedback, Vibration, Image } from 'react-native'
-import React, { useEffect, useState, useRef, createRef } from 'react'
+import { StyleSheet, View, ScrollView, Text, TouchableOpacity, TextInput, Keyboard, Animated, Easing, TouchableWithoutFeedback, Image } from 'react-native';
+import React, { useEffect, useState, useRef, createRef } from 'react';
 import { useUserContext } from '../contexts/userContext';
 import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import Icon from 'react-native-vector-icons/Feather';
 import { searchIndex } from '../functions/search/processQueries';
 import SearchResultContainer from '../components/SearchResult';
 import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from 'react-native-vector-icons';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { StatusBar } from 'expo-status-bar';
-import { invokeAddUserSearchQuery } from '../functions/search/searchQueryStorage';
 import nullSearchImage from '../assets/null__search.png';
 
 const HomeScreen = ({navigation}) => {
   const screenWidth = useScreenWidth();
   const screenHeight = useScreenHeight();
-
-  const [isPopupVisible, setIsPopupVisible] = useState(false);
-  const [scaleSize, setScaleSize] = useState( new Animated.Value(1));
   const [recentSignOut, setRecentSignOut] = useState(false);
   const [brandTextYTransform, setBrandTextYTransform] = useState( new Animated.Value(0));
-  const {trackSearchQuery, user, logoutUser, subscription} = useUserContext();
+  const {trackSearchQuery, subscription} = useUserContext();
   const [searchQuery, setSearchQuery] = useState("");
   const [data, setData] = useState(null);
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [isAwaitingFetch, setIsAwaitingFetch] = useState(false);
-  const [uid, setUid] = useState("");
-
-  // useEffect to detect non users and send them to welcome
-  useEffect(() => {
-    if (!user) {
-      navigation.navigate("Welcome");
-    } else {
-      setUid(user.uid);
-    }
-  }, [user])
-
+  
   // useEffect to show subscription prompt pop up iof the user is not a subscriber
   useEffect(() => {
     if (subscription === "none" && !recentSignOut) {
-      setIsPopupVisible(true);
+      navigation.replace("CTA")
     }
   }, [subscription])
-  
-  const signOut = () => {
-    setRecentSignOut(true)
-    setIsPopupVisible(false)
-    logoutUser()
-    navigation.navigate("Welcome")
-  }
+
 
   // useEffect to detect future keyboard presence. Used for TouchableWithoutFeedback Animation. Distinct from past keyboard presence.
   useEffect(() => {
@@ -79,11 +60,6 @@ const HomeScreen = ({navigation}) => {
     }).start();
   }
 
-  // options for haptics
-  const options = {
-    enableVibrateFallback: true,
-    ignoreAndroidSystemSettings: false
-  };
 
   const [responseDataLength, setResonseDataLength] = useState(0);
   const handleSearch = async () => {
@@ -96,9 +72,6 @@ const HomeScreen = ({navigation}) => {
     setResonseDataLength(responseData.length);
     setKeyboardHeight(0);
     setKeyboardVisible(false);
-
-    // Write the userSearchQuery, and the responseData to Vulcan
-    // const response = await invokeAddUserSearchQuery(uid, searchQuery, responseData);
 
     setIsAwaitingFetch(false);
     setShowSearchResults(true);
@@ -117,10 +90,29 @@ const HomeScreen = ({navigation}) => {
     searchBarRef.current.focus()
   }
 
+  // useEffect for animation to fade in home screen
+  const [animation, setAnimation] = useState(new Animated.Value(0));
+  useEffect(() => {
+    Animated.timing(animation, {
+      toValue: 1,
+      duration: 200,
+      easing: Easing.linear,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
+  const opacity = animation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 1],
+  });
+
   return (
-      <View style={styles(screenWidth, screenHeight).backgroundView}>
+      <Animated.View style={[styles(screenWidth, screenHeight).backgroundView, {opacity}]}>
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-          <ScrollView contentContainerStyle={[styles(screenWidth, screenHeight).container, {overflow: 'scroll', backgroundColor: 'white'}]}>
+          <ScrollView 
+            contentContainerStyle={[styles(screenWidth, screenHeight).container, {overflow: 'scroll', backgroundColor: 'white'}]}
+            showsVerticalScrollIndicator={false}
+            >
             <Spinner
               visible={isAwaitingFetch}
               color="#0060FF"
@@ -134,7 +126,7 @@ const HomeScreen = ({navigation}) => {
               { showSearchResults ?
                 <>
                   <TouchableOpacity style={styles(screenWidth, screenHeight).centerButton} onPress={handleCenterButtonClick}>
-                    <Ionicons name="person-circle" size={28} color="#0060FF" />
+                    <Ionicons name="ios-person-circle-outline" size={28} color="#0060FF" />
                   </TouchableOpacity>
                   <TouchableOpacity style={styles(screenWidth, screenHeight).backButton} onPress={handleBackToBrandedSearch}>
                     <Icon name="chevrons-left" size={28} color={"#0060FF"} />
@@ -210,7 +202,7 @@ const HomeScreen = ({navigation}) => {
           </ScrollView>
         </TouchableWithoutFeedback>
         <StatusBar style='light' />
-      </View>
+      </Animated.View>
   )
 }
 
