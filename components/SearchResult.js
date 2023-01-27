@@ -155,9 +155,9 @@ const SearchResultContainer = ({line}) => {
           </>
           } */}
              
-          <TouchableOpacity style={styles(screenWidth, screenHeight).betNowButton} onPress={handleBetNowPress}>
-            <Text style={styles(screenWidth, screenHeight).betNowButtonText}>Bet Now</Text>
-            <Icon name="chevrons-right" size={18} color={"#0060FF"} />
+          <TouchableOpacity style={styles(screenWidth, screenHeight).betNowButton} onPress={handleInfoClick}>
+            <Text style={styles(screenWidth, screenHeight).betNowButtonText}>See Rating</Text>
+            {/* <Icon name="chevrons-right" size={18} color={"#0060FF"} /> */}
           </TouchableOpacity>
         </View>
         <Modal 
@@ -329,8 +329,8 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
     borderWidth: 0.125,
     paddingTop: 7.5,
     paddingBottom: 7.5,
-    paddingRight: 15,
-    paddingLeft:15,
+    paddingRight: 21.25,
+    paddingLeft:21.25,
     shadowColor: '#0060FF',
     shadowOffset: { width: 0, height: 0 },
     shadowRadius: 5,
@@ -341,6 +341,6 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
     color: "#0060FF",
     fontSize: 14,
     fontWeight: '300',
-    marginRight: 10,
+    // marginRight: 10,
   },
 });

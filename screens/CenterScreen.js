@@ -55,8 +55,8 @@ const CenterScreen = ( {navigation} ) => {
 
   return (
       <View style={styles(screenWidth, screenHeight).container}>
-        <TouchableOpacity onPress={handleManageSubscription} style={styles(screenWidth, screenHeight).manageSubscriptionButton}><Text style={styles(screenWidth, screenHeight).manageSubscriptionButtonText}>Manage Subscription</Text></TouchableOpacity>
-        <TouchableOpacity onPress={signOut} style={styles(screenWidth, screenHeight).signOutButton}><Text style={styles(screenWidth, screenHeight).signOutButtonText}>Sign Out: {user && user.email}</Text></TouchableOpacity>
+        {/* <TouchableOpacity onPress={handleManageSubscription} style={styles(screenWidth, screenHeight).manageSubscriptionButton}><Text style={styles(screenWidth, screenHeight).manageSubscriptionButtonText}>Manage Subscription</Text></TouchableOpacity> */}
+        <TouchableOpacity onPress={signOut} style={styles(screenWidth, screenHeight).manageSubscriptionButton}><Text style={styles(screenWidth, screenHeight).manageSubscriptionButtonText}>Sign Out: {user && user.email}</Text></TouchableOpacity>
         <View style={styles(screenWidth, screenHeight).legalRow}>
             <Text onPress={handleTermsClick} style={styles(screenWidth, screenHeight).legalLinkText}>Terms and Conditions</Text>
             <Text onPress={handlePrivClick} style={styles(screenWidth, screenHeight).legalLinkText}>Privacy Policy</Text>
@@ -81,7 +81,7 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
       flex: 1, 
       alignItems: 'center',
       padding: 16,
-      justifyContent: 'center',
+      justifyContent: 'flex-end',
       backgroundColor: "#0060FF"
     },
     legalRow: {
@@ -110,7 +110,7 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
         backgroundColor: '#FFFFFF',
         alignItems: 'center',
         justifyContent: 'center',
-        marginVertical: screenHeight * 0.0125,
+        marginVertical: 100,
     },
     manageSubscriptionButtonText: {
         fontSize: 16,

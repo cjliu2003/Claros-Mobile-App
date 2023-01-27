@@ -1,11 +1,10 @@
 import { Modal, StyleSheet, Text, TouchableOpacity, View, Image, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import {AntDesign} from '@expo/vector-icons'
 import InAppWebBrowser from '../components/WebBrowser';
 import { useUserContext } from '../contexts/userContext';
 import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import { Ionicons } from '@expo/vector-icons';
-import { StripeProvider, usePaymentSheet } from '@stripe/stripe-react-native';
+import Purchases from 'react-native-purchases';
 
 const CTAScreen = ({navigation}) => {
   const screenWidth = useScreenWidth();
@@ -15,7 +14,13 @@ const CTAScreen = ({navigation}) => {
   const [currWebview, setCurrWebview] = useState("")
   const benefits = [
     "Unlimited Ratings & Analytics", "Constant Realtime Market Data", "Access to Future Developments"
-]
+  ]
+
+  const getAccess = () => {
+    // Vibration.vibrate(0, 250)
+    setCurrWebview("pricing")
+  };
+
   useEffect(() => {
     if (subscription != "none") navigation.replace("Home")
   }, [subscription])
@@ -24,59 +29,15 @@ const CTAScreen = ({navigation}) => {
     navigation.navigate("Center")
   }
 
-  // Stripe stuff!
-  const [ready, setReady] = useState(false);
-  const {initPaymentSheet, presentPaymentSheet, loading} = usePaymentSheet();
-
-  useEffect(() => {
-    initializePaymentSheet();
-  }, []);
-
-  const initializePaymentSheet = async () => {
-     
-    // const {paymentIntent, ephemeralKey, customer} = await fetchPaymentSheetParams();
-
-    const {error} = await initPaymentSheet({
-      // customerId: customer,
-      // customerEphemeralKeySecret: ephemeralKey, // ephemeralKey is fetched from backend
-      paymentIntentClientSecret: 'pi_3MUNesLm94FZCBUM0zgPWUGN_secret_OhzgfxqK9akK3dBgN8vRupH5f', // paymentIntent is created on and fetched from backend
-      merchantDisplayName: 'Claros AI, LLC',
-      allowsDelayedPaymentMethods: true,
-      returnURL: 'stripe-example://stripe-redirect',
-    });
-    if (error) {
-      Alert.alert(`Error code: ${error.code}`, error.message);
-    } else {
-      setReady(true);
-    }
-  };
-
-  // // Now we set up API fetch call from backend server defined in './backend/server.js'
-  // const fetchPaymentSheetParams = async () => {
-  //   const response = await fetch('https://053d-128-12-123-61.ngrok.io', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //   });
-  //   const {paymentIntent, ephemeralKey, customer} = await response.json;
-
-  //   return {
-  //     paymentIntent,
-  //     ephemeralKey,
-  //     customer,
-  //   };
-  // };
-
-  // Async function subscribe makes hook call to payment sheet initializer hook, supra
   async function subscribe() {
-    const {error} = await presentPaymentSheet();
-
-    if (error) {
-      Alert.Alert(`Error code: ${error.code}`, error.message);
-    } else {
-      Alert.Alert('Success! The payment was confirmed successfully!');
-      setReady(false);
+    try {
+      const offerings = await Purchases.getOfferings();
+      if (offerings.current !== null && offerings.current.availablePackages.length !== 0) {
+        console.log(offerings.current);
+      }
+    } catch (e) {
+      console.log(e);
+     
     }
   }
   
@@ -91,28 +52,23 @@ const CTAScreen = ({navigation}) => {
           <Ionicons name="person-circle" size={28} color="#0060FF" />
         </TouchableOpacity>
           <Image source={require('../assets/claros__iOS__card__light.png')} style={styles(screenWidth, screenHeight).image}/>
-          <Text style={styles(screenWidth, screenHeight).popupHeader}>Activate Claros AI</Text>
-          <Text style={styles(screenWidth, screenHeight).popupSubheader}>Upgrade your betting game with Claros! Once you purchase a subscription, you will gain access to all Claros features.</Text>
+          <Text style={styles(screenWidth, screenHeight).popupHeader}>Claros AI</Text>
+          <Text style={styles(screenWidth, screenHeight).popupSubheader}>We're sorry, but Claros AI is presently only available to our subscribers. We know this is not ideal.</Text>
+          <View style={styles(screenWidth, screenHeight).dummyView}></View>
           <Image source={require('../assets/hero__feature-graphic.png')} style={styles(screenWidth, screenHeight).heroImage}/>
-          {benefits.map((benefit, i) => {
+          {/* {benefits.map((benefit, i) => {
             return (
               <View key={benefit + i} style={styles(screenWidth, screenHeight).listItem}>
                 <AntDesign style={{paddingRight: 8}} name="checkcircle" size={25} color="#000000" />
                 <Text style={styles(screenWidth, screenHeight).listItemText}>{benefit}</Text>
               </View>
             )
-          })}
+          })} */}
         </View>
         <View>
-          <StripeProvider
-            publishableKey="pk_test_51L9D0DLm94FZCBUMlzrr3KMkkus8cwe0aovIfCGCrW9H4XlS6eD9YF1nBSK5IBS9bXXlgAXQlyY0LDzw1uGMumjH00U1dlZ7mf"
-            // merchantIdentifier={MERCHANT_ID}
-            >
-              <TouchableOpacity style={styles(screenWidth, screenHeight).button} onPress={subscribe}>
-                <Text style={styles(screenWidth, screenHeight).buttonText}>Get Access</Text>
-              </TouchableOpacity>
-            
-          </StripeProvider>
+          <TouchableOpacity style={styles(screenWidth, screenHeight).button} onPress={subscribe}>
+            <Text style={styles(screenWidth, screenHeight).buttonText}>View Account</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -203,7 +159,7 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
   },
   popupSubheader: {
     fontSize: 20,
-    fontWeight: '300',
+    fontWeight: '200',
     textAlign: 'center',
     letterSpacing: -.5,
     color: 'black',
