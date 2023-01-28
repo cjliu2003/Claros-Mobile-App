@@ -16,6 +16,7 @@ const globalScreenOptions = {
   headerTintColor: "black",
 }
 
+// Class initializes RevenueCat at beginning of app life cycle.
 export class Payments extends React.Component {
 
   componentDidMount() {
@@ -24,11 +25,16 @@ export class Payments extends React.Component {
 
   async configureRevenueCat() {
     Purchases.setDebugLogsEnabled(true);
-    if (Platform.OS === 'ios') {
-        console.log('The platform is iOS')
-        await Purchases.configure({ 
-          apiKey: "appl_ojeITQxIMBehijogjimVTULazFJ" 
-        });
+
+    try {
+        if (Platform.OS === 'ios') {
+            await Purchases.configure({ 
+              apiKey: "appl_ojeITQxIMBehijogjimVTULazFJ" 
+            });
+            console.log("RevenueCat is properly configured!")
+        }
+    } catch (error) {
+        console.log("Error while configuring RevenueCat:", error)
     }
   }
 }

@@ -121,8 +121,13 @@ const HomeScreen = ({navigation}) => {
             />
 
             <Animated.View style={[styles(screenWidth, screenHeight).container, showSearchResults ? {justifyContent: 'flex-start'} : {justifyContent: 'center'}, { transform: [{ translateY }] }]}>
-              <Animated.Text style={[styles(screenWidth, screenHeight).brandText, showSearchResults ? {fontSize: 48} : {fontSize: 84},{transform: [{translateY: brandTextYTransform}]}]}>Claros</Animated.Text>
-              
+              {/* <Animated.Text style={[styles(screenWidth, screenHeight).brandText, showSearchResults ? {fontSize: 48} : {fontSize: 84},{transform: [{translateY: brandTextYTransform}]}]}>Claros</Animated.Text> */}
+              <Animated.Image 
+                style={[styles(screenWidth, screenHeight).brandLogo, showSearchResults ? {justifyContent: 'flex-start'} : {justifyContent: 'center'}, { transform: [{ translateY }] }]}
+                source={require('../assets/full__text__logo.png')}
+              >
+
+              </Animated.Image>
               { showSearchResults ?
                 <>
                   <TouchableOpacity style={styles(screenWidth, screenHeight).centerButton} onPress={handleCenterButtonClick}>
@@ -266,6 +271,12 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
     color: "#0060FF",
     letterSpacing: 0,
     marginBottom: screenHeight * 0.02,
+  },
+  brandLogo: {
+    height: screenHeight * 0.08,
+    width: screenWidth * 0.75,
+    position: 'absolute',
+
   },
   callToActionText: {
     fontSize: 22,

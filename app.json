@@ -2,7 +2,7 @@
   "expo": {
     "name": "Claros",
     "slug": "Claros",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/claros__iOS__card__dark.png",
     "userInterfaceStyle": "light",

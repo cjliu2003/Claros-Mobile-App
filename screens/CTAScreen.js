@@ -1,17 +1,21 @@
-import { Modal, StyleSheet, Text, TouchableOpacity, View, Image, Alert } from 'react-native'
+import { Modal, StyleSheet, Text, TouchableOpacity, View, ScrollView, Image, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import InAppWebBrowser from '../components/WebBrowser';
 import { useUserContext } from '../contexts/userContext';
 import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import { Ionicons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 import Purchases from 'react-native-purchases';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const CTAScreen = ({navigation}) => {
   const screenWidth = useScreenWidth();
   const screenHeight = useScreenHeight();
 
-  const {subscription} = useUserContext()
-  const [currWebview, setCurrWebview] = useState("")
+  const {subscription} = useUserContext();
+  const [currWebview, setCurrWebview] = useState("");
+  const [isAwaitingOfferings, setIsAwaitingOfferings] = useState(false);
+
   const benefits = [
     "Unlimited Ratings & Analytics", "Constant Realtime Market Data", "Access to Future Developments"
   ]
@@ -30,48 +34,75 @@ const CTAScreen = ({navigation}) => {
   }
 
   async function subscribe() {
+    setIsAwaitingOfferings(true);
+
+    // We first fetch the available offerings from ReveneueCat, which derives the list from App Store Connect
+    // From the offerings we extract the productID we want the user to purchase
+    let productID;
+
     try {
       const offerings = await Purchases.getOfferings();
       if (offerings.current !== null && offerings.current.availablePackages.length !== 0) {
-        console.log(offerings.current);
+        productID = offerings.current.availablePackages[0].product.identifier;
       }
     } catch (e) {
       console.log(e);
-     
     }
+
+    // We next employ the package fetched from about to allow the end user to purchase subscription!
+    // Suffice it to say: This is the exciting part!
+    try {
+      await Purchases.purchaseProduct(productID);
+      setIsAwaitingOfferings(false);
+    } catch (e) {
+
+      if (!e.userCancelled) {
+        setIsAwaitingOfferings(false);
+        showError(e);
+      }
+    }
+    setIsAwaitingOfferings(false);
   }
-  
+
   return (
     <View style={styles(screenWidth, screenHeight).container}>
-      <Modal transparent={true} animationType="fade" visible={currWebview === "pricing"}>
-        <InAppWebBrowser url={'https://www.claros.ai/pricing'} currWebview={currWebview} setCurrWebview={setCurrWebview}></InAppWebBrowser>
-      </Modal>
-      <View style={{height: screenHeight * 0.9, justifyContent: 'space-between'}}>
-        <View style={styles(screenWidth, screenHeight).popupContainer}>
-        <TouchableOpacity style={styles(screenWidth, screenHeight).icon} onPress={handleCenterButtonClick}>
-          <Ionicons name="person-circle" size={28} color="#0060FF" />
-        </TouchableOpacity>
-          <Image source={require('../assets/claros__iOS__card__light.png')} style={styles(screenWidth, screenHeight).image}/>
-          <Text style={styles(screenWidth, screenHeight).popupHeader}>Claros AI</Text>
-          <Text style={styles(screenWidth, screenHeight).popupSubheader}>We're sorry, but Claros AI is presently only available to our subscribers. We know this is not ideal.</Text>
-          <View style={styles(screenWidth, screenHeight).dummyView}></View>
-          <Image source={require('../assets/hero__feature-graphic.png')} style={styles(screenWidth, screenHeight).heroImage}/>
-          {/* {benefits.map((benefit, i) => {
-            return (
-              <View key={benefit + i} style={styles(screenWidth, screenHeight).listItem}>
-                <AntDesign style={{paddingRight: 8}} name="checkcircle" size={25} color="#000000" />
-                <Text style={styles(screenWidth, screenHeight).listItemText}>{benefit}</Text>
-              </View>
-            )
-          })} */}
-        </View>
-        <View>
-          <TouchableOpacity style={styles(screenWidth, screenHeight).button} onPress={subscribe}>
-            <Text style={styles(screenWidth, screenHeight).buttonText}>View Account</Text>
+      <ScrollView contentContainerStyle={styles(screenWidth, screenHeight).container}>
+        <Spinner
+            visible={isAwaitingOfferings}
+            color="#0060FF"
+            overlayColor="#FFFFFF"
+            animation="none"
+          />  
+        <View style={{height: screenHeight * 0.9, justifyContent: 'space-between'}}>
+          <View style={styles(screenWidth, screenHeight).popupContainer}>
+          <TouchableOpacity style={styles(screenWidth, screenHeight).icon} onPress={handleCenterButtonClick}>
+            <Ionicons name="ios-person-circle-outline" size={28} color="#0060FF" />
           </TouchableOpacity>
+            <Image source={require('../assets/claros__iOS__card__light.png')} style={styles(screenWidth, screenHeight).card}/>
+            {/* <Image source={require('../assets/full__text__logo.png')} style={styles(screenWidth, screenHeight).logo}/> */}
+            <Text style={styles(screenWidth, screenHeight).popupHeader}>Claros AI</Text>
+            <Text style={styles(screenWidth, screenHeight).popupSubheader}>Claros subscribers get unrestricted access to Claros. Main features include: unlimited betting market search, advanced analytics, realtime market updats, access to future developments.</Text>
+            <View style={styles(screenWidth, screenHeight).dummyView}></View>
+            <Image source={require('../assets/hero__feature-graphic.png')} style={styles(screenWidth, screenHeight).heroImage}/>
+            {benefits.map((benefit, i) => {
+              return (
+                <View key={benefit + i} style={styles(screenWidth, screenHeight).listItem}>
+                  <AntDesign style={{paddingRight: 8}} name="checkcircle" size={25} color="#000000" />
+                  <Text style={styles(screenWidth, screenHeight).listItemText}>{benefit}</Text>
+                </View>
+              )
+            })}
+          </View>
+          <View>
+            <TouchableOpacity style={styles(screenWidth, screenHeight).button} onPress={subscribe}>
+              <Text style={styles(screenWidth, screenHeight).buttonText}>Subscribe</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </ScrollView>
+
     </View>
+    
   )
 }
 
@@ -85,9 +116,13 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
     height: screenHeight,
     backgroundColor: 'white',
   },
-  image: {
+  card: {
     height: 50,
     width: 50,
+  },
+  logo:{
+    height: screenHeight * 0.075,
+    width: screenWidth * 0.75,
   },
   heroImage: {
     height: 240,
