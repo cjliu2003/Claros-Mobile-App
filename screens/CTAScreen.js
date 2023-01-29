@@ -1,6 +1,5 @@
-import { Modal, StyleSheet, Text, TouchableOpacity, View, ScrollView, Image, Alert } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, ScrollView, Image, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import InAppWebBrowser from '../components/WebBrowser';
 import { useUserContext } from '../contexts/userContext';
 import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import { Ionicons } from '@expo/vector-icons';
@@ -12,7 +11,7 @@ const CTAScreen = ({navigation}) => {
   const screenWidth = useScreenWidth();
   const screenHeight = useScreenHeight();
 
-  const {subscription} = useUserContext();
+  const { findSubscription, subscription, user} = useUserContext();
   const [currWebview, setCurrWebview] = useState("");
   const [isAwaitingOfferings, setIsAwaitingOfferings] = useState(false);
 
@@ -20,48 +19,54 @@ const CTAScreen = ({navigation}) => {
     "Unlimited Ratings & Analytics", "Constant Realtime Market Data", "Access to Future Developments"
   ]
 
-  const getAccess = () => {
-    // Vibration.vibrate(0, 250)
-    setCurrWebview("pricing")
-  };
-
-  useEffect(() => {
-    if (subscription != "none") navigation.replace("Home")
-  }, [subscription])
+  // useEffect(() => {
+  //   if (subscription != "none") navigation.replace("Home")
+  // }, [subscription])
   
   const handleCenterButtonClick = () => {
     navigation.navigate("Center")
   }
 
   async function subscribe() {
-    setIsAwaitingOfferings(true);
+    if (user.uid) {
+      setIsAwaitingOfferings(true);
 
-    // We first fetch the available offerings from ReveneueCat, which derives the list from App Store Connect
-    // From the offerings we extract the productID we want the user to purchase
-    let productID;
+      // We first fetch the available offerings from ReveneueCat, which derives the list from App Store Connect
+      // From the offerings we extract the productID we want the user to purchase
+      let productID;
 
-    try {
-      const offerings = await Purchases.getOfferings();
-      if (offerings.current !== null && offerings.current.availablePackages.length !== 0) {
-        productID = offerings.current.availablePackages[0].product.identifier;
-      }
-    } catch (e) {
-      console.log(e);
-    }
+      try {
+        const offerings = await Purchases.getOfferings();
+        if (offerings.current !== null && offerings.current.availablePackages.length !== 0) {
+          productID = offerings.current.availablePackages[0].product.identifier;
+          }
+        } catch (e) {
+          console.log(e);
+        }
 
-    // We next employ the package fetched from about to allow the end user to purchase subscription!
-    // Suffice it to say: This is the exciting part!
-    try {
-      await Purchases.purchaseProduct(productID);
-      setIsAwaitingOfferings(false);
-    } catch (e) {
+        // We next employ the package fetched from about to allow the end user to purchase subscription!
+        // Suffice it to say: This is the exciting part!
+        try {
+          const res = await Purchases.purchaseProduct(productID);
+          // console.log("Subscribe RES: ", res)
+          if (res) {
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'Home' }],
+            });
+          }
+          setIsAwaitingOfferings(false);
+        } catch (e) {
 
-      if (!e.userCancelled) {
+          if (!e.userCancelled) {
+            setIsAwaitingOfferings(false);
+            showError(e);
+          }
+        }
         setIsAwaitingOfferings(false);
-        showError(e);
-      }
+    } else {
+      Alert.alert("There was an unknown error in fetching your credentials. Please refresh the app and try again.")
     }
-    setIsAwaitingOfferings(false);
   }
 
   return (
@@ -106,7 +111,7 @@ const CTAScreen = ({navigation}) => {
   )
 }
 
-export default CTAScreen
+export default CTAScreen;
 
 const styles = (screenWidth, screenHeight) => StyleSheet.create({
   container: {

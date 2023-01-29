@@ -29,7 +29,12 @@ const CenterScreen = ( {navigation} ) => {
   }, [])
 
   useEffect(() => {
-    if (!user) navigation.replace("Welcome")
+    if (!user) {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Welcome' }],
+      });
+    }
   }, [user])
   
 

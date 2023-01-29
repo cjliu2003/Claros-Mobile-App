@@ -2,17 +2,17 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore"
 import { getDatabase } from "firebase/database"
 import { getStorage} from "firebase/storage";
-import { getAuth } from 'firebase/auth'
+import { getAuth } from "firebase/auth";
+import { FIREBASE_API_KEY, FIREBASE_AUTH_DOMAIN, FIREBASE_PROJECT_ID, FIREBASE_STORAGE_BUCKET, FIREBASE_MESSAGING_SENDER_ID, FIREBASE_APP_ID, FIREBASE_MEASUREMENT_ID } from "@env";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCZAQl2VLDPcVFj-2wYI_tMBOdtQmQp6gM",
-    authDomain: "beat-the-books-users.firebaseapp.com",
-    databaseURL: "https://beat-the-books-users-default-rtdb.firebaseio.com",
-    projectId: "beat-the-books-users",
-    storageBucket: "beat-the-books-users.appspot.com",
-    messagingSenderId: "1003042902666",
-    appId: "1:1003042902666:web:aafe81d58feb3c14c15373",
-    measurementId: "G-7QGNJ6LSXJ"
+    apiKey: FIREBASE_API_KEY,
+    authDomain: FIREBASE_AUTH_DOMAIN,
+    projectId: FIREBASE_PROJECT_ID,
+    storageBucket: FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: FIREBASE_MESSAGING_SENDER_ID,
+    appId: FIREBASE_APP_ID,
+    measurementId: FIREBASE_MEASUREMENT_ID
   };
 
   const app = initializeApp(firebaseConfig);

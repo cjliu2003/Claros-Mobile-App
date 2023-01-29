@@ -1,6 +1,6 @@
 // Welcome screen provides user with option to login in or create an account. It is the top of the navigation stack.
 
-import { StyleSheet, Text, View, Animated, Easing, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Animated, Easing, TouchableOpacity, Image } from 'react-native'
 import React, { useState, useEffect } from 'react';
 import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
 import { StatusBar } from 'expo-status-bar';
@@ -32,6 +32,10 @@ const WelcomeScreen = ({ navigation }) => {
   return (
     <Animated.View style={[styles(screenWidth, screenHeight).container, {opacity}]}>
       <Animated.View style={styles(screenWidth, screenHeight).container}>
+        {/* <Image 
+          style={[styles(screenWidth, screenHeight).fullTextLogo, {marginTop: screenHeight * 0.1}]} 
+          source={require('../assets/claros__full__text__logo__dark.png')}
+        /> */}
         <Text style={[styles(screenWidth, screenHeight).brandText, {marginTop: screenHeight * 0.1}]}>Claros</Text>
         <Text style={styles(screenWidth, screenHeight).callToActionText}>Your personal sports betting assistant.</Text>
         <View style={styles(screenWidth, screenHeight).buttonContainer}>
@@ -65,6 +69,11 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
     fontWeight: "900",
     color: "#FFFFFF",
     letterSpacing: 0,
+  },
+  fullTextLogo: {
+    height: screenHeight * 0.05,
+    width: screenWidth * 0.65,
+
   },
   callToActionText: {
     fontSize: 22,

@@ -22,12 +22,6 @@ const HomeScreen = ({navigation}) => {
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [isAwaitingFetch, setIsAwaitingFetch] = useState(false);
   
-  // useEffect to show subscription prompt pop up iof the user is not a subscriber
-  useEffect(() => {
-    if (subscription === "none" && !recentSignOut) {
-      navigation.replace("CTA")
-    }
-  }, [subscription])
 
 
   // useEffect to detect future keyboard presence. Used for TouchableWithoutFeedback Animation. Distinct from past keyboard presence.
@@ -121,13 +115,12 @@ const HomeScreen = ({navigation}) => {
             />
 
             <Animated.View style={[styles(screenWidth, screenHeight).container, showSearchResults ? {justifyContent: 'flex-start'} : {justifyContent: 'center'}, { transform: [{ translateY }] }]}>
-              {/* <Animated.Text style={[styles(screenWidth, screenHeight).brandText, showSearchResults ? {fontSize: 48} : {fontSize: 84},{transform: [{translateY: brandTextYTransform}]}]}>Claros</Animated.Text> */}
-              <Animated.Image 
+              <Animated.Text style={[styles(screenWidth, screenHeight).brandText, showSearchResults ? {fontSize: 48} : {fontSize: 84},{transform: [{translateY: brandTextYTransform}]}]}>Claros</Animated.Text>
+              {/* <Animated.Image 
                 style={[styles(screenWidth, screenHeight).brandLogo, showSearchResults ? {justifyContent: 'flex-start'} : {justifyContent: 'center'}, { transform: [{ translateY }] }]}
                 source={require('../assets/full__text__logo.png')}
               >
-
-              </Animated.Image>
+              </Animated.Image> */}
               { showSearchResults ?
                 <>
                   <TouchableOpacity style={styles(screenWidth, screenHeight).centerButton} onPress={handleCenterButtonClick}>

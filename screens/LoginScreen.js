@@ -8,15 +8,14 @@ const LoginScreen = ({navigation}) => {
   const screenWidth = useScreenWidth();
   const screenHeight = useScreenHeight();
 
-  const {user, authEmail, signInUserEmail} = useUserContext()
+  const {findSubscription, authEmail, signInUserEmail} = useUserContext()
   const [password, setPassword] = useState("")
-  const [signInTrigger, setSignInTrigger] = useState(false)
 
-  useEffect(() => {
-    if (user && signInTrigger) {
-      navigation.replace("Home")
-    }
-  }, [user, signInTrigger])
+  // useEffect(() => {
+  //   if (user && signInTrigger) {
+  //     navigation.replace("Home")
+  //   }
+  // }, [user, signInTrigger])
   
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -35,15 +34,31 @@ const LoginScreen = ({navigation}) => {
     });
   }, [])
   
+  
   const signIn = async () => {
     if (authEmail && password !== "") {
       // signInUserEmail and navigate to Home
       const uid = await signInUserEmail(authEmail, password); // signInUserEmail returns the UID string as the response object
-
-      setSignInTrigger(true)
-
+      if (uid) {
+        console.log("Sign In UID: ", uid)
+        const subscriptionAsAString = await findSubscription();
+        console.log("The subscription fetched when the user signed in was: ", subscriptionAsAString);
+        if (subscriptionAsAString === "premium") {
+          console.log("The subscriptionAsAString equals premium")
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Home' }],
+          });
+        } else {
+          console.log("The SubscriptionAsAString equals CTA")
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'CTA' }],
+          });
+        }
+      }
     } else {
-      Alert.alert("Please make sure both fields are filled.")
+      Alert.alert("Please make sure the password field is filled.")
     }
   }
 

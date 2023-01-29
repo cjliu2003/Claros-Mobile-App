@@ -2,58 +2,78 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { UserContextProvider } from "./contexts/userContext";
+import { UserContextProvider, useUserContext } from "./contexts/userContext";
 import { Splash, Welcome, Login, CreateAccount, Home, Email, Center, CTA } from "./screens";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Purchases from 'react-native-purchases';
-import { Platform } from 'react-native';
+import { RevenueCat } from './functions/revenueCat/revenueCat';
 
 const Stack = createStackNavigator();
-
 const globalScreenOptions = {
   headerStyle: { backgroundColor: "#FFFFFF"},
   headerTitleStyle: {color: "black"},
   headerTintColor: "black",
 }
 
-// Class initializes RevenueCat at beginning of app life cycle.
-export class Payments extends React.Component {
-
-  componentDidMount() {
-    this.configureRevenueCat();
-  }
-
-  async configureRevenueCat() {
-    Purchases.setDebugLogsEnabled(true);
-
-    try {
-        if (Platform.OS === 'ios') {
-            await Purchases.configure({ 
-              apiKey: "appl_ojeITQxIMBehijogjimVTULazFJ" 
-            });
-            console.log("RevenueCat is properly configured!")
-        }
-    } catch (error) {
-        console.log("Error while configuring RevenueCat:", error)
-    }
-  }
-}
-
 export default function App() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [initialRoute, setInitialRoute] = useState("Splash");
-
+ 
+  const findSubscription = async() => {
+    try {
+        const revenueCat = new RevenueCat();
+        const customerInfo = await revenueCat.fetchCustomerInfo();
+        console.log("APPJS__FIND-SUBSCRIPTION: ", customerInfo)
+        if (customerInfo.entitlements.active.premium) {
+            if (customerInfo.entitlements.active.premium.isActive === true) {
+                // setSubscription("premium")
+                return "premium"
+            } else {
+                // setSubscription("none")
+                return "none"
+            }
+        } else {
+            // setSubscription("none")
+            return "none"
+        }
+    } catch (error) {
+        console.log("Error while getting customer info:", error);
+        return "none"
+    }
+  }
+  
   useEffect(() => {
-    async function checkIfLoggedIn() {
+    async function determineAppRoute() {
         const userToken = await AsyncStorage.getItem('userToken');
-        setInitialRoute(userToken && userToken !== "" ? "Home" : "Welcome");
+        console.log(userToken)
+        // Logic to conditionally set initialRoute (conditional upon persistent auth presence, subscription)
+        if (userToken && userToken !== "") {
+          // If there exists a non-empty user token in AysncStorage,
+          const revenueCat = new RevenueCat();
+          revenueCat.loginForRevenueCat(userToken);
+          const subscriptionInStringForm = await findSubscription()
+          console.log(subscriptionInStringForm)
+          if (subscriptionInStringForm == "premium") {
+            console.log("Subscriber is premium!");
+            setInitialRoute("Home");
+          } else if (subscriptionInStringForm == "none") {
+            console.log("No subscription!");
+            setInitialRoute("CTA");
+          }
+
+        } else {
+          setInitialRoute("Welcome");
+        }
+        // setInitialRoute(userToken && userToken !== "" ? "Home" : "Welcome");
         setTimeout(() => {
           setIsLoaded(true);
         }, 3000);
     };
-    const payments = new Payments();
-    payments.configureRevenueCat();
-    checkIfLoggedIn();
+    
+    const revenueCat = new RevenueCat();
+    revenueCat.configureRevenueCat();
+    determineAppRoute();
+    // setInitialRoute("Welcome");
+    // setIsLoaded(true)
   }, []);
     
   if(!isLoaded) return <Splash />;

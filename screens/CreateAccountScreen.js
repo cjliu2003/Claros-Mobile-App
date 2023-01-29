@@ -7,12 +7,6 @@ import { validateCredentials } from '../functions/signup/validateCredentials';
 import InAppWebBrowser from '../components/WebBrowser';
 
 const CreateAccountScreen = ( {navigation} ) => {
-  const [signUpTrigger, setSignUpTrigger] = useState(false)
-  useEffect(() => {
-    if (user) {
-      navigation.replace("CTA")
-    }
-  }, [user, signUpTrigger])
 
   const screenWidth = useScreenWidth();
   const screenHeight = useScreenHeight();
@@ -70,10 +64,14 @@ const CreateAccountScreen = ( {navigation} ) => {
     } else {
       const validation = validateCredentials(authEmail, password, confirmPassword)
       if (!validation) {
-        await registerUser(password)
-        setTimeout(() => {
-          setSignUpTrigger(!signUpTrigger)
-        }, 1500);
+        const res = await registerUser(password);
+        console.log("RES", res)
+        if (res) {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'CTA' }],
+          });
+        }
       } else {
         Alert.alert("Sign Up Error", validation, [{Text: 'Ok'}])
       }

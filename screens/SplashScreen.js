@@ -1,7 +1,10 @@
 import { View, Image, StyleSheet } from 'react-native';
 import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
+import { StatusBar } from 'expo-status-bar';
+import { useEffect } from 'react';
+import { useUserContext } from '../contexts/userContext';
 
-const SplashScreen = () => {
+const SplashScreen = ({navigation}) => {
     const screenWidth = useScreenWidth();
     const screenHeight = useScreenHeight();
 
@@ -9,8 +12,9 @@ const SplashScreen = () => {
         <View style={styles(screenWidth, screenHeight).container}>
             <Image
                 style={styles(screenWidth, screenHeight).logo}
-                source={require('../assets/claros__logo__splash__light.png')}
+                source={require('../assets/claros__splash__logo__light.png')}
             />
+            <StatusBar style='light' />
         </View>
     );
 }
