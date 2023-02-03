@@ -1,4 +1,5 @@
 import Purchases from "react-native-purchases";
+import {Alert} from 'react-native'
 
 export class RevenueCat {
     // Thsi function initially configures RevenueCart, and does so with anonymous App UID
@@ -11,7 +12,7 @@ export class RevenueCat {
                 Purchases.configure({ 
                     apiKey: "appl_ojeITQxIMBehijogjimVTULazFJ",
                 });
-                console.log("RevenueCat is properly configured, anonymously!")
+                // console.log("RevenueCat is properly configured, anonymously!")
             }
         } catch (error) {
             console.log("Error while anonymously configuring RevenueCat:", error)
@@ -25,7 +26,7 @@ export class RevenueCat {
 
         try {
             // Later log in provided user Id
-            console.log("Logging In: ", uid)
+            // console.log("Logging In: ", uid)
             Purchases.logIn(uid);
         } catch (error) {
             console.log(`Error while logging in uid ${uid} for RevenueCat:`, error);
@@ -56,5 +57,17 @@ export class RevenueCat {
             console.log("Error while fetching RevenueCat customer info:", error);
           }
         return customerInfo;
+    }
+
+    async restoreSubscription() {
+        console.log("The function `restoreSubscription()` was triggered!")
+        let restoreSubscriptionResponse;
+        try {
+            restoreSubscriptionResponse = await Purchases.restorePurchases();
+        } catch (e) {
+            // console.log("Error while restoring subscription:", e);
+            Alert.alert("Error while restoring subscription", e)
+        }
+        return restoreSubscriptionResponse;
     }
 }

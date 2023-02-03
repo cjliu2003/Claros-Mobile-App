@@ -2,15 +2,10 @@
   "expo": {
     "name": "Claros",
     "slug": "Claros",
-    "version": "1.0.4",
+    "version": "1.0.10",
     "orientation": "portrait",
     "icon": "./assets/claros__iOS__card__dark.png",
     "userInterfaceStyle": "light",
-    // "splash": {
-    //   "image": "./assets/claros__logo__splash__light.png",
-    //   "resizeMode": "contain",
-    //   "backgroundColor": "#FFFFFF"
-    // },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -36,7 +31,7 @@
       }
     },
     "expo": {
-    "jsEngine": "hermes"
-    }
+      "jsEngine": "hermes"
+    },
   }
 }

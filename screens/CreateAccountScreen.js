@@ -15,6 +15,7 @@ const CreateAccountScreen = ( {navigation} ) => {
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const [acceptAppleTerms, setAcceptAppleTerms] = useState(false);
   const [currWebview, setCurrWebview] = useState("")
 
   useLayoutEffect(() => {
@@ -59,8 +60,8 @@ const CreateAccountScreen = ( {navigation} ) => {
   }).start();
   
   const signUpUser = async() => {
-    if (!acceptTerms) {
-      Alert.alert("Please accept the terms and conditions")
+    if (!acceptTerms || !acceptAppleTerms) {
+      Alert.alert("Please accept the terms and conditions and apple's terms of use")
     } else {
       const validation = validateCredentials(authEmail, password, confirmPassword)
       if (!validation) {
@@ -69,7 +70,7 @@ const CreateAccountScreen = ( {navigation} ) => {
         if (res) {
           navigation.reset({
             index: 0,
-            routes: [{ name: 'CTA' }],
+            routes: [{ name: 'Home' }],
           });
         }
       } else {
@@ -81,6 +82,10 @@ const CreateAccountScreen = ( {navigation} ) => {
   const handleTermsClick = () => {
     // Vibration.vibrate(0,250)
     setCurrWebview("terms")
+  }
+
+  const handleAppleTermsClick = () => {
+    setCurrWebview("apple_terms")
   }
 
   return (
@@ -123,10 +128,16 @@ const CreateAccountScreen = ( {navigation} ) => {
             </TouchableOpacity>
           </View>
           <View style={styles(screenWidth, screenHeight).termsContainer}>
+            <TouchableOpacity style={styles(screenWidth, screenHeight).checkbox} onPress={() => setAcceptAppleTerms(!acceptAppleTerms)}>
+                <Icon name={acceptAppleTerms ? "check-square" : "square"} size={24} color={"#ffffff85"} />
+            </TouchableOpacity>
+            <Text onPress={handleAppleTermsClick} style={styles(screenWidth, screenHeight).legalText}>I accept Apple's Terms of Use</Text>
+          </View>
+          <View style={styles(screenWidth, screenHeight).termsContainer}>
             <TouchableOpacity style={styles(screenWidth, screenHeight).checkbox} onPress={() => setAcceptTerms(!acceptTerms)}>
                 <Icon name={acceptTerms ? "check-square" : "square"} size={24} color={"#ffffff85"} />
             </TouchableOpacity>
-            <Text onPress={handleTermsClick} style={styles(screenWidth, screenHeight).legalText}>I accept the terms and conditions</Text>
+            <Text onPress={handleTermsClick} style={styles(screenWidth, screenHeight).legalText}>I accept the terms and conditions of Claros</Text>
           </View>
 
         </Animated.View>
@@ -134,6 +145,9 @@ const CreateAccountScreen = ( {navigation} ) => {
     </TouchableWithoutFeedback>
       <Modal transparent={true} animationType="fade" visible={currWebview === "terms"}>
         <InAppWebBrowser url={'https://www.claros.ai/termsandconditions'} currWebview={currWebview} setCurrWebview={setCurrWebview}></InAppWebBrowser>
+      </Modal>
+      <Modal transparent={true} animationType="fade" visible={currWebview === "apple_terms"}>
+        <InAppWebBrowser url={'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/'} currWebview={currWebview} setCurrWebview={setCurrWebview}></InAppWebBrowser>
       </Modal>
       </>
   )
@@ -157,6 +171,7 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: screenHeight * 0.02,
+    alignSelf: 'flex-start',
   },
   checkbox: {
     marginRight: 10,
