@@ -1,4 +1,4 @@
-import { StyleSheet, View, ScrollView, Text, TouchableOpacity, TextInput, Keyboard, Animated, Easing, TouchableWithoutFeedback, Image } from 'react-native';
+import { StyleSheet, View, ScrollView, Text, TouchableOpacity, Touchable, TextInput, Keyboard, Animated, Easing, TouchableWithoutFeedback, Image, Modal  } from 'react-native';
 import React, { useEffect, useState, useRef, createRef } from 'react';
 import { useUserContext } from '../contexts/userContext';
 import { useScreenWidth, useScreenHeight } from "../contexts/useOrientation";
@@ -6,24 +6,27 @@ import Icon from 'react-native-vector-icons/Feather';
 import { searchIndex } from '../functions/search/processQueries';
 import SearchResultContainer from '../components/SearchResult';
 import { Ionicons } from '@expo/vector-icons';
-import { MaterialCommunityIcons } from 'react-native-vector-icons';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { StatusBar } from 'expo-status-bar';
 import nullSearchImage from '../assets/null__search.png';
+import { RevenueCat } from '../functions/revenueCat/revenueCat';
+import SubscriptionCTA from '../components/SubscriptionCTA';
+import TextTicker from 'react-native-text-ticker';
 
 const HomeScreen = ({navigation}) => {
   const screenWidth = useScreenWidth();
   const screenHeight = useScreenHeight();
-  const [recentSignOut, setRecentSignOut] = useState(false);
   const [brandTextYTransform, setBrandTextYTransform] = useState( new Animated.Value(0));
-  const {trackSearchQuery, subscription} = useUserContext();
+  const {setCustomerData, user, trackSearchQuery, customer} = useUserContext();
   const [searchQuery, setSearchQuery] = useState("");
+  const [displaySearchInput, setDisplaySearchInput] = useState(false);
   const [data, setData] = useState(null);
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [isAwaitingFetch, setIsAwaitingFetch] = useState(false);
+  const [isSubscriber, setIsSubscriber] = useState(false);
+  const [showCTAModal, setShowCTAModal] = useState(false);
   
-
-
+  
   // useEffect to detect future keyboard presence. Used for TouchableWithoutFeedback Animation. Distinct from past keyboard presence.
   useEffect(() => {
     const keyboardShowListener = Keyboard.addListener('keyboardWillShow', (event) => {
@@ -41,10 +44,31 @@ const HomeScreen = ({navigation}) => {
     };
   }, []);
   
+  // This is a useEffect we are using to check if the user has a subscription on screen load.
+  useEffect(() => {
+    const checkSub = async() => {
+      const revenueCat = new RevenueCat();
+      let infoSnap = await revenueCat.fetchCustomerInfo();
+      if (infoSnap.entitlements.all.premium) {
+        if (infoSnap.entitlements.all.hasOwnProperty("premium") && infoSnap.entitlements.all.premium.isActive) {
+          setIsSubscriber(true);
+          console.log("User is a subscriber");
+        } else {
+          setIsSubscriber(false);
+          console.log("User is not a subscriber");
+        }
+      } else {
+        setIsSubscriber(false);
+      }
+    }
+    checkSub();
+  }, []);
+
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const translateY = useRef(new Animated.Value(0)).current;
 
+  // This useEffect is used to animate the brand text up when the keyboard is visible.
   if (!showSearchResults) {
     Animated.spring(translateY, {
       toValue: -1/2 * keyboardHeight,
@@ -54,21 +78,91 @@ const HomeScreen = ({navigation}) => {
     }).start();
   }
 
+  const handleGenericDismiss = () => {
+    Keyboard.dismiss();
+    setKeyboardHeight(0);
+    setKeyboardVisible(false);
+    if (!searchQuery.length > 0) {
+      setDisplaySearchInput(false);
+    }
+  }
+
+
+  const checkSub = async() => {
+    const revenueCat = new RevenueCat();
+    let infoSnap = await revenueCat.fetchCustomerInfo();
+    if (infoSnap.entitlements.all.hasOwnProperty("premium") && infoSnap.entitlements.all.premium.isActive) {
+      setIsSubscriber(true);
+      console.log("User is a subscriber");
+    } else {
+      setIsSubscriber(false);
+      console.log("User is not a subscriber");
+    }
+  }
 
   const [responseDataLength, setResonseDataLength] = useState(0);
   const handleSearch = async () => {
-    setIsAwaitingFetch(true); // Update the state to loading
+    setCustomerData();
+    await checkSub();
+    // Function now considers whether press comes from subscriber or not subscriber and handles accordingly.
+    if (customer["search_queries"].length > 5 && !isSubscriber) {
+      setShowCTAModal(true);
+    } else {
+      setIsAwaitingFetch(true); // Update the state to loading
+        // Perform search from index
+        setTimeout(async () => {
+          const responseData = await searchIndex(searchQuery);
+          setData(responseData);
+          trackSearchQuery(searchQuery, responseData)
+          setResonseDataLength(responseData.length);
+          setKeyboardHeight(0);
+          setKeyboardVisible(false);
+          setSearchQuery("");
+  
+          setIsAwaitingFetch(false);
+          setShowSearchResults(true);
+        }, 1000); //  1 second delay
+    }
+  }
 
-    // Perform search from index
-    const responseData = await searchIndex(searchQuery);
-    setData(responseData);
-    trackSearchQuery(searchQuery, responseData)
-    setResonseDataLength(responseData.length);
-    setKeyboardHeight(0);
-    setKeyboardVisible(false);
+  const searchInputTransition = () => {
+    setDisplaySearchInput(true);
+  }
 
-    setIsAwaitingFetch(false);
-    setShowSearchResults(true);
+  const handleSwipeUpSearch = async (e) => {
+    const { nativeEvent } = e;
+    const verticalVelocity = nativeEvent.velocity.y;
+    if (verticalVelocity > 0 && !showSearchResults) {
+      // Trigger your logic here as the user scrolled up
+      setCustomerData();
+      await checkSub();
+      // Function now considers whether press comes from subscriber or not subscriber and handles accordingly.
+      if (customer["search_queries"].length > 5 && !isSubscriber) {
+        setShowCTAModal(true);
+      } else {
+        setIsAwaitingFetch(true); // Update the state to loading
+        // Perform search from index
+        let searchQuery = "";
+
+        setTimeout(async () => {
+          const responseData = await searchIndex(searchQuery);
+          console.log(responseData[0]);
+          setData(responseData);
+          trackSearchQuery(searchQuery, responseData)
+          setResonseDataLength(responseData.length);
+          setKeyboardHeight(0);
+          setKeyboardVisible(false);
+          setSearchQuery("");
+  
+          setIsAwaitingFetch(false);
+          setShowSearchResults(true);
+        }, 1000); // 1 second delay
+      }
+    }
+  };
+
+  const handleCTAModalClose = () => {
+    setShowCTAModal(false);
   }
 
   const handleCenterButtonClick = () => {
@@ -102,10 +196,11 @@ const HomeScreen = ({navigation}) => {
 
   return (
       <Animated.View style={[styles(screenWidth, screenHeight).backgroundView, {opacity}]}>
-        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-          <ScrollView 
+        <TouchableWithoutFeedback onPress={handleGenericDismiss}>
+          <ScrollView
             contentContainerStyle={[styles(screenWidth, screenHeight).container, {overflow: 'scroll', backgroundColor: 'white'}]}
             showsVerticalScrollIndicator={false}
+            onScrollEndDrag={handleSwipeUpSearch}
             >
             <Spinner
               visible={isAwaitingFetch}
@@ -113,39 +208,47 @@ const HomeScreen = ({navigation}) => {
               overlayColor="#FFFFFF"
               animation="none"
             />
-
             <Animated.View style={[styles(screenWidth, screenHeight).container, showSearchResults ? {justifyContent: 'flex-start'} : {justifyContent: 'center'}, { transform: [{ translateY }] }]}>
               <Animated.Text style={[styles(screenWidth, screenHeight).brandText, showSearchResults ? {fontSize: 48} : {fontSize: 84},{transform: [{translateY: brandTextYTransform}]}]}>Claros</Animated.Text>
-              {/* <Animated.Image 
-                style={[styles(screenWidth, screenHeight).brandLogo, showSearchResults ? {justifyContent: 'flex-start'} : {justifyContent: 'center'}, { transform: [{ translateY }] }]}
-                source={require('../assets/full__text__logo.png')}
-              >
-              </Animated.Image> */}
-              { showSearchResults ?
-                <>
                   <TouchableOpacity style={styles(screenWidth, screenHeight).centerButton} onPress={handleCenterButtonClick}>
                     <Ionicons name="ios-person-circle-outline" size={28} color="#0060FF" />
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles(screenWidth, screenHeight).backButton} onPress={handleBackToBrandedSearch}>
-                    <Icon name="chevrons-left" size={28} color={"#0060FF"} />
-                  </TouchableOpacity>
-                </>
-              : null
-              }            
+                  {showSearchResults ?
+                    <TouchableOpacity style={styles(screenWidth, screenHeight).backButton} onPress={handleBackToBrandedSearch}>
+                      <Icon name="chevrons-left" size={28} color={"#0060FF"} />
+                    </TouchableOpacity>
+                    :
+                    <></>
+                  }
               {!showSearchResults ? <>
                 <Text style={styles(screenWidth, screenHeight).callToActionText}>Find your next bet with Claros!</Text>
                 <View style={styles(screenWidth, screenHeight).rowContainer}>
-                  <TextInput
-                    
-                    style={styles(screenWidth, screenHeight).searchInput}
-                    placeholder="Sportsbook, League, Team" 
-                    placeholderTextColor="#00000060"
-                    enablesReturnKeyAutomatically="true"
-                    onChangeText={(text) => setSearchQuery(text)}
-                    onSubmitEditing={() => handleSearch()}
-                    returnKeyType="search"
-                    returnKeyLabel='\u23CE'
-                  />
+                  
+                    {displaySearchInput ? (
+                        <TextInput
+                          style={styles(screenWidth, screenHeight).searchInput}
+                          onChangeText={(text) => setSearchQuery(text)}
+                          onSubmitEditing={() => handleSearch()}
+                          returnKeyType="search"
+                          returnKeyLabel='\u23CE'
+                          autoFocus={true}
+                          />
+                        )
+                      :
+                        (
+                        <TouchableWithoutFeedback onPress={searchInputTransition}>
+                          <View style={styles(screenWidth, screenHeight).scrollingSearchInput}>
+                            <TextTicker 
+                              style={styles(screenWidth, screenHeight).searchInputPlaceholder}
+                              duration={7500}
+                              loop={true}
+                              repeatSpacer={100}
+                              >
+                                <Text style={styles(screenWidth, screenWidth).scrollingSearchInputPlaceholderText}>Search by sportsbook, league, team, market. Or swipe up to see top plays.</Text>
+                            </TextTicker>
+                          </View>
+                        </TouchableWithoutFeedback>
+                    )}
                   <TouchableOpacity style={[styles(screenWidth, screenHeight).searchButton, { marginLeft: 10 }]} onPress={() => handleSearch()}>
                     <Icon
                       name="corner-right-up"
@@ -153,50 +256,70 @@ const HomeScreen = ({navigation}) => {
                       color="#FFFFFF"
                     />
                   </TouchableOpacity>
-                </View>
+                  <Modal
+                    visible={showCTAModal}
+                    animationType='slide'
+                    onRequestClose={() => handleCTAModalClose()}
+                    swipeThreshold={1000}
+                    presentationStyle='pageSheet'
+                  >
+                    <SubscriptionCTA
+                      setShowCTAModal={setShowCTAModal}
+                      setIsSubscriber={setIsSubscriber}
+                    />
+                  </Modal>
+                </View>  
                 </>
               : <>
               <View style={[styles(screenWidth, screenHeight).rowContainer, {marginBottom: 20}]}>
-                  <View style={styles(screenWidth, screenHeight).newSearchViewContainer}>
-                    <Ionicons name="search" size={16} color="#000000" />
-                    <TextInput
-                      ref={searchBarRef}
-                      style={styles(screenWidth, screenHeight).newSearchInput}
-                      placeholder="Search by sportsbook, league, team . . ."
-                      placeholderTextColor="#000000"
-                      enablesReturnKeyAutomatically="true"
-                      onChangeText={(text) => setSearchQuery(text)}
-                      onSubmitEditing={() => handleSearch()}
-                      returnKeyType="search"
-                    />
-                  </View>
+                <View style={styles(screenWidth, screenHeight).newSearchViewContainer}>
+                  <Ionicons name="search" size={16} color="#000000" />
+                  <TextInput
+                    ref={searchBarRef}
+                    style={styles(screenWidth, screenHeight).newSearchInput}
+                    placeholder="Search by sportsbook, league, team . . ."
+                    placeholderTextColor="#000000"
+                    enablesReturnKeyAutomatically="true"
+                    onChangeText={(text) => setSearchQuery(text)}
+                    onSubmitEditing={() => handleSearch()}
+                    returnKeyType="search"
+                  />
                 </View>
-                {
-                  responseDataLength === 0 ? (
-                    <View style={styles(screenWidth, screenHeight).nullSearchResultContainer}>
-                      <Image source={nullSearchImage} style={styles(screenWidth, screenHeight).nullSearchImage}></Image>
-                      {/* <View style={{ height: screenHeight * 0.05 }}></View> */}
-                      {/* <Text style={styles(screenWidth, screenHeight).nullSearchText}>No results found.</Text> */}
-                      {/* <View style={{ height: screenHeight * 0.05 }}></View> */}
-                      <Text style={styles(screenWidth, screenHeight).nullSearchText}>We couldn't find the line you're looking for.</Text>
-                      <View style={styles(screenWidth, screenHeight).sentenceContainer}>
-                        <Text style={styles(screenWidth, screenHeight).nullSearchText}>Please try another </Text>
-                        <TouchableOpacity onPress={handleNullSearchCallToAction}>
-                            <Text style={styles(screenWidth, screenHeight).nullSearchTextCallToActionText}>search.</Text>
-                        </TouchableOpacity>
-                      </View>
+              </View>
+              {
+                responseDataLength === 0 ? (
+                  <View style={styles(screenWidth, screenHeight).nullSearchResultContainer}>
+                    <Image source={nullSearchImage} style={styles(screenWidth, screenHeight).nullSearchImage}></Image>
+                    <Text style={styles(screenWidth, screenHeight).nullSearchText}>We couldn't find the line you're looking for.</Text>
+                    <View style={styles(screenWidth, screenHeight).sentenceContainer}>
+                      <Text style={styles(screenWidth, screenHeight).nullSearchText}>Please try another </Text>
+                      <TouchableOpacity onPress={handleNullSearchCallToAction}>
+                          <Text style={styles(screenWidth, screenHeight).nullSearchTextCallToActionText}>search.</Text>
+                      </TouchableOpacity>
                     </View>
-                  ) : (
-                    data && data.map(line => {
-                      return (
-                        <SearchResultContainer key={line.id} line={line}/>
-                      )
-                    })
-                  )
-                }
+                  </View>
+                ) : (
+                  data && data.map(line => {
+                    return (
+                      <SearchResultContainer key={line.id} line={line}/>
+                    )
+                  })
+                )
+              }
+              <Modal
+                visible={showCTAModal}
+                animationType='slide'
+                onRequestClose={() => handleCTAModalClose()}
+                swipeThreshold={1000}
+                presentationStyle='pageSheet'
+                >
+                  <SubscriptionCTA
+                    setShowCTAModal={setShowCTAModal}
+                    setIsSubscriber={setIsSubscriber}
+                    />
+              </Modal>
               </> }
             </Animated.View>
-            {/* <Text onPress={() => signOut()}>click me to sign out (this helps with testing if the popup will occur on different accounts)</Text> */}
           </ScrollView>
         </TouchableWithoutFeedback>
         <StatusBar style='light' />
@@ -215,7 +338,9 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
     alignItems: 'center',
     backgroundColor: "#FFFFFF",
     minHeight: screenHeight,
-    width: screenWidth
+    width: screenWidth,
+    // borderColor: '#0060FF',
+    // borderWidth: 1,
   },
   centerButton: {
     position: 'absolute',
@@ -277,19 +402,50 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
     marginTop: 10,
     marginBottom: 60,
   },
-  searchInput: {
+  scrollingSearchInput: {
     height: 60,
     width: screenWidth * 0.65,
+    justifyContent: 'center',
     borderRadius: 11,
     paddingHorizontal: 20,
     fontSize: 18,
     fontWeight: "200",
     color: "black",
-    shadowColor: '#000000',
+    shadowColor: '#00000075',
     shadowOffset: { width: 0, height: 0 },
-    shadowRadius: 2,
+    shadowRadius: 4,
     shadowOpacity: 0.25,
     backgroundColor: '#FFFFFF',
+  },
+  scrollingSearchInputPlaceholderText: {
+    fontSize: 18,
+    fontWeight: "200",
+    color: "#00000075",
+    textAlign: 'center',
+    justifyContent: 'center',
+  },
+  searchInput: {
+    height: 60,
+    width: screenWidth * 0.65,
+    justifyContent: 'center',
+    borderRadius: 11,
+    paddingHorizontal: 20,
+    fontSize: 18,
+    fontWeight: "200",
+    color: "black",
+    shadowColor: '#00000075',
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 4,
+    shadowOpacity: 0.25,
+    backgroundColor: '#FFFFFF',
+
+  },
+  searchInputPlaceholder: {
+    fontSize: 18,
+    fontWeight: "200",
+    color: "#00000075",
+    textAlign: 'center',
+    justifyContent: 'center',
   },
   searchButton: {
     width: 70,
@@ -298,6 +454,10 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
     backgroundColor: '#0060FF',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  brandedSearchButtonUpArrow: {
+    height: 50,
+    width: 50,
   },
   newSearchViewContainer: {
     height: 40,

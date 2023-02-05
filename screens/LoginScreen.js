@@ -53,7 +53,7 @@ const LoginScreen = ({navigation}) => {
           console.log("The SubscriptionAsAString equals CTA")
           navigation.reset({
             index: 0,
-            routes: [{ name: 'CTA' }],
+            routes: [{ name: 'Home' }],
           });
         }
       }

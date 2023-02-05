@@ -7,8 +7,8 @@
 import { createContext, useContext, useState, useEffect} from "react";
 import { auth } from "../firebase";
 import { firestore } from "../firebase";
-import { createUserWithEmailAndPassword, updateProfile, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, updateEmail, fetchSignInMethodsForEmail} from "@firebase/auth";
-import { doc, setDoc, updateDoc } from "firebase/firestore";
+import { createUserWithEmailAndPassword, getAuth, updateProfile, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, updateEmail, deleteUser, fetchSignInMethodsForEmail} from "@firebase/auth";
+import { doc, setDoc, updateDoc, getDoc } from "firebase/firestore";
 import { Alert } from "react-native";
 import { parseFirebaseSignInError } from "../functions/parsing/parseFirebaseSignInError";
 import { parseFirebaseSignUpError } from "../functions/parsing/parseFirebaseSignUpError";
@@ -59,6 +59,17 @@ export const UserContextProvider = ({ children }) => {
       return unsubscribe;
     }, []);
 
+    const setCustomerData = async() => {
+        const userDocRef = doc(firestore, "customers", user.uid);
+        const customerObject = await getDoc(userDocRef)
+        setCustomer(customerObject.data())
+
+    }
+    useEffect(() => {
+        if (user) setCustomerData()
+    }, [user])
+    
+
 
     const isAuthenticatedEmail = async(email) => {
         try {
@@ -76,30 +87,28 @@ export const UserContextProvider = ({ children }) => {
     
     // Finds the customer's subscription status in firebase.
     const findSubscription = async() => {
-        console.log("The function `findSubscription()` in `userContext.js` was triggered!");
         try {
             const revenueCat = new RevenueCat();
             const customerInfo = await revenueCat.fetchCustomerInfo();
-            console.log(customerInfo);
-            if (customerInfo.entitlements.active.premium) {
-                if (customerInfo.entitlements.active.premium.isActive === true) {
-                    // setSubscription("premium")
-                    console.log("premium")
-                    return "premium"
-                } else {
-                    // setSubscription("none")
-                    console.log("none")
-                    return "none"
+            if (customerInfo) {
+                if (customerInfo.entitlements.active) {
+                    if (customerInfo.entitlements.active.premium) {
+                        if (customerInfo.entitlements.active.premium.isActive === true) {
+                            return "premium"
+                        } else {
+                            return "none"
+                        }
+                    } else {
+                        // setSubscription("none")
+                        return "none"
+                    }
                 }
             } else {
-                // setSubscription("none")
-                return "none"
+                return ("none")
             }
         } catch (error) {
             console.log("Error while getting customer info:", error);
         }
-
-        // console.log(subscription);
     }
 
     // This function updates the display name of the given user with the given name
@@ -110,7 +119,7 @@ export const UserContextProvider = ({ children }) => {
         })
         .then(() => {
             // If the update is successful, log a message
-            console.log("Succesful Profile Update")
+            console.log("Successful Profile Update")
         })
         .catch((error) => {
             // If there is an error, show an alert with the error message
@@ -124,7 +133,7 @@ export const UserContextProvider = ({ children }) => {
         updateEmail(user, email)
         .then(() => {
             // If the update is successful, log a message
-            console.log("Succesful Profile Update")
+            console.log("Successful Profile Update")
         })
         .catch((error) => {
             // If there is an error, show an alert with the error message
@@ -139,11 +148,13 @@ export const UserContextProvider = ({ children }) => {
         }, {merge: true});
     }
 
-    const trackSearchQuery = (query, results) => {
+    const trackSearchQuery = async(query, results) => {
         let curr = []
-        if (customer) {
-            if (customer.search_queries) {
-                curr = customer.search_queries
+        const userDocRef = doc(firestore, "customers", user.uid);
+        const customerObject = await getDoc(userDocRef)
+        if (customerObject.exists()) {
+            if (customerObject.data().search_queries) {
+                curr = customerObject.data().search_queries
             } 
         }
         let currDate = new Date()
@@ -154,7 +165,8 @@ export const UserContextProvider = ({ children }) => {
             timestamp: currDate.toUTCString()
         }
         curr.push(newQuery)
-        const userDocRef = doc(firestore, "customers", user.uid);
+
+
         updateDoc(userDocRef, {
             search_queries: curr
         }, {merge: true});
@@ -220,6 +232,18 @@ export const UserContextProvider = ({ children }) => {
         })
     }
 
+    const deleteAccount = async() => {
+        try {
+          await deleteUser(user);
+          return { success: true, message: 'Account deleted successfully.' };
+        } catch (error) {
+          return { success: false, message: error }
+        }
+      };
+      
+      
+      
+
     const contextValue = {
         user,
         loading, setLoading,
@@ -242,7 +266,9 @@ export const UserContextProvider = ({ children }) => {
         authEmail, setAuthEmail,
         trackSearchQuery, 
         findSubscription,
-        signUpSuccess
+        signUpSuccess,
+        deleteAccount,
+        setCustomerData
     };
     
     return (

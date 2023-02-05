@@ -79,7 +79,7 @@ const SpecificRatingInfoCard = (props) => {
           <View style={styles(screenWidth, screenHeight).cardRow5}>
               <View style={[{backgroundColor: backgroundColor}, styles(screenWidth, screenHeight).ratingsCategoryView]}>
                 <SimpleLineIcons name="info" size={16} color={textColor}></SimpleLineIcons>
-                <Text style={[styles(screenWidth, screenHeight).ratingsCategoryText, {color: textColor}]}>{line.max_ev >= 1 ? "A" : line.max_ev > -1 && line.max_ev < 1 ? "B" : "C"} Rating </Text>
+                {/* <Text style={[styles(screenWidth, screenHeight).ratingsCategoryText, {color: textColor}]}>{line.max_ev >= 1 ? "A" : line.max_ev > -1 && line.max_ev < 1 ? "B" : "C"} Rating </Text> */}
                 <Text style={[styles(screenWidth, screenHeight).ratingsMetricText, {color: textColor}]}>{line.max_ev > 0 && "+" }{(line.max_ev).toFixed(2)}% Edge</Text>
               </View>
               

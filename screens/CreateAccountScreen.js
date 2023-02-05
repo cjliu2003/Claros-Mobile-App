@@ -60,7 +60,7 @@ const CreateAccountScreen = ( {navigation} ) => {
   
   const signUpUser = async() => {
     if (!acceptTerms) {
-      Alert.alert("Please accept the terms and conditions")
+      Alert.alert("Please accept the Apple Terms of Use & Claros Terms and Conditions")
     } else {
       const validation = validateCredentials(authEmail, password, confirmPassword)
       if (!validation) {
@@ -69,7 +69,7 @@ const CreateAccountScreen = ( {navigation} ) => {
         if (res) {
           navigation.reset({
             index: 0,
-            routes: [{ name: 'CTA' }],
+            routes: [{ name: 'Home' }],
           });
         }
       } else {
@@ -81,6 +81,10 @@ const CreateAccountScreen = ( {navigation} ) => {
   const handleTermsClick = () => {
     // Vibration.vibrate(0,250)
     setCurrWebview("terms")
+  }
+
+  const handleAppleTermsClick = () => {
+    setCurrWebview("apple_terms")
   }
 
   return (
@@ -124,9 +128,13 @@ const CreateAccountScreen = ( {navigation} ) => {
           </View>
           <View style={styles(screenWidth, screenHeight).termsContainer}>
             <TouchableOpacity style={styles(screenWidth, screenHeight).checkbox} onPress={() => setAcceptTerms(!acceptTerms)}>
-                <Icon name={acceptTerms ? "check-square" : "square"} size={24} color={"#ffffff85"} />
+                <Icon name={acceptTerms ? "check-square" : "square"} size={20} color={"#FFFFFF"} />
             </TouchableOpacity>
-            <Text onPress={handleTermsClick} style={styles(screenWidth, screenHeight).legalText}>I accept the terms and conditions</Text>
+            <Text style={styles(screenWidth, screenHeight).legalText}>I accept the </Text>
+            <Text onPress={handleAppleTermsClick} style={styles(screenWidth, screenHeight).legalText}>Apple Terms of Use</Text>
+            <Text style={styles(screenWidth, screenHeight).legalText}> and the </Text>
+            <Text onPress={handleTermsClick} style={styles(screenWidth, screenHeight).legalText}>Claros Terms and Conditions</Text>
+            
           </View>
 
         </Animated.View>
@@ -134,6 +142,9 @@ const CreateAccountScreen = ( {navigation} ) => {
     </TouchableWithoutFeedback>
       <Modal transparent={true} animationType="fade" visible={currWebview === "terms"}>
         <InAppWebBrowser url={'https://www.claros.ai/termsandconditions'} currWebview={currWebview} setCurrWebview={setCurrWebview}></InAppWebBrowser>
+      </Modal>
+      <Modal transparent={true} animationType="fade" visible={currWebview === "apple_terms"}>
+        <InAppWebBrowser url={'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/'} currWebview={currWebview} setCurrWebview={setCurrWebview}></InAppWebBrowser>
       </Modal>
       </>
   )
@@ -156,7 +167,9 @@ const styles = (screenWidth, screenHeight) => StyleSheet.create({
   termsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: screenHeight * 0.02,
+    justifyContent: 'center',
+    marginTop: 20,
+    flexWrap: 'wrap',
   },
   checkbox: {
     marginRight: 10,

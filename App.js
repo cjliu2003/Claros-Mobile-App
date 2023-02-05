@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Alert } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { UserContextProvider, useUserContext } from "./contexts/userContext";
-import { Splash, Welcome, Login, CreateAccount, Home, Email, Center, CTA } from "./screens";
+import { Splash, Welcome, Login, CreateAccount, Home, Email, Center, CTA, Deletion } from "./screens";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RevenueCat } from './functions/revenueCat/revenueCat';
 
@@ -22,7 +22,6 @@ export default function App() {
     try {
         const revenueCat = new RevenueCat();
         const customerInfo = await revenueCat.fetchCustomerInfo();
-        console.log("APPJS__FIND-SUBSCRIPTION: ", customerInfo)
         if (customerInfo.entitlements.active.premium) {
             if (customerInfo.entitlements.active.premium.isActive === true) {
                 // setSubscription("premium")
@@ -44,26 +43,21 @@ export default function App() {
   useEffect(() => {
     async function determineAppRoute() {
         const userToken = await AsyncStorage.getItem('userToken');
-        console.log(userToken)
         // Logic to conditionally set initialRoute (conditional upon persistent auth presence, subscription)
         if (userToken && userToken !== "") {
           // If there exists a non-empty user token in AysncStorage,
           const revenueCat = new RevenueCat();
           revenueCat.loginForRevenueCat(userToken);
           const subscriptionInStringForm = await findSubscription()
-          console.log(subscriptionInStringForm)
           if (subscriptionInStringForm == "premium") {
-            console.log("Subscriber is premium!");
             setInitialRoute("Home");
           } else if (subscriptionInStringForm == "none") {
-            console.log("No subscription!");
-            setInitialRoute("CTA");
+            setInitialRoute("Home");
           }
 
         } else {
           setInitialRoute("Welcome");
         }
-        // setInitialRoute(userToken && userToken !== "" ? "Home" : "Welcome");
         setTimeout(() => {
           setIsLoaded(true);
         }, 3000);
@@ -72,8 +66,6 @@ export default function App() {
     const revenueCat = new RevenueCat();
     revenueCat.configureRevenueCat();
     determineAppRoute();
-    // setInitialRoute("Welcome");
-    // setIsLoaded(true)
   }, []);
     
   if(!isLoaded) return <Splash />;
@@ -90,6 +82,7 @@ export default function App() {
           <Stack.Screen name='Email' component={Email} options={{ headerShown: true }} />
           <Stack.Screen name='Center' component={Center} options={{ headerShown: true }} />
           <Stack.Screen name='CTA' component={CTA} options={{ headerShown: false }} />
+          <Stack.Screen name='Deletion' component={Deletion} options={{ headerShown: true }} />
         </Stack.Navigator>
       </NavigationContainer>
     </UserContextProvider>

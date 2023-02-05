@@ -8,3 +8,4 @@ export {default as Home} from './HomeScreen';
 export {default as Login} from './LoginScreen';
 export {default as Center} from './CenterScreen';
 export {default as CTA} from './CTAScreen';
+export {default as Deletion} from './DeletionScreen';
