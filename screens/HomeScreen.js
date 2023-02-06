@@ -52,10 +52,8 @@ const HomeScreen = ({navigation}) => {
       if (infoSnap.entitlements.all.premium) {
         if (infoSnap.entitlements.all.hasOwnProperty("premium") && infoSnap.entitlements.all.premium.isActive) {
           setIsSubscriber(true);
-          console.log("User is a subscriber");
         } else {
           setIsSubscriber(false);
-          console.log("User is not a subscriber");
         }
       } else {
         setIsSubscriber(false);
@@ -87,16 +85,13 @@ const HomeScreen = ({navigation}) => {
     }
   }
 
-
   const checkSub = async() => {
     const revenueCat = new RevenueCat();
     let infoSnap = await revenueCat.fetchCustomerInfo();
     if (infoSnap.entitlements.all.hasOwnProperty("premium") && infoSnap.entitlements.all.premium.isActive) {
       setIsSubscriber(true);
-      console.log("User is a subscriber");
     } else {
       setIsSubscriber(false);
-      console.log("User is not a subscriber");
     }
   }
 
@@ -146,7 +141,6 @@ const HomeScreen = ({navigation}) => {
 
         setTimeout(async () => {
           const responseData = await searchIndex(searchQuery);
-          console.log(responseData[0]);
           setData(responseData);
           trackSearchQuery(searchQuery, responseData)
           setResonseDataLength(responseData.length);
